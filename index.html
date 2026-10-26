@@ -342,7 +342,7 @@
     </div>
   </div>
 
-  <!-- VICTORY MODAL -->
+  <!-- VICTORY MODAL WITH RETRY, NEXT, AND HOME BUTTONS -->
   <div id="modal-victory" class="fixed inset-0 z-50 bg-slate-950/90 backdrop-blur-lg hidden flex items-center justify-center p-4">
     <div class="max-w-md w-full bg-slate-900 border border-emerald-500/50 rounded-2xl shadow-2xl p-5 text-center space-y-4">
       <div class="w-14 h-14 bg-emerald-500/20 border-2 border-emerald-400 rounded-full flex items-center justify-center mx-auto text-emerald-400 text-2xl">
@@ -360,12 +360,15 @@
         <div id="victory-record-status" class="text-xs font-bold text-emerald-400 hidden">🎉 NEW PERSONAL BEST RECORD!</div>
       </div>
 
-      <div class="flex space-x-3">
-        <button id="victory-btn-restart" class="flex-1 py-2.5 bg-slate-800 hover:bg-slate-700 text-slate-200 font-bold rounded-xl border border-slate-700 text-sm">
+      <div class="grid grid-cols-3 gap-2">
+        <button id="victory-btn-home" class="py-2.5 bg-slate-800 hover:bg-slate-700 text-slate-200 font-bold rounded-xl border border-slate-700 text-xs sm:text-sm flex items-center justify-center">
+          <i class="fa-solid fa-house mr-1"></i> Home
+        </button>
+        <button id="victory-btn-restart" class="py-2.5 bg-slate-800 hover:bg-slate-700 text-slate-200 font-bold rounded-xl border border-slate-700 text-xs sm:text-sm flex items-center justify-center">
           <i class="fa-solid fa-rotate-right mr-1"></i> Retry
         </button>
-        <button id="victory-btn-next" class="flex-1 py-2.5 bg-blue-600 hover:bg-blue-500 text-white font-bold rounded-xl shadow-lg text-sm">
-          Next Track <i class="fa-solid fa-arrow-right ml-1"></i>
+        <button id="victory-btn-next" class="py-2.5 bg-blue-600 hover:bg-blue-500 text-white font-bold rounded-xl shadow-lg text-xs sm:text-sm flex items-center justify-center">
+          Next <i class="fa-solid fa-arrow-right ml-1"></i>
         </button>
       </div>
     </div>
@@ -544,7 +547,7 @@
 
     let isEditingControls = false;
 
-    // CAR PHYSICS DATA (Decreased friction from 0.965 to 0.985 for less deceleration)
+    // CAR PHYSICS DATA
     const car = {
       x: 0,
       y: 0,
@@ -555,7 +558,8 @@
       friction: 0.985,
       turnSpeed: 0.034,
       width: 28,
-      height: 48
+      height: 48,
+      isColliding: false
     };
 
     // TRAIL LINE HISTORY POINTS
@@ -836,6 +840,7 @@
       car.y = (currentMaze.start.y + 0.5) * TILE_SIZE;
       car.speed = 0;
       car.angle = 0;
+      car.isColliding = false;
 
       // Push initial position to trail path
       carTrailPath.push({ x: car.x, y: car.y });
@@ -867,7 +872,6 @@
       } else {
         pausedTimeTotal += (performance.now() - pauseStartedAt);
         pauseModal.classList.add('hidden');
-        // Resume loop seamlessly
         if (animFrameId) cancelAnimationFrame(animFrameId);
         gameLoop();
       }
@@ -921,18 +925,24 @@
       };
 
       const collisionRadius = 18;
+      let collidedThisFrame = false;
 
       if (!checkCollision(nextX + (vx > 0 ? collisionRadius : -collisionRadius), car.y)) {
         car.x = nextX;
       } else {
-        car.speed = 0; // Stop instantly on wall impact instead of bouncing back
+        car.speed = 0;
+        collidedThisFrame = true;
       }
 
       if (!checkCollision(car.x, nextY + (vy > 0 ? collisionRadius : -collisionRadius))) {
         car.y = nextY;
       } else {
-        car.speed = 0; // Stop instantly on wall impact instead of bouncing back
+        car.speed = 0;
+        collidedThisFrame = true;
       }
+
+      // Trigger indicator state when user accelerates into a wall
+      car.isColliding = collidedThisFrame && (inputs.gas || inputs.brake);
 
       // Record trail coordinate if car moved enough distance
       const lastPoint = carTrailPath[carTrailPath.length - 1];
@@ -949,7 +959,7 @@
       }
     }
 
-    // --- RENDER SYSTEM (LINE-BASED TRAIL & FIXED CAR CENTER) ---
+    // --- RENDER SYSTEM (LINE-BASED TRAIL & CAR WITH COLLISION WARNING INDICATOR) ---
     function renderWorld() {
       ctx.clearRect(0, 0, canvas.width, canvas.height);
 
@@ -1025,20 +1035,33 @@
 
       ctx.restore();
 
-      // DRAW CAR AT EXACT CENTER
+      // DRAW CAR AT EXACT CENTER WITH COLLISION INDICATOR
       ctx.save();
       ctx.translate(screenCenterX, screenCenterY);
+
+      // Pulsing red collision aura when stuck on a wall
+      if (car.isColliding) {
+        ctx.save();
+        ctx.fillStyle = 'rgba(239, 68, 68, 0.35)';
+        ctx.strokeStyle = '#ef4444';
+        ctx.lineWidth = 3;
+        ctx.beginPath();
+        ctx.arc(0, 0, car.height * 0.75, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.stroke();
+        ctx.restore();
+      }
 
       // Car Shadow
       ctx.fillStyle = 'rgba(0,0,0,0.5)';
       ctx.fillRect(-car.width / 2 + 4, -car.height / 2 + 4, car.width, car.height);
 
-      // Body
-      ctx.fillStyle = '#0284c7';
+      // Body (turns warning red if colliding)
+      ctx.fillStyle = car.isColliding ? '#dc2626' : '#0284c7';
       ctx.beginPath();
       ctx.roundRect(-car.width / 2, -car.height / 2, car.width, car.height, 8);
       ctx.fill();
-      ctx.strokeStyle = '#38bdf8';
+      ctx.strokeStyle = car.isColliding ? '#f87171' : '#38bdf8';
       ctx.lineWidth = 3;
       ctx.stroke();
 
@@ -1046,10 +1069,18 @@
       ctx.fillStyle = '#0f172a';
       ctx.fillRect(-car.width / 2 + 4, -car.height / 2 + 10, car.width - 8, 16);
 
-      // Headlights
-      ctx.fillStyle = '#fef08a';
+      // Headlights / Warning Hazards
+      ctx.fillStyle = car.isColliding ? '#ef4444' : '#fef08a';
       ctx.fillRect(-car.width / 2 + 3, -car.height / 2 + 2, 6, 4);
       ctx.fillRect(car.width / 2 - 9, -car.height / 2 + 2, 6, 4);
+
+      // Draw Impact Warning Icon above car when stuck
+      if (car.isColliding) {
+        ctx.fillStyle = '#facc15';
+        ctx.font = 'bold 18px sans-serif';
+        ctx.textAlign = 'center';
+        ctx.fillText('⚠️', 0, -car.height / 2 - 8);
+      }
 
       ctx.restore();
 
@@ -1084,13 +1115,13 @@
           const ph = Math.max(1, TILE_SIZE * scaleY);
 
           if (currentMaze.grid[r][c] === 1) {
-            ctx.fillStyle = '#475569'; // Wall color
+            ctx.fillStyle = '#475569';
             ctx.fillRect(px, py, pw, ph);
           }
         }
       }
 
-      // Render trail path on minimap with a high-contrast distinct color (Neon Pink/Magenta #ec4899)
+      // Render trail path on minimap with neon magenta (#ec4899)
       if (carTrailPath.length > 1) {
         ctx.strokeStyle = '#ec4899';
         ctx.lineWidth = 2;
@@ -1163,7 +1194,7 @@
       fullMapCtx.fillRect(currentMaze.start.x * tileW, currentMaze.start.y * tileH, tileW, tileH);
 
       fullMapCtx.fillStyle = '#f59e0b';
-      fullMapCtx.fillRect(currentMaze.finish.x * tileW, currentMaze.finish.y * tileH, tileW, tileH);
+      fullMapCtx.fillRect(currentMaze.finish.x * tileW, currentMaze.finish.y * tileH, tileH);
 
       // Player Position Marker
       const carCol = car.x / TILE_SIZE;
@@ -1208,89 +1239,95 @@
 
     // --- UI EVENT LISTENERS ---
     function setupUIEventListeners() {
-      document.getElementById('menu-btn-play').onclick = () => {
+      const bindAction = (id, handler) => {
+        const el = document.getElementById(id);
+        if (!el) return;
+        el.onclick = (e) => { e.preventDefault(); handler(); };
+      };
+
+      bindAction('menu-btn-play', () => {
         renderCategoryTabs();
         renderLevelSelector();
         document.getElementById('modal-levels').classList.remove('hidden');
-      };
+      });
 
-      document.getElementById('menu-btn-settings').onclick = () => {
+      bindAction('menu-btn-settings', () => {
         document.getElementById('modal-settings').classList.remove('hidden');
-      };
+      });
 
-      document.getElementById('menu-btn-leaderboard').onclick = () => {
+      bindAction('menu-btn-leaderboard', () => {
         populateLeaderboardMazeSelect();
         renderLeaderboardUI();
         document.getElementById('modal-leaderboard').classList.remove('hidden');
-      };
+      });
 
-      document.getElementById('btn-back-menu').onclick = () => {
+      bindAction('btn-back-menu', () => {
         gameActive = false;
         isPaused = false;
         document.getElementById('modal-menu').classList.remove('hidden');
-      };
+      });
 
-      // Pause button listener
-      document.getElementById('btn-pause-game').onclick = () => {
-        togglePause();
-      };
-
-      document.getElementById('pause-btn-resume').onclick = () => {
-        togglePause();
-      };
-
-      document.getElementById('pause-btn-restart').onclick = () => {
+      bindAction('btn-pause-game', () => togglePause());
+      bindAction('pause-btn-resume', () => togglePause());
+      bindAction('pause-btn-restart', () => {
         document.getElementById('modal-pause').classList.add('hidden');
         startLevel(currentMaze);
-      };
-
-      document.getElementById('pause-btn-menu').onclick = () => {
+      });
+      bindAction('pause-btn-menu', () => {
         document.getElementById('modal-pause').classList.add('hidden');
         gameActive = false;
         isPaused = false;
         document.getElementById('modal-menu').classList.remove('hidden');
-      };
+      });
 
-      document.getElementById('btn-open-settings').onclick = () => {
+      bindAction('btn-open-settings', () => {
         document.getElementById('modal-settings').classList.remove('hidden');
-      };
+      });
 
-      // Custom Control Layout Edit Buttons
-      document.getElementById('btn-edit-controls-hud').onclick = () => toggleEditLayoutMode(true);
-      document.getElementById('btn-start-adjust-controls').onclick = () => {
+      bindAction('btn-edit-controls-hud', () => toggleEditLayoutMode(true));
+      bindAction('btn-start-adjust-controls', () => {
         document.getElementById('modal-settings').classList.add('hidden');
         toggleEditLayoutMode(true);
-      };
-      document.getElementById('btn-save-controls').onclick = () => toggleEditLayoutMode(false);
-      document.getElementById('btn-reset-controls').onclick = () => resetControlPositions();
+      });
+      bindAction('btn-save-controls', () => toggleEditLayoutMode(false));
+      bindAction('btn-reset-controls', () => resetControlPositions());
 
-      // Full Map Modal Toggles
-      document.getElementById('btn-full-map').onclick = () => {
+      bindAction('btn-full-map', () => {
         document.getElementById('full-map-title').innerText = `${currentMaze.name} (${currentMaze.sizeLabel})`;
         document.getElementById('modal-full-map').classList.remove('hidden');
         renderFullMazeMap();
-      };
+      });
 
-      document.getElementById('btn-close-full-map').onclick = () => {
+      bindAction('btn-close-full-map', () => {
         document.getElementById('modal-full-map').classList.add('hidden');
-      };
+      });
 
       document.querySelectorAll('.btn-close-modal').forEach(btn => {
-        btn.onclick = () => {
+        btn.onclick = (e) => {
+          e.preventDefault();
           btn.closest('.fixed').classList.add('hidden');
           saveSettings();
         };
       });
 
-      document.getElementById('victory-btn-restart').onclick = () => startLevel(currentMaze);
-      document.getElementById('victory-btn-next').onclick = () => {
+      // Victory Modal Button Listeners (Home, Retry, Next)
+      bindAction('victory-btn-home', () => {
+        document.getElementById('modal-victory').classList.add('hidden');
+        gameActive = false;
+        isPaused = false;
+        document.getElementById('modal-menu').classList.remove('hidden');
+      });
+
+      bindAction('victory-btn-restart', () => startLevel(currentMaze));
+      
+      bindAction('victory-btn-next', () => {
         const idx = MAZE_CONFIGS.findIndex(m => m.id === currentMaze.id);
         const nextCfg = MAZE_CONFIGS[(idx + 1) % MAZE_CONFIGS.length];
         startLevel(nextCfg);
-      };
+      });
 
-      document.getElementById('opt-steer-wheel').onclick = () => selectSteerOption('wheel');
-      document.getElementById('opt-steer-buttons').onclick = () => selectSteerOption('buttons');
+      bindAction('opt-steer-wheel', () => selectSteerOption('wheel'));
+      bindAction('opt-steer-buttons', () => selectSteerOption('buttons'));
       document.getElementById('leaderboard-maze-select').onchange = renderLeaderboardUI;
     }
 
