@@ -13,7 +13,7 @@
       touch-action: none;
       box-sizing: border-box;
     }
-    button, select, input {
+    button {
       touch-action: manipulation;
     }
     body, html {
@@ -116,10 +116,10 @@
 </head>
 <body class="bg-slate-950 text-white flex flex-col h-screen w-screen overflow-hidden">
 
-  <!-- TOP HUD HEADER (RESPONSIVE TOUCH ENABLED) -->
-  <div id="game-hud" class="absolute top-0 left-0 right-0 z-40 flex justify-between items-center px-4 py-2 bg-slate-900/90 backdrop-blur-md border-b border-slate-800 pointer-events-auto">
+  <!-- TOP HUD HEADER (LANDSCAPE OPTIMIZED) -->
+  <div id="game-hud" class="absolute top-0 left-0 right-0 z-40 flex justify-between items-center px-4 py-2 bg-slate-900/85 backdrop-blur-md border-b border-slate-800 pointer-events-auto">
     <div class="flex items-center space-x-3">
-      <button id="btn-back-menu" class="bg-slate-800 hover:bg-slate-700 active:bg-slate-600 text-slate-200 px-3 py-1.5 rounded-lg border border-slate-700 flex items-center justify-center cursor-pointer">
+      <button id="btn-back-menu" class="bg-slate-800 hover:bg-slate-700 text-slate-200 px-3 py-1.5 rounded-lg border border-slate-700 flex items-center justify-center">
         <i class="fa-solid fa-house text-sm"></i>
       </button>
       <div>
@@ -134,26 +134,26 @@
         <div class="text-[9px] uppercase text-slate-400 font-bold">Track Record</div>
         <div id="hud-best-val" class="text-xs font-mono text-emerald-400">--:--.---</div>
       </div>
-      <button id="btn-pause-game" class="bg-amber-600 hover:bg-amber-500 active:bg-amber-700 text-white text-xs px-3 py-1.5 rounded-lg font-bold shadow-md flex items-center space-x-1 cursor-pointer">
+      <button id="btn-pause-game" class="bg-amber-600 hover:bg-amber-500 text-white text-xs px-3 py-1.5 rounded-lg font-bold shadow-md flex items-center space-x-1">
         <i class="fa-solid fa-pause"></i>
         <span>Pause</span>
       </button>
-      <button id="btn-edit-controls-hud" class="bg-amber-600 hover:bg-amber-500 active:bg-amber-700 text-white text-xs px-2.5 py-1.5 rounded-lg font-bold shadow-md flex items-center space-x-1 cursor-pointer">
+      <button id="btn-edit-controls-hud" class="bg-amber-600 hover:bg-amber-500 text-white text-xs px-2.5 py-1.5 rounded-lg font-bold shadow-md flex items-center space-x-1">
         <i class="fa-solid fa-up-down-left-right"></i>
         <span class="hidden sm:inline">Move Buttons</span>
       </button>
-      <button id="btn-full-map" class="bg-blue-600 hover:bg-blue-500 active:bg-blue-700 text-white text-xs px-3 py-1.5 rounded-lg font-bold shadow-md flex items-center space-x-1 cursor-pointer">
+      <button id="btn-full-map" class="bg-blue-600 hover:bg-blue-500 text-white text-xs px-3 py-1.5 rounded-lg font-bold shadow-md flex items-center space-x-1">
         <i class="fa-solid fa-map"></i>
         <span>Full Map</span>
       </button>
-      <button id="btn-open-settings" class="bg-slate-800 hover:bg-slate-700 active:bg-slate-600 text-slate-200 p-1.5 rounded-lg border border-slate-700 cursor-pointer">
+      <button id="btn-open-settings" class="bg-slate-800 hover:bg-slate-700 text-slate-200 p-1.5 rounded-lg border border-slate-700">
         <i class="fa-solid fa-gear text-sm"></i>
       </button>
     </div>
   </div>
 
   <!-- EDIT LAYOUT BANNER OVERLAY -->
-  <div id="edit-layout-banner" class="absolute top-16 left-1/2 -translate-x-1/2 z-40 bg-amber-500 text-slate-950 font-bold text-xs px-4 py-1.5 rounded-full shadow-lg hidden flex items-center space-x-3 pointer-events-auto">
+  <div id="edit-layout-banner" class="absolute top-14 left-1/2 -translate-x-1/2 z-40 bg-amber-500 text-slate-950 font-bold text-xs px-4 py-1.5 rounded-full shadow-lg hidden flex items-center space-x-3 pointer-events-auto">
     <span> Drag control elements to customize position</span>
     <button id="btn-reset-controls" class="bg-slate-900 text-white px-2 py-0.5 rounded text-[10px] uppercase">Reset</button>
     <button id="btn-save-controls" class="bg-emerald-700 text-white px-2.5 py-0.5 rounded text-[10px] uppercase">Done</button>
@@ -227,14 +227,14 @@
   </div>
 
   <!-- FULL MAZE MAP OVERLAY MODAL -->
-  <div id="modal-full-map" class="fixed inset-0 z-50 bg-slate-950/95 backdrop-blur-md hidden flex flex-col items-center justify-center p-4">
+  <div id="modal-full-map" class="fixed inset-0 z-40 bg-slate-950/95 backdrop-blur-md hidden flex flex-col items-center justify-center p-4">
     <div class="w-full max-w-3xl bg-slate-900 border border-slate-700 rounded-2xl p-4 flex flex-col h-[88vh]">
       <div class="flex justify-between items-center border-b border-slate-800 pb-2 mb-2">
         <div class="flex items-center space-x-2">
           <i class="fa-solid fa-map-location-dot text-blue-400"></i>
           <span id="full-map-title" class="font-bold text-white text-sm">Full Maze View</span>
         </div>
-        <button id="btn-close-full-map" class="bg-slate-800 hover:bg-slate-700 text-slate-300 px-3 py-1 rounded-lg text-xs font-bold border border-slate-700 cursor-pointer">
+        <button id="btn-close-full-map" class="bg-slate-800 hover:bg-slate-700 text-slate-300 px-3 py-1 rounded-lg text-xs font-bold border border-slate-700">
           Close Map
         </button>
       </div>
@@ -255,17 +255,17 @@
       </div>
 
       <div class="space-y-3">
-        <button id="menu-btn-play" class="w-full py-3.5 bg-blue-600 hover:bg-blue-500 text-white font-bold rounded-xl shadow-lg shadow-blue-500/30 flex items-center justify-center space-x-2 text-base transition transform active:scale-95 cursor-pointer">
+        <button id="menu-btn-play" class="w-full py-3.5 bg-blue-600 hover:bg-blue-500 text-white font-bold rounded-xl shadow-lg shadow-blue-500/30 flex items-center justify-center space-x-2 text-base transition transform active:scale-95">
           <i class="fa-solid fa-flag-checkered"></i>
           <span>Select Maze (30 Mazes)</span>
         </button>
 
-        <button id="menu-btn-leaderboard" class="w-full py-3 bg-slate-800 hover:bg-slate-700 text-slate-200 font-bold rounded-xl border border-slate-700 flex items-center justify-center space-x-2 transition cursor-pointer">
+        <button id="menu-btn-leaderboard" class="w-full py-3 bg-slate-800 hover:bg-slate-700 text-slate-200 font-bold rounded-xl border border-slate-700 flex items-center justify-center space-x-2 transition">
           <i class="fa-solid fa-trophy text-amber-400"></i>
           <span>Track Leaderboards</span>
         </button>
 
-        <button id="menu-btn-settings" class="w-full py-3 bg-slate-800 hover:bg-slate-700 text-slate-200 font-bold rounded-xl border border-slate-700 flex items-center justify-center space-x-2 transition cursor-pointer">
+        <button id="menu-btn-settings" class="w-full py-3 bg-slate-800 hover:bg-slate-700 text-slate-200 font-bold rounded-xl border border-slate-700 flex items-center justify-center space-x-2 transition">
           <i class="fa-solid fa-sliders text-slate-400"></i>
           <span>Control Options</span>
         </button>
@@ -280,7 +280,7 @@
         <h2 class="text-lg font-bold text-white flex items-center gap-2">
           <i class="fa-solid fa-layer-group text-blue-400"></i> Select Maze Circuit (30 Mazes)
         </h2>
-        <button class="btn-close-modal text-slate-400 hover:text-white p-1 cursor-pointer">
+        <button class="btn-close-modal text-slate-400 hover:text-white p-1">
           <i class="fa-solid fa-xmark text-lg"></i>
         </button>
       </div>
@@ -303,7 +303,7 @@
         <h2 class="text-lg font-bold text-white flex items-center gap-2">
           <i class="fa-solid fa-sliders text-blue-400"></i> Control Preferences
         </h2>
-        <button class="btn-close-modal text-slate-400 hover:text-white p-1 cursor-pointer">
+        <button class="btn-close-modal text-slate-400 hover:text-white p-1">
           <i class="fa-solid fa-xmark text-lg"></i>
         </button>
       </div>
@@ -312,11 +312,11 @@
         <div>
           <label class="block text-xs uppercase tracking-wider text-slate-400 font-bold mb-2">Steering Interface</label>
           <div class="grid grid-cols-2 gap-3">
-            <button id="opt-steer-wheel" class="p-3 bg-blue-600/20 border-2 border-blue-500 rounded-xl text-left flex flex-col items-center space-y-1 cursor-pointer">
+            <button id="opt-steer-wheel" class="p-3 bg-blue-600/20 border-2 border-blue-500 rounded-xl text-left flex flex-col items-center space-y-1">
               <i class="fa-solid fa-steering-wheel text-2xl text-blue-400"></i>
               <span class="text-xs font-bold text-white">Touch Wheel</span>
             </button>
-            <button id="opt-steer-buttons" class="p-3 bg-slate-800 border-2 border-transparent rounded-xl text-left flex flex-col items-center space-y-1 cursor-pointer">
+            <button id="opt-steer-buttons" class="p-3 bg-slate-800 border-2 border-transparent rounded-xl text-left flex flex-col items-center space-y-1">
               <i class="fa-solid fa-arrows-left-right text-2xl text-slate-400"></i>
               <span class="text-xs font-bold text-white">L / R Buttons</span>
             </button>
@@ -324,7 +324,7 @@
         </div>
 
         <div>
-          <button id="btn-start-adjust-controls" class="w-full py-2.5 bg-amber-600/20 hover:bg-amber-600/30 border border-amber-500 text-amber-300 font-bold rounded-xl text-xs flex items-center justify-center space-x-2 cursor-pointer">
+          <button id="btn-start-adjust-controls" class="w-full py-2.5 bg-amber-600/20 hover:bg-amber-600/30 border border-amber-500 text-amber-300 font-bold rounded-xl text-xs flex items-center justify-center space-x-2">
             <i class="fa-solid fa-up-down-left-right"></i>
             <span>Drag & Customize Button Positions</span>
           </button>
@@ -336,7 +336,7 @@
         </div>
       </div>
 
-      <button class="btn-close-modal w-full py-2.5 bg-blue-600 hover:bg-blue-500 text-white font-bold rounded-xl shadow-lg text-sm cursor-pointer">
+      <button class="btn-close-modal w-full py-2.5 bg-blue-600 hover:bg-blue-500 text-white font-bold rounded-xl shadow-lg text-sm">
         Save & Close
       </button>
     </div>
@@ -361,10 +361,10 @@
       </div>
 
       <div class="flex space-x-3">
-        <button id="victory-btn-restart" class="flex-1 py-2.5 bg-slate-800 hover:bg-slate-700 text-slate-200 font-bold rounded-xl border border-slate-700 text-sm cursor-pointer">
+        <button id="victory-btn-restart" class="flex-1 py-2.5 bg-slate-800 hover:bg-slate-700 text-slate-200 font-bold rounded-xl border border-slate-700 text-sm">
           <i class="fa-solid fa-rotate-right mr-1"></i> Retry
         </button>
-        <button id="victory-btn-next" class="flex-1 py-2.5 bg-blue-600 hover:bg-blue-500 text-white font-bold rounded-xl shadow-lg text-sm cursor-pointer">
+        <button id="victory-btn-next" class="flex-1 py-2.5 bg-blue-600 hover:bg-blue-500 text-white font-bold rounded-xl shadow-lg text-sm">
           Next Track <i class="fa-solid fa-arrow-right ml-1"></i>
         </button>
       </div>
@@ -378,7 +378,7 @@
         <h2 class="text-lg font-bold text-white flex items-center gap-2">
           <i class="fa-solid fa-trophy text-amber-400"></i> Track Records
         </h2>
-        <button class="btn-close-modal text-slate-400 hover:text-white p-1 cursor-pointer">
+        <button class="btn-close-modal text-slate-400 hover:text-white p-1">
           <i class="fa-solid fa-xmark text-lg"></i>
         </button>
       </div>
@@ -544,7 +544,7 @@
 
     let isEditingControls = false;
 
-    // CAR PHYSICS DATA (Friction decreased to 0.985 for smooth drifting and momentum)
+    // CAR PHYSICS DATA (Decreased friction from 0.965 to 0.985 for less deceleration)
     const car = {
       x: 0,
       y: 0,
@@ -585,18 +585,6 @@
     const fullMapCtx = fullMapCanvas.getContext('2d');
 
     const TILE_SIZE = 70;
-
-    // Helper for robust touch & click event binding
-    function bindAction(elem, callback) {
-      if (!elem) return;
-      const handler = (e) => {
-        e.preventDefault();
-        e.stopPropagation();
-        callback(e);
-      };
-      elem.addEventListener('click', handler);
-      elem.addEventListener('touchstart', handler, { passive: false });
-    }
 
     // --- INITIALIZATION ---
     window.addEventListener('load', () => {
@@ -736,7 +724,7 @@
           if (isEditingControls) return;
           e.preventDefault(); inputs[key] = false; elem.classList.remove('active'); 
         };
-        elem.addEventListener('touchstart', start, { passive: false });
+        elem.addEventListener('touchstart', start);
         elem.addEventListener('touchend', end);
         elem.addEventListener('mousedown', start);
         elem.addEventListener('mouseup', end);
@@ -759,7 +747,7 @@
           e.preventDefault(); 
           if(dir==='left') inputs.steerLeft = false; else inputs.steerRight = false; 
         };
-        elem.addEventListener('touchstart', start, { passive: false });
+        elem.addEventListener('touchstart', start);
         elem.addEventListener('touchend', end);
         elem.addEventListener('mousedown', start);
         elem.addEventListener('mouseup', end);
@@ -937,13 +925,13 @@
       if (!checkCollision(nextX + (vx > 0 ? collisionRadius : -collisionRadius), car.y)) {
         car.x = nextX;
       } else {
-        car.speed *= -0.25;
+        car.speed = 0; // Stop instantly on wall impact instead of bouncing back
       }
 
       if (!checkCollision(car.x, nextY + (vy > 0 ? collisionRadius : -collisionRadius))) {
         car.y = nextY;
       } else {
-        car.speed *= -0.25;
+        car.speed = 0; // Stop instantly on wall impact instead of bouncing back
       }
 
       // Record trail coordinate if car moved enough distance
@@ -961,7 +949,7 @@
       }
     }
 
-    // --- RENDER SYSTEM (LINE-BASED TRAIL & ROTATING VIEWPORT) ---
+    // --- RENDER SYSTEM (LINE-BASED TRAIL & FIXED CAR CENTER) ---
     function renderWorld() {
       ctx.clearRect(0, 0, canvas.width, canvas.height);
 
@@ -1065,18 +1053,17 @@
 
       ctx.restore();
 
-      // Render minimap ONLY when game is active and NOT paused
+      // Only render minimap if game is active and NOT paused
       if (gameActive && !isPaused) {
         renderMiniMap();
       }
     }
 
-    // --- CORNER MINIMAP HUD (MOVED BELOW DASHBOARD & NEON PINK TRAIL) ---
+    // --- CORNER MINIMAP HUD (FIXED POSITION & DISTINCT TRAIL COLOR) ---
     function renderMiniMap() {
       const mapSize = 105;
       const padding = 12;
       const x = canvas.width - mapSize - padding;
-      // Positioned below upper dashboard (Y=68)
       const y = 68;
 
       ctx.fillStyle = 'rgba(15, 23, 42, 0.9)';
@@ -1097,13 +1084,13 @@
           const ph = Math.max(1, TILE_SIZE * scaleY);
 
           if (currentMaze.grid[r][c] === 1) {
-            ctx.fillStyle = '#475569';
+            ctx.fillStyle = '#475569'; // Wall color
             ctx.fillRect(px, py, pw, ph);
           }
         }
       }
 
-      // Render trail path with high contrast Neon Magenta (#ec4899)
+      // Render trail path on minimap with a high-contrast distinct color (Neon Pink/Magenta #ec4899)
       if (carTrailPath.length > 1) {
         ctx.strokeStyle = '#ec4899';
         ctx.lineWidth = 2;
@@ -1219,91 +1206,91 @@
       document.getElementById('modal-victory').classList.remove('hidden');
     }
 
-    // --- UI EVENT LISTENERS WITH FULL TOUCH & CLICK BINDINGS ---
+    // --- UI EVENT LISTENERS ---
     function setupUIEventListeners() {
-      bindAction(document.getElementById('menu-btn-play'), () => {
+      document.getElementById('menu-btn-play').onclick = () => {
         renderCategoryTabs();
         renderLevelSelector();
         document.getElementById('modal-levels').classList.remove('hidden');
-      });
+      };
 
-      bindAction(document.getElementById('menu-btn-settings'), () => {
+      document.getElementById('menu-btn-settings').onclick = () => {
         document.getElementById('modal-settings').classList.remove('hidden');
-      });
+      };
 
-      bindAction(document.getElementById('menu-btn-leaderboard'), () => {
+      document.getElementById('menu-btn-leaderboard').onclick = () => {
         populateLeaderboardMazeSelect();
         renderLeaderboardUI();
         document.getElementById('modal-leaderboard').classList.remove('hidden');
-      });
+      };
 
-      bindAction(document.getElementById('btn-back-menu'), () => {
+      document.getElementById('btn-back-menu').onclick = () => {
         gameActive = false;
         isPaused = false;
         document.getElementById('modal-menu').classList.remove('hidden');
-      });
+      };
 
-      // Pause button listeners
-      bindAction(document.getElementById('btn-pause-game'), () => {
+      // Pause button listener
+      document.getElementById('btn-pause-game').onclick = () => {
         togglePause();
-      });
+      };
 
-      bindAction(document.getElementById('pause-btn-resume'), () => {
+      document.getElementById('pause-btn-resume').onclick = () => {
         togglePause();
-      });
+      };
 
-      bindAction(document.getElementById('pause-btn-restart'), () => {
+      document.getElementById('pause-btn-restart').onclick = () => {
         document.getElementById('modal-pause').classList.add('hidden');
         startLevel(currentMaze);
-      });
+      };
 
-      bindAction(document.getElementById('pause-btn-menu'), () => {
+      document.getElementById('pause-btn-menu').onclick = () => {
         document.getElementById('modal-pause').classList.add('hidden');
         gameActive = false;
         isPaused = false;
         document.getElementById('modal-menu').classList.remove('hidden');
-      });
+      };
 
-      bindAction(document.getElementById('btn-open-settings'), () => {
+      document.getElementById('btn-open-settings').onclick = () => {
         document.getElementById('modal-settings').classList.remove('hidden');
-      });
+      };
 
       // Custom Control Layout Edit Buttons
-      bindAction(document.getElementById('btn-edit-controls-hud'), () => toggleEditLayoutMode(true));
-      bindAction(document.getElementById('btn-start-adjust-controls'), () => {
+      document.getElementById('btn-edit-controls-hud').onclick = () => toggleEditLayoutMode(true);
+      document.getElementById('btn-start-adjust-controls').onclick = () => {
         document.getElementById('modal-settings').classList.add('hidden');
         toggleEditLayoutMode(true);
-      });
-      bindAction(document.getElementById('btn-save-controls'), () => toggleEditLayoutMode(false));
-      bindAction(document.getElementById('btn-reset-controls'), () => resetControlPositions());
+      };
+      document.getElementById('btn-save-controls').onclick = () => toggleEditLayoutMode(false);
+      document.getElementById('btn-reset-controls').onclick = () => resetControlPositions();
 
       // Full Map Modal Toggles
-      bindAction(document.getElementById('btn-full-map'), () => {
+      document.getElementById('btn-full-map').onclick = () => {
         document.getElementById('full-map-title').innerText = `${currentMaze.name} (${currentMaze.sizeLabel})`;
         document.getElementById('modal-full-map').classList.remove('hidden');
         renderFullMazeMap();
-      });
+      };
 
-      bindAction(document.getElementById('btn-close-full-map'), () => {
+      document.getElementById('btn-close-full-map').onclick = () => {
         document.getElementById('modal-full-map').classList.add('hidden');
-      });
+      };
 
       document.querySelectorAll('.btn-close-modal').forEach(btn => {
-        bindAction(btn, () => {
+        btn.onclick = () => {
           btn.closest('.fixed').classList.add('hidden');
           saveSettings();
-        });
+        };
       });
 
-      bindAction(document.getElementById('victory-btn-restart'), () => startLevel(currentMaze));
-      bindAction(document.getElementById('victory-btn-next'), () => {
+      document.getElementById('victory-btn-restart').onclick = () => startLevel(currentMaze);
+      document.getElementById('victory-btn-next').onclick = () => {
         const idx = MAZE_CONFIGS.findIndex(m => m.id === currentMaze.id);
         const nextCfg = MAZE_CONFIGS[(idx + 1) % MAZE_CONFIGS.length];
         startLevel(nextCfg);
-      });
+      };
 
-      bindAction(document.getElementById('opt-steer-wheel'), () => selectSteerOption('wheel'));
-      bindAction(document.getElementById('opt-steer-buttons'), () => selectSteerOption('buttons'));
+      document.getElementById('opt-steer-wheel').onclick = () => selectSteerOption('wheel');
+      document.getElementById('opt-steer-buttons').onclick = () => selectSteerOption('buttons');
       document.getElementById('leaderboard-maze-select').onchange = renderLeaderboardUI;
     }
 
@@ -1322,11 +1309,11 @@
       const btnButtons = document.getElementById('opt-steer-buttons');
 
       if (isWheel) {
-        btnWheel.className = "p-3 bg-blue-600/20 border-2 border-blue-500 rounded-xl text-left flex flex-col items-center space-y-1 cursor-pointer";
-        btnButtons.className = "p-3 bg-slate-800 border-2 border-transparent rounded-xl text-left flex flex-col items-center space-y-1 cursor-pointer";
+        btnWheel.className = "p-3 bg-blue-600/20 border-2 border-blue-500 rounded-xl text-left flex flex-col items-center space-y-1";
+        btnButtons.className = "p-3 bg-slate-800 border-2 border-transparent rounded-xl text-left flex flex-col items-center space-y-1";
       } else {
-        btnWheel.className = "p-3 bg-slate-800 border-2 border-transparent rounded-xl text-left flex flex-col items-center space-y-1 cursor-pointer";
-        btnButtons.className = "p-3 bg-blue-600/20 border-2 border-blue-500 rounded-xl text-left flex flex-col items-center space-y-1 cursor-pointer";
+        btnWheel.className = "p-3 bg-slate-800 border-2 border-transparent rounded-xl text-left flex flex-col items-center space-y-1";
+        btnButtons.className = "p-3 bg-blue-600/20 border-2 border-blue-500 rounded-xl text-left flex flex-col items-center space-y-1";
       }
     }
 
@@ -1341,7 +1328,7 @@
     function renderCategoryTabs() {
       const container = document.getElementById('category-tabs');
       container.innerHTML = SIZE_CATEGORIES.map(cat => `
-        <button class="px-3 py-1.5 rounded-lg text-xs font-bold whitespace-nowrap transition cursor-pointer ${selectedCategoryFilter === cat.key ? 'bg-blue-600 text-white shadow-md' : 'bg-slate-800 text-slate-400 hover:text-white'}" onclick="filterCategory(${cat.key})">
+        <button class="px-3 py-1.5 rounded-lg text-xs font-bold whitespace-nowrap transition ${selectedCategoryFilter === cat.key ? 'bg-blue-600 text-white shadow-md' : 'bg-slate-800 text-slate-400 hover:text-white'}" onclick="filterCategory(${cat.key})">
           ${cat.label}
         </button>
       `).join('');
@@ -1372,7 +1359,7 @@
             </div>
             <div class="text-[10px] text-slate-400 mt-0.5">Best Record: ${pb ? formatTime(parseFloat(pb)) : 'No time recorded'}</div>
           </div>
-          <button class="bg-blue-600 hover:bg-blue-500 text-white p-2 rounded-lg shadow-md text-xs cursor-pointer">
+          <button class="bg-blue-600 hover:bg-blue-500 text-white p-2 rounded-lg shadow-md text-xs">
             <i class="fa-solid fa-play"></i>
           </button>
         `;
