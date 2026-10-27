@@ -165,7 +165,7 @@
 
     <!-- FLOATING & REPOSITIONABLE TOUCH CONTROLS -->
     <!-- 1. STEERING WHEEL CONTAINER -->
-    <div id="ctrl-wheel-wrapper" class="floating-control" style="bottom: 16px; left: 24px;">
+    <div id="ctrl-wheel-wrapper" class="floating-control hidden" style="bottom: 16px; left: 24px;">
       <div id="steering-wheel-container">
         <div id="steering-wheel">
           <div class="wheel-center">
@@ -176,7 +176,7 @@
     </div>
 
     <!-- 2. STEERING BUTTONS (LEFT/RIGHT) -->
-    <div id="ctrl-buttons-wrapper" class="floating-control hidden flex space-x-3" style="bottom: 24px; left: 24px;">
+    <div id="ctrl-buttons-wrapper" class="floating-control flex space-x-3" style="bottom: 24px; left: 24px;">
       <button id="btn-steer-left" class="pedal w-16 h-16 bg-slate-900/90 border-2 border-blue-500 rounded-2xl flex items-center justify-center text-blue-400 text-2xl shadow-lg active:bg-blue-600 active:text-white">
         <i class="fa-solid fa-caret-left"></i>
       </button>
@@ -312,13 +312,13 @@
         <div>
           <label class="block text-xs uppercase tracking-wider text-slate-400 font-bold mb-2">Steering Interface</label>
           <div class="grid grid-cols-2 gap-3">
-            <button id="opt-steer-wheel" class="p-3 bg-blue-600/20 border-2 border-blue-500 rounded-xl text-left flex flex-col items-center space-y-1">
-              <i class="fa-solid fa-steering-wheel text-2xl text-blue-400"></i>
-              <span class="text-xs font-bold text-white">Touch Wheel</span>
-            </button>
-            <button id="opt-steer-buttons" class="p-3 bg-slate-800 border-2 border-transparent rounded-xl text-left flex flex-col items-center space-y-1">
-              <i class="fa-solid fa-arrows-left-right text-2xl text-slate-400"></i>
+            <button id="opt-steer-buttons" class="p-3 bg-blue-600/20 border-2 border-blue-500 rounded-xl text-left flex flex-col items-center space-y-1">
+              <i class="fa-solid fa-arrows-left-right text-2xl text-blue-400"></i>
               <span class="text-xs font-bold text-white">L / R Buttons</span>
+            </button>
+            <button id="opt-steer-wheel" class="p-3 bg-slate-800 border-2 border-transparent rounded-xl text-left flex flex-col items-center space-y-1">
+              <i class="fa-solid fa-steering-wheel text-2xl text-slate-400"></i>
+              <span class="text-xs font-bold text-white">Touch Wheel</span>
             </button>
           </div>
         </div>
@@ -541,7 +541,7 @@
 
     // Settings & Control Customizer State
     let playerSettings = {
-      steeringMode: localStorage.getItem('tm_steer_mode') || 'wheel',
+      steeringMode: localStorage.getItem('tm_steer_mode') || 'buttons',
       playerName: localStorage.getItem('tm_player_name') || 'Driver' + Math.floor(Math.random()*1000)
     };
 
@@ -554,7 +554,7 @@
       angle: 0,
       speed: 0,
       maxSpeed: 6.5,
-      accel: 0.05,
+      accel: 0.050,
       friction: 0.990,
       turnSpeed: 0.040,
       width: 28,
@@ -959,7 +959,7 @@
       }
     }
 
-    // --- RENDER SYSTEM (LINE-BASED TRAIL & CAR WITH COLLISION WARNING INDICATOR) ---
+    // --- RENDER SYSTEM ---
     function renderWorld() {
       ctx.clearRect(0, 0, canvas.width, canvas.height);
 
@@ -1035,11 +1035,10 @@
 
       ctx.restore();
 
-      // DRAW CAR AT EXACT CENTER WITH COLLISION INDICATOR
+      // DRAW CAR AT EXACT CENTER WITH COLLISION WARNING INDICATOR
       ctx.save();
       ctx.translate(screenCenterX, screenCenterY);
 
-      // Pulsing red collision aura when stuck on a wall
       if (car.isColliding) {
         ctx.save();
         ctx.fillStyle = 'rgba(239, 68, 68, 0.35)';
@@ -1056,7 +1055,7 @@
       ctx.fillStyle = 'rgba(0,0,0,0.5)';
       ctx.fillRect(-car.width / 2 + 4, -car.height / 2 + 4, car.width, car.height);
 
-      // Body (turns warning red if colliding)
+      // Body
       ctx.fillStyle = car.isColliding ? '#dc2626' : '#0284c7';
       ctx.beginPath();
       ctx.roundRect(-car.width / 2, -car.height / 2, car.width, car.height, 8);
@@ -1074,7 +1073,6 @@
       ctx.fillRect(-car.width / 2 + 3, -car.height / 2 + 2, 6, 4);
       ctx.fillRect(car.width / 2 - 9, -car.height / 2 + 2, 6, 4);
 
-      // Draw Impact Warning Icon above car when stuck
       if (car.isColliding) {
         ctx.fillStyle = '#facc15';
         ctx.font = 'bold 18px sans-serif';
@@ -1090,12 +1088,15 @@
       }
     }
 
-    // --- CORNER MINIMAP HUD (FIXED POSITION & DISTINCT TRAIL COLOR) ---
+    // --- CORNER MINIMAP HUD (DYNAMIC HEIGHT PLACEMENT & CAR DIRECTION ARROW) ---
     function renderMiniMap() {
       const mapSize = 105;
       const padding = 12;
       const x = canvas.width - mapSize - padding;
-      const y = 68;
+      
+      // Dynamic positioning safely below HUD Header
+      const hudElem = document.getElementById('game-hud');
+      const y = (hudElem ? hudElem.offsetHeight : 55) + 10;
 
       ctx.fillStyle = 'rgba(15, 23, 42, 0.9)';
       ctx.strokeStyle = '#334155';
@@ -1121,7 +1122,7 @@
         }
       }
 
-      // Render trail path on minimap with neon magenta (#ec4899)
+      // Render trail path on minimap
       if (carTrailPath.length > 1) {
         ctx.strokeStyle = '#ec4899';
         ctx.lineWidth = 2;
@@ -1140,14 +1141,27 @@
       ctx.fillStyle = '#f59e0b';
       ctx.fillRect(x + currentMaze.finish.x * TILE_SIZE * scaleX, y + currentMaze.finish.y * TILE_SIZE * scaleY, Math.max(3, TILE_SIZE * scaleX), Math.max(3, TILE_SIZE * scaleY));
 
-      // Car Dot
+      // Car Marker with Heading Direction Pointer Arrow
+      const carMinimapX = x + car.x * scaleX;
+      const carMinimapY = y + car.y * scaleY;
+
+      ctx.save();
+      ctx.translate(carMinimapX, carMinimapY);
+      ctx.rotate(car.angle);
+
+      // Directional arrow head
       ctx.fillStyle = '#ef4444';
       ctx.beginPath();
-      ctx.arc(x + car.x * scaleX, y + car.y * scaleY, 3, 0, Math.PI * 2);
+      ctx.moveTo(0, -7);
+      ctx.lineTo(4, 4);
+      ctx.lineTo(-4, 4);
+      ctx.closePath();
       ctx.fill();
+
+      ctx.restore();
     }
 
-    // --- EXPANDED FULL MAZE MAP OVERLAY WITH TRAIL LINE ---
+    // --- EXPANDED FULL MAZE MAP OVERLAY WITH PROPER ASPECT RATIO & DIRECTION ---
     function renderFullMazeMap() {
       const containerW = fullMapCanvas.parentElement.clientWidth - 20;
       const containerH = fullMapCanvas.parentElement.clientHeight - 20;
@@ -1157,33 +1171,43 @@
 
       fullMapCtx.clearRect(0, 0, containerW, containerH);
 
-      const tileW = containerW / currentMaze.cols;
-      const tileH = containerH / currentMaze.rows;
+      // Preserve square grid aspect ratios
+      const maxTileW = containerW / currentMaze.cols;
+      const maxTileH = containerH / currentMaze.rows;
+      const tileSize = Math.min(maxTileW, maxTileH);
+
+      const mapWidth = tileSize * currentMaze.cols;
+      const mapHeight = tileSize * currentMaze.rows;
+      const offsetX = (containerW - mapWidth) / 2;
+      const offsetY = (containerH - mapHeight) / 2;
 
       for (let r = 0; r < currentMaze.rows; r++) {
         for (let c = 0; c < currentMaze.cols; c++) {
+          const px = offsetX + c * tileSize;
+          const py = offsetY + r * tileSize;
+
           if (currentMaze.grid[r][c] === 1) {
             fullMapCtx.fillStyle = '#3b82f6';
           } else {
             fullMapCtx.fillStyle = '#0f172a';
           }
-          fullMapCtx.fillRect(c * tileW, r * tileH, tileW, tileH);
+          fullMapCtx.fillRect(px, py, tileSize, tileSize);
         }
       }
 
       // Draw Trail Line on Full Map
       if (carTrailPath.length > 1) {
         fullMapCtx.strokeStyle = '#ec4899';
-        fullMapCtx.lineWidth = Math.max(2, tileW * 0.6);
+        fullMapCtx.lineWidth = Math.max(2, tileSize * 0.6);
         fullMapCtx.lineCap = 'round';
         fullMapCtx.lineJoin = 'round';
         fullMapCtx.beginPath();
-        const startMapX = (carTrailPath[0].x / TILE_SIZE) * tileW;
-        const startMapY = (carTrailPath[0].y / TILE_SIZE) * tileH;
+        const startMapX = offsetX + (carTrailPath[0].x / TILE_SIZE) * tileSize;
+        const startMapY = offsetY + (carTrailPath[0].y / TILE_SIZE) * tileSize;
         fullMapCtx.moveTo(startMapX, startMapY);
         for (let i = 1; i < carTrailPath.length; i++) {
-          const ptX = (carTrailPath[i].x / TILE_SIZE) * tileW;
-          const ptY = (carTrailPath[i].y / TILE_SIZE) * tileH;
+          const ptX = offsetX + (carTrailPath[i].x / TILE_SIZE) * tileSize;
+          const ptY = offsetY + (carTrailPath[i].y / TILE_SIZE) * tileSize;
           fullMapCtx.lineTo(ptX, ptY);
         }
         fullMapCtx.stroke();
@@ -1191,18 +1215,29 @@
 
       // Start A & Finish B
       fullMapCtx.fillStyle = '#10b981';
-      fullMapCtx.fillRect(currentMaze.start.x * tileW, currentMaze.start.y * tileH, tileW, tileH);
+      fullMapCtx.fillRect(offsetX + currentMaze.start.x * tileSize, offsetY + currentMaze.start.y * tileSize, tileSize, tileSize);
 
       fullMapCtx.fillStyle = '#f59e0b';
-      fullMapCtx.fillRect(currentMaze.finish.x * tileW, currentMaze.finish.y * tileH, tileH);
+      fullMapCtx.fillRect(offsetX + currentMaze.finish.x * tileSize, offsetY + currentMaze.finish.y * tileSize, tileSize, tileSize);
 
-      // Player Position Marker
-      const carCol = car.x / TILE_SIZE;
-      const carRow = car.y / TILE_SIZE;
+      // Player Position Marker with Direction Arrow
+      const carMapX = offsetX + (car.x / TILE_SIZE) * tileSize;
+      const carMapY = offsetY + (car.y / TILE_SIZE) * tileSize;
+
+      fullMapCtx.save();
+      fullMapCtx.translate(carMapX, carMapY);
+      fullMapCtx.rotate(car.angle);
+
       fullMapCtx.fillStyle = '#ef4444';
+      const arrowSize = Math.max(6, tileSize * 1.2);
       fullMapCtx.beginPath();
-      fullMapCtx.arc(carCol * tileW, carRow * tileH, Math.max(4, tileW * 0.8), 0, Math.PI * 2);
+      fullMapCtx.moveTo(0, -arrowSize);
+      fullMapCtx.lineTo(arrowSize * 0.6, arrowSize * 0.6);
+      fullMapCtx.lineTo(-arrowSize * 0.6, arrowSize * 0.6);
+      fullMapCtx.closePath();
       fullMapCtx.fill();
+
+      fullMapCtx.restore();
     }
 
     // --- VICTORY & LEADERBOARD HANDLER ---
@@ -1310,7 +1345,6 @@
         };
       });
 
-      // Victory Modal Button Listeners (Home, Retry, Next)
       bindAction('victory-btn-home', () => {
         document.getElementById('modal-victory').classList.add('hidden');
         gameActive = false;
