@@ -101,16 +101,16 @@
       transform: scale(0.92);
       filter: brightness(1.25);
     }
-    /* Custom Scrollbar */
-    ::-webkit-scrollbar {
-      width: 6px;
+
+    /* Custom Clean Scrollbars (Hidden scrollbars for smooth touch experience) */
+    .custom-scroll::-webkit-scrollbar {
+      width: 0px;
+      height: 0px;
+      display: none;
     }
-    ::-webkit-scrollbar-track {
-      background: #1e293b;
-    }
-    ::-webkit-scrollbar-thumb {
-      background: #3b82f6;
-      border-radius: 3px;
+    .custom-scroll {
+      -ms-overflow-style: none;
+      scrollbar-width: none;
     }
 
     /* Range Input Customization */
@@ -120,6 +120,47 @@
   </style>
 </head>
 <body class="bg-slate-950 text-white flex flex-col h-screen w-screen overflow-hidden">
+
+  <!-- INITIAL LOADING SCREEN OVERLAY (5 SECONDS) -->
+  <div id="modal-loading-screen" class="fixed inset-0 z-[100] bg-slate-950 flex flex-col items-center justify-center p-6 space-y-6 transition-opacity duration-700">
+    <div class="max-w-xs w-full text-center space-y-4">
+      <div class="w-28 h-28 mx-auto rounded-2xl overflow-hidden border-2 border-blue-500/50 shadow-2xl shadow-blue-500/20 bg-slate-900 flex items-center justify-center">
+        <img src="
+
+http://googleusercontent.com/image_generation_content/1_998
+
+" alt="Turbo Maze Racer Logo" class="w-full h-full object-cover">
+      </div>
+      <div>
+        <h1 class="text-3xl font-black italic tracking-wider text-transparent bg-clip-text bg-gradient-to-r from-blue-400 via-indigo-300 to-emerald-400 neon-text">
+          TURBO MAZE
+        </h1>
+        <p class="text-xs text-slate-400 mt-1 uppercase tracking-widest font-bold">Mobile Edition</p>
+      </div>
+
+      <!-- Loading Bar -->
+      <div class="w-full bg-slate-900 border border-slate-800 rounded-full h-2.5 overflow-hidden p-0.5">
+        <div id="loading-progress-bar" class="bg-gradient-to-r from-blue-500 to-emerald-400 h-full rounded-full transition-all duration-300" style="width: 0%;"></div>
+      </div>
+
+      <!-- Enhanced Tip -->
+      <div class="bg-slate-900/90 border border-slate-800 rounded-xl p-3 text-left space-y-1 shadow-lg">
+        <div class="text-[10px] font-bold text-amber-400 uppercase flex items-center gap-1.5">
+          <i class="fa-solid fa-lightbulb"></i> Pro Driver Tip
+        </div>
+        <p class="text-xs text-slate-300 leading-relaxed" id="loading-tip-text">
+          Tune your setup for peak velocity and conquer every maze against the clock!
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <!-- COUNTDOWN OVERLAY (3 SECONDS BEFORE RACE) -->
+  <div id="modal-countdown" class="fixed inset-0 z-60 bg-slate-950/80 backdrop-blur-md hidden flex items-center justify-center">
+    <div id="countdown-number" class="text-8xl font-black italic text-transparent bg-clip-text bg-gradient-to-r from-amber-400 to-emerald-400 animate-bounce">
+      3
+    </div>
+  </div>
 
   <!-- TOP HUD HEADER (LANDSCAPE OPTIMIZED) -->
   <div id="game-hud" class="absolute top-0 left-0 right-0 z-40 flex justify-between items-center px-4 py-2 bg-slate-900/85 backdrop-blur-md border-b border-slate-800 pointer-events-auto">
@@ -159,7 +200,7 @@
 
   <!-- EDIT LAYOUT BANNER OVERLAY -->
   <div id="edit-layout-banner" class="absolute top-14 left-1/2 -translate-x-1/2 z-40 bg-amber-500 text-slate-950 font-bold text-xs px-4 py-1.5 rounded-full shadow-lg hidden flex items-center space-x-3 pointer-events-auto">
-    <span> Drag control elements to customize position</span>
+    <span>Drag control elements to customize position</span>
     <button id="btn-reset-controls" class="bg-slate-900 text-white px-2 py-0.5 rounded text-[10px] uppercase">Reset</button>
     <button id="btn-save-controls" class="bg-emerald-700 text-white px-2.5 py-0.5 rounded text-[10px] uppercase">Done</button>
   </div>
@@ -274,7 +315,7 @@
     </div>
   </div>
 
-  <!-- LEVEL SELECT MODAL (LEVELS 1 - 100 WITH PROGRESSION & TABS) -->
+  <!-- LEVEL SELECT MODAL (LEVELS 1 - 100 WITH PROGRESSION & VISIBLE TIER TABS) -->
   <div id="modal-levels" class="fixed inset-0 z-50 bg-slate-950/90 backdrop-blur-lg hidden flex items-center justify-center p-4">
     <div class="max-w-2xl w-full bg-slate-900 border border-slate-700 rounded-2xl shadow-2xl p-5 space-y-4 max-h-[90vh] flex flex-col">
       <div class="flex justify-between items-center border-b border-slate-800 pb-3">
@@ -286,12 +327,13 @@
         </button>
       </div>
 
-      <!-- Tier Filter Tabs -->
-      <div class="flex overflow-x-auto space-x-2 pb-1 border-b border-slate-800" id="tier-tabs">
+      <!-- Tier Filter Tabs (Fully Visible, No Scrollbars) -->
+      <div class="grid grid-cols-2 sm:grid-cols-4 gap-2 pb-2 border-b border-slate-800" id="tier-tabs">
         <!-- Rendered dynamically -->
       </div>
 
-      <div id="levels-container" class="space-y-2.5 overflow-y-auto pr-1 flex-1">
+      <!-- Scrollable Levels Container (Clean Custom Scrollbar) -->
+      <div id="levels-container" class="space-y-2.5 overflow-y-auto custom-scroll pr-1 flex-1">
         <!-- Rendered dynamically -->
       </div>
     </div>
@@ -299,7 +341,7 @@
 
   <!-- PRE-RACE CAR TUNING MODAL (POPS UP BEFORE STARTING ANY LEVEL) -->
   <div id="modal-pre-race-tuning" class="fixed inset-0 z-50 bg-slate-950/90 backdrop-blur-lg hidden flex items-center justify-center p-4">
-    <div class="max-w-md w-full bg-slate-900 border border-blue-500/50 rounded-2xl shadow-2xl p-5 space-y-4 max-h-[90vh] overflow-y-auto">
+    <div class="max-w-md w-full bg-slate-900 border border-blue-500/50 rounded-2xl shadow-2xl p-5 space-y-4 max-h-[90vh] overflow-y-auto custom-scroll">
       <div class="flex justify-between items-center border-b border-slate-800 pb-2">
         <h2 class="text-lg font-bold text-white flex items-center gap-2">
           <i class="fa-solid fa-gauge-high text-amber-400"></i> Pre-Race Car Setup
@@ -328,7 +370,7 @@
 
   <!-- CONTROL SETTINGS MODAL -->
   <div id="modal-settings" class="fixed inset-0 z-50 bg-slate-950/90 backdrop-blur-lg hidden flex items-center justify-center p-4">
-    <div class="max-w-md w-full bg-slate-900 border border-slate-700 rounded-2xl shadow-2xl p-5 space-y-4 max-h-[90vh] overflow-y-auto">
+    <div class="max-w-md w-full bg-slate-900 border border-slate-700 rounded-2xl shadow-2xl p-5 space-y-4 max-h-[90vh] overflow-y-auto custom-scroll">
       <div class="flex justify-between items-center border-b border-slate-800 pb-3">
         <h2 class="text-lg font-bold text-white flex items-center gap-2">
           <i class="fa-solid fa-sliders text-blue-400"></i> Preferences & Tuning
@@ -432,7 +474,7 @@
         </select>
       </div>
 
-      <div id="leaderboard-list" class="space-y-2 overflow-y-auto flex-1 pr-1">
+      <div id="leaderboard-list" class="space-y-2 overflow-y-auto custom-scroll flex-1 pr-1">
       </div>
     </div>
   </div>
@@ -527,10 +569,10 @@
     }
 
     const TIER_CATEGORIES = [
-      { key: 't1', label: 'Tier 1 (Levels 1-25)', min: 1, max: 25 },
-      { key: 't2', label: 'Tier 2 (Levels 26-50)', min: 26, max: 50 },
-      { key: 't3', label: 'Tier 3 (Levels 51-75)', min: 51, max: 75 },
-      { key: 't4', label: 'Tier 4 (Levels 76-100)', min: 76, max: 100 }
+      { key: 't1', label: 'Tier 1 (1-25)', min: 1, max: 25 },
+      { key: 't2', label: 'Tier 2 (26-50)', min: 26, max: 50 },
+      { key: 't3', label: 'Tier 3 (51-75)', min: 51, max: 75 },
+      { key: 't4', label: 'Tier 4 (76-100)', min: 76, max: 100 }
     ];
 
     let selectedTierKey = 't1';
@@ -685,7 +727,34 @@
       restoreSavedControlPositions();
       setupUIEventListeners();
       updateControlUI();
+      runInitialLoadingScreen();
     });
+
+    function runInitialLoadingScreen() {
+      const loadingScreen = document.getElementById('modal-loading-screen');
+      const progressBar = document.getElementById('loading-progress-bar');
+      const tips = [
+        "Tune your setup for peak velocity and conquer every maze against the clock!",
+        "Master drifting around sharp corners to shave seconds off your personal best.",
+        "Keep an eye on the full map overview to plan your navigation path ahead.",
+        "Adjust your grip and steering responsiveness in the tuning menu for better control."
+      ];
+      
+      document.getElementById('loading-tip-text').innerText = tips[Math.floor(Math.random() * tips.length)];
+
+      let progress = 0;
+      const interval = setInterval(() => {
+        progress += 2;
+        progressBar.style.width = `${progress}%`;
+        if (progress >= 100) {
+          clearInterval(interval);
+          loadingScreen.style.opacity = '0';
+          setTimeout(() => {
+            loadingScreen.classList.add('hidden');
+          }, 700);
+        }
+      }, 100);
+    }
 
     function resizeCanvas() {
       const container = document.getElementById('canvas-container');
@@ -908,9 +977,9 @@
       document.getElementById('modal-pre-race-tuning').classList.remove('hidden');
     }
 
-    function startLevel(mazeConfig) {
+    function startCountdownAndRace(mazeConfig) {
       currentMaze = getOrGenerateMaze(mazeConfig);
-      cacheMinimapBackground(); // Pre-draw minimap once for peak performance
+      cacheMinimapBackground();
 
       document.getElementById('hud-level-title').innerText = `${currentMaze.name} (${currentMaze.sizeLabel})`;
 
@@ -928,6 +997,32 @@
 
       document.querySelectorAll('[id^="modal-"]').forEach(m => m.classList.add('hidden'));
 
+      // Render initial world state behind countdown
+      renderWorld();
+
+      // Start 3-Second Countdown
+      const countdownModal = document.getElementById('modal-countdown');
+      const countdownNum = document.getElementById('countdown-number');
+      countdownModal.classList.remove('hidden');
+
+      let count = 3;
+      countdownNum.innerText = count;
+
+      const countInterval = setInterval(() => {
+        count--;
+        if (count > 0) {
+          countdownNum.innerText = count;
+        } else if (count === 0) {
+          countdownNum.innerText = "GO!";
+        } else {
+          clearInterval(countInterval);
+          countdownModal.classList.add('hidden');
+          beginActiveGameLoop();
+        }
+      }, 1000);
+    }
+
+    function beginActiveGameLoop() {
       gameActive = true;
       isPaused = false;
       startTime = performance.now();
@@ -1020,14 +1115,15 @@
       if (!checkCollision(nextX + (vx > 0 ? collisionRadius : -collisionRadius), car.y)) {
         car.x = nextX;
       } else {
-        car.speed = Math.abs(car.speed) > 0.5 ? -car.speed * 0.4 : 0;
+        // Lowered rebound effect from 0.4 to 0.15 for smoother collision handling
+        car.speed = Math.abs(car.speed) > 0.5 ? -car.speed * 0.15 : 0;
         collidedThisFrame = true;
       }
 
       if (!checkCollision(car.x, nextY + (vy > 0 ? collisionRadius : -collisionRadius))) {
         car.y = nextY;
       } else {
-        car.speed = Math.abs(car.speed) > 0.5 ? -car.speed * 0.4 : 0;
+        car.speed = Math.abs(car.speed) > 0.5 ? -car.speed * 0.15 : 0;
         collidedThisFrame = true;
       }
 
@@ -1057,7 +1153,6 @@
       ctx.rotate(-car.angle);
       ctx.translate(-car.x, -car.y);
 
-      // Optimized strict viewport culling based on exact screen window size
       const halfW = (canvas.width / 2) + TILE_SIZE;
       const halfH = (canvas.height / 2) + TILE_SIZE;
 
@@ -1173,7 +1268,6 @@
       const hudElem = document.getElementById('game-hud');
       const y = (hudElem ? hudElem.offsetHeight : 55) + 10;
 
-      // Draw pre-cached minimap canvas instantly (1 draw call instead of thousands!)
       ctx.drawImage(minimapCacheCanvas, x, y);
       ctx.strokeStyle = '#334155';
       ctx.lineWidth = 2;
@@ -1426,7 +1520,7 @@
       bindAction('pause-btn-resume', () => togglePause());
       bindAction('pause-btn-restart', () => {
         document.getElementById('modal-pause').classList.add('hidden');
-        startLevel(currentMaze);
+        startCountdownAndRace(currentMaze);
       });
       bindAction('pause-btn-menu', () => {
         document.getElementById('modal-pause').classList.add('hidden');
@@ -1466,7 +1560,7 @@
       bindAction('btn-start-race-now', () => {
         if (pendingStartMazeConfig) {
           document.getElementById('modal-pre-race-tuning').classList.add('hidden');
-          startLevel(pendingStartMazeConfig);
+          startCountdownAndRace(pendingStartMazeConfig);
         }
       });
 
@@ -1488,12 +1582,13 @@
         document.getElementById('modal-menu').classList.remove('hidden');
       });
 
-      bindAction('victory-btn-restart', () => startLevel(currentMaze));
+      bindAction('victory-btn-restart', () => startCountdownAndRace(currentMaze));
       
       bindAction('victory-btn-next', () => {
         const nextLevelNum = currentMaze.levelNum + 1;
         const nextCfg = MAZE_CONFIGS.find(m => m.levelNum === nextLevelNum);
         if (nextCfg) {
+          document.getElementById('modal-victory').classList.add('hidden');
           openPreRaceModal(nextCfg);
         } else {
           document.getElementById('modal-victory').classList.add('hidden');
@@ -1540,7 +1635,7 @@
     function renderTierTabs() {
       const container = document.getElementById('tier-tabs');
       container.innerHTML = TIER_CATEGORIES.map(tier => `
-        <button class="px-3 py-1.5 rounded-lg text-xs font-bold whitespace-nowrap transition ${selectedTierKey === tier.key ? 'bg-blue-600 text-white shadow-md' : 'bg-slate-800 text-slate-400 hover:text-white'}" onclick="filterTier('${tier.key}')">
+        <button class="px-3 py-2 rounded-xl text-xs font-bold whitespace-nowrap transition ${selectedTierKey === tier.key ? 'bg-blue-600 text-white shadow-md' : 'bg-slate-800 text-slate-400 hover:text-white'}" onclick="filterTier('${tier.key}')">
           ${tier.label}
         </button>
       `).join('');
