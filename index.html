@@ -218,7 +218,7 @@
           Resume Game
         </button>
         <button id="pause-btn-restart" class="w-full py-2.5 bg-slate-800 hover:bg-slate-700 text-slate-200 font-bold rounded-xl border border-slate-700 text-sm">
-          Restart Maze
+          Restart Level
         </button>
         <button id="pause-btn-menu" class="w-full py-2.5 bg-slate-800 hover:bg-slate-700 text-slate-200 font-bold rounded-xl border border-slate-700 text-sm">
           Main Menu
@@ -252,13 +252,13 @@
         <h1 class="text-4xl font-black italic tracking-wider text-transparent bg-clip-text bg-gradient-to-r from-blue-400 via-indigo-300 to-emerald-400 neon-text">
           TURBO MAZE
         </h1>
-        <p class="text-slate-400 text-xs mt-1">1185 Levels • Progressive Difficulty • Free Tuning</p>
+        <p class="text-slate-400 text-xs mt-1">Progression (Levels 1 - 100) • Free Car Tuning</p>
       </div>
 
       <div class="space-y-3">
         <button id="menu-btn-play" class="w-full py-3.5 bg-blue-600 hover:bg-blue-500 text-white font-bold rounded-xl shadow-lg shadow-blue-500/30 flex items-center justify-center space-x-2 text-base transition transform active:scale-95">
           <i class="fa-solid fa-flag-checkered"></i>
-          <span id="menu-play-text">Select Maze Level</span>
+          <span>Campaign Levels (1-100)</span>
         </button>
 
         <button id="menu-btn-leaderboard" class="w-full py-3 bg-slate-800 hover:bg-slate-700 text-slate-200 font-bold rounded-xl border border-slate-700 flex items-center justify-center space-x-2 transition">
@@ -274,20 +274,20 @@
     </div>
   </div>
 
-  <!-- LEVEL SELECT MODAL (DYNAMIC MAZE LEVEL PROGRESSION) -->
+  <!-- LEVEL SELECT MODAL (LEVELS 1 - 100 WITH PROGRESSION & TABS) -->
   <div id="modal-levels" class="fixed inset-0 z-50 bg-slate-950/90 backdrop-blur-lg hidden flex items-center justify-center p-4">
     <div class="max-w-2xl w-full bg-slate-900 border border-slate-700 rounded-2xl shadow-2xl p-5 space-y-4 max-h-[90vh] flex flex-col">
       <div class="flex justify-between items-center border-b border-slate-800 pb-3">
         <h2 class="text-lg font-bold text-white flex items-center gap-2">
-          <i class="fa-solid fa-layer-group text-blue-400"></i> Select Level Circuit
+          <i class="fa-solid fa-layer-group text-blue-400"></i> Campaign Levels (1 - 100)
         </h2>
         <button class="btn-close-modal text-slate-400 hover:text-white p-1">
           <i class="fa-solid fa-xmark text-lg"></i>
         </button>
       </div>
 
-      <!-- Size Range Filter Tabs -->
-      <div class="flex overflow-x-auto space-x-2 pb-1 border-b border-slate-800" id="category-tabs">
+      <!-- Tier Filter Tabs -->
+      <div class="flex overflow-x-auto space-x-2 pb-1 border-b border-slate-800" id="tier-tabs">
         <!-- Rendered dynamically -->
       </div>
 
@@ -297,21 +297,20 @@
     </div>
   </div>
 
-  <!-- PRE-RACE CAR TUNING MODAL -->
+  <!-- PRE-RACE CAR TUNING MODAL (POPS UP BEFORE STARTING ANY LEVEL) -->
   <div id="modal-pre-race-tuning" class="fixed inset-0 z-50 bg-slate-950/90 backdrop-blur-lg hidden flex items-center justify-center p-4">
     <div class="max-w-md w-full bg-slate-900 border border-blue-500/50 rounded-2xl shadow-2xl p-5 space-y-4 max-h-[90vh] overflow-y-auto">
       <div class="flex justify-between items-center border-b border-slate-800 pb-2">
         <h2 class="text-lg font-bold text-white flex items-center gap-2">
-          <i class="fa-solid fa-gauge-high text-amber-400"></i> Pre-Race Setup
+          <i class="fa-solid fa-gauge-high text-amber-400"></i> Pre-Race Car Setup
         </h2>
         <button id="btn-close-pre-race" class="text-slate-400 hover:text-white p-1">
           <i class="fa-solid fa-xmark text-lg"></i>
         </button>
       </div>
 
-      <p class="text-xs text-slate-400">Fine-tune your car stats before launching into this maze!</p>
+      <p class="text-xs text-slate-400">Fine-tune your performance for free before launching into the track!</p>
 
-      <!-- SHARED TUNING CONTROLS CONTAINER -->
       <div id="pre-race-tuning-controls" class="space-y-3.5">
         <!-- Injected dynamically -->
       </div>
@@ -366,7 +365,6 @@
           <input type="text" id="input-player-name" maxlength="14" placeholder="SpeedRacer" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-4 py-2 text-white text-sm focus:outline-none focus:border-blue-500">
         </div>
 
-        <!-- CAR STATS TUNING SECTION IN SETTINGS -->
         <div class="border-t border-slate-800 pt-3">
           <div class="flex justify-between items-center mb-2">
             <label class="block text-xs uppercase tracking-wider text-amber-400 font-bold">Car Tuning (Free Setup)</label>
@@ -392,7 +390,7 @@
       </div>
 
       <div>
-        <h2 class="text-2xl font-black text-white">MAZE CONQUERED!</h2>
+        <h2 class="text-2xl font-black text-white">LEVEL COMPLETED!</h2>
         <p class="text-xs text-slate-400 uppercase tracking-widest mt-1" id="victory-level-name">Level 1 (10x10)</p>
       </div>
 
@@ -416,7 +414,7 @@
     </div>
   </div>
 
-  <!-- PER-MAZE LEADERBOARD MODAL -->
+  <!-- LEADERBOARD MODAL -->
   <div id="modal-leaderboard" class="fixed inset-0 z-50 bg-slate-950/90 backdrop-blur-lg hidden flex items-center justify-center p-4">
     <div class="max-w-md w-full bg-slate-900 border border-slate-700 rounded-2xl shadow-2xl p-5 space-y-4 max-h-[85vh] flex flex-col">
       <div class="flex justify-between items-center border-b border-slate-800 pb-2">
@@ -429,7 +427,7 @@
       </div>
 
       <div>
-        <label class="block text-[10px] uppercase text-slate-400 font-bold mb-1">Select Maze Level</label>
+        <label class="block text-[10px] uppercase text-slate-400 font-bold mb-1">Select Campaign Level</label>
         <select id="leaderboard-maze-select" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-white text-xs font-bold focus:outline-none focus:border-blue-500">
         </select>
       </div>
@@ -456,7 +454,6 @@
       const gridCols = cols % 2 === 0 ? cols + 1 : cols;
       const gridRows = rows % 2 === 0 ? rows + 1 : rows;
 
-      // 1 = Wall, 0 = Path
       const grid = Array(gridRows).fill().map(() => Array(gridCols).fill(1));
       const visited = Array(gridRows).fill().map(() => Array(gridCols).fill(false));
 
@@ -494,7 +491,6 @@
         }
       }
 
-      // Ensure clear Start (A) & Finish (B) zones
       grid[1][1] = 0; grid[1][2] = 0; grid[2][1] = 0;
       grid[gridRows - 2][gridCols - 2] = 0; 
       grid[gridRows - 2][gridCols - 3] = 0; 
@@ -509,59 +505,35 @@
       };
     }
 
-    // --- DYNAMIC PROGRESSION LEVEL CONFIGURATION GENERATOR ---
-    // Rule set:
-    // Sizes: 10x10 up to 100x100
-    // Sizes 10 - 25: 5 mazes per size
-    // Sizes 26 - 50: 10 mazes per size
-    // Sizes 51 - 75: 15 mazes per size
-    // Sizes 76 - 100: 20 mazes per size
-    const SIZE_CATEGORIES = [
-      { key: '10-25', label: "10x10 - 25x25", minSize: 10, maxSize: 25 },
-      { key: '26-50', label: "26x26 - 50x50", minSize: 26, maxSize: 50 },
-      { key: '51-75', label: "51x51 - 75x75", minSize: 51, maxSize: 75 },
-      { key: '76-100', label: "76x76 - 100x100", minSize: 76, maxSize: 100 }
+    // --- GENERATE 100 CAMPAIGN LEVELS (FROM 10x10 UP TO 100x100) ---
+    const MAZE_CONFIGS = [];
+    for (let i = 1; i <= 100; i++) {
+      let size = 10;
+      if (i >= 26 && i <= 50) size = 40;
+      else if (i >= 51 && i <= 75) size = 70;
+      else if (i >= 76) size = 100;
+      else {
+        size = 10 + Math.floor((i - 1) / 5) * 6;
+        if (size > 35) size = 35;
+      }
+
+      MAZE_CONFIGS.push({
+        id: `lvl_${i}`,
+        levelNum: i,
+        name: `Level ${i}`,
+        size: size,
+        seed: 1000 + i * 37
+      });
+    }
+
+    const TIER_CATEGORIES = [
+      { key: 't1', label: 'Tier 1 (Levels 1-25)', min: 1, max: 25 },
+      { key: 't2', label: 'Tier 2 (Levels 26-50)', min: 26, max: 50 },
+      { key: 't3', label: 'Tier 3 (Levels 51-75)', min: 51, max: 75 },
+      { key: 't4', label: 'Tier 4 (Levels 76-100)', min: 76, max: 100 }
     ];
 
-    function generateAllLevels() {
-      const levels = [];
-      let levelNumber = 1;
-
-      for (let size = 10; size <= 100; size++) {
-        let mazesPerSize = 5;
-        if (size >= 26 && size <= 50) mazesPerSize = 10;
-        else if (size >= 51 && size <= 75) mazesPerSize = 15;
-        else if (size >= 76 && size <= 100) mazesPerSize = 20;
-
-        for (let sub = 1; sub <= mazesPerSize; sub++) {
-          levels.push({
-            id: `lvl_${levelNumber}`,
-            levelNumber: levelNumber,
-            name: `Level ${levelNumber}`,
-            size: size,
-            variant: sub,
-            seed: levelNumber * 1000 + size * 13 + sub
-          });
-          levelNumber++;
-        }
-      }
-      return levels;
-    }
-
-    const MAZE_CONFIGS = generateAllLevels();
-
-    // PROGRESSION TRACKING IN LOCAL STORAGE
-    function getMaxUnlockedLevel() {
-      const saved = localStorage.getItem('tm_max_unlocked_level');
-      return saved ? parseInt(saved, 10) : 1;
-    }
-
-    function unlockNextLevel(completedLevelNumber) {
-      const currentMax = getMaxUnlockedLevel();
-      if (completedLevelNumber >= currentMax && completedLevelNumber < MAZE_CONFIGS.length) {
-        localStorage.setItem('tm_max_unlocked_level', (completedLevelNumber + 1).toString());
-      }
-    }
+    let selectedTierKey = 't1';
 
     // DEFAULT CAR STATS CONFIGURATION
     const DEFAULT_CAR_STATS = {
@@ -571,7 +543,6 @@
       turnSpeed: 0.040
     };
 
-    // TUNING SPECIFICATION DEFINITIONS
     const STAT_CONFIGS = [
       { key: 'maxSpeed', label: 'Max Speed', min: 4.0, max: 9.0, step: 0.1, dec: 1 },
       { key: 'accel', label: 'Acceleration', min: 0.020, max: 0.100, step: 0.001, dec: 3 },
@@ -579,7 +550,6 @@
       { key: 'turnSpeed', label: 'Turn Speed', min: 0.020, max: 0.070, step: 0.001, dec: 3 }
     ];
 
-    // Lazy generated maze instances storage
     const generatedMazesCache = {};
 
     function getOrGenerateMaze(cfg) {
@@ -595,16 +565,54 @@
     }
 
     let currentMaze = null;
-    let selectedCategoryFilter = '10-25';
     let pendingStartMazeConfig = null;
 
-    // Settings & Control Customizer State
+    // Off-screen minimap cache canvas
+    let minimapCacheCanvas = document.createElement('canvas');
+    let minimapCacheCtx = minimapCacheCanvas.getContext('2d');
+
+    function cacheMinimapBackground() {
+      const mapSize = 105;
+      minimapCacheCanvas.width = mapSize;
+      minimapCacheCanvas.height = mapSize;
+
+      minimapCacheCtx.fillStyle = 'rgba(15, 23, 42, 0.9)';
+      minimapCacheCtx.fillRect(0, 0, mapSize, mapSize);
+
+      const scaleX = mapSize / (currentMaze.cols * TILE_SIZE);
+      const scaleY = mapSize / (currentMaze.rows * TILE_SIZE);
+
+      minimapCacheCtx.fillStyle = '#475569';
+      for (let r = 0; r < currentMaze.rows; r++) {
+        for (let c = 0; c < currentMaze.cols; c++) {
+          if (currentMaze.grid[r][c] === 1) {
+            const px = c * TILE_SIZE * scaleX;
+            const py = r * TILE_SIZE * scaleY;
+            const pw = Math.max(1, TILE_SIZE * scaleX);
+            const ph = Math.max(1, TILE_SIZE * scaleY);
+            minimapCacheCtx.fillRect(px, py, pw, ph);
+          }
+        }
+      }
+    }
+
+    function getMaxUnlockedLevel() {
+      const saved = localStorage.getItem('tm_max_unlocked_level');
+      return saved ? parseInt(saved, 10) : 1;
+    }
+
+    function unlockNextLevel(completedLevelNum) {
+      const currentMax = getMaxUnlockedLevel();
+      if (completedLevelNum >= currentMax && completedLevelNum < 100) {
+        localStorage.setItem('tm_max_unlocked_level', (completedLevelNum + 1).toString());
+      }
+    }
+
     let playerSettings = {
       steeringMode: localStorage.getItem('tm_steer_mode') || 'buttons',
       playerName: localStorage.getItem('tm_player_name') || 'Driver' + Math.floor(Math.random()*1000)
     };
 
-    // LOAD PERSISTED CAR TUNING STATS FROM LOCALSTORAGE OR USE DEFAULTS
     function loadSavedCarStats() {
       const saved = localStorage.getItem('tm_car_stats');
       if (!saved) return { ...DEFAULT_CAR_STATS };
@@ -623,7 +631,6 @@
 
     let isEditingControls = false;
 
-    // CAR PHYSICS DATA
     const car = {
       x: 0,
       y: 0,
@@ -645,10 +652,7 @@
       localStorage.setItem('tm_car_stats', JSON.stringify(statsToSave));
     }
 
-    // TRAIL LINE HISTORY POINTS
     let carTrailPath = [];
-
-    // Inputs
     const inputs = {
       gas: false,
       brake: false,
@@ -657,7 +661,6 @@
       steerRight: false
     };
 
-    // Engine States
     let gameActive = false;
     let isPaused = false;
     let startTime = 0;
@@ -665,6 +668,7 @@
     let pauseStartedAt = 0;
     let elapsedTime = 0;
     let animFrameId = null;
+    let lastFrameTime = 0;
 
     const canvas = document.getElementById('gameCanvas');
     const ctx = canvas.getContext('2d');
@@ -673,7 +677,6 @@
 
     const TILE_SIZE = 70;
 
-    // --- INITIALIZATION ---
     window.addEventListener('load', () => {
       resizeCanvas();
       window.addEventListener('resize', resizeCanvas);
@@ -682,7 +685,6 @@
       restoreSavedControlPositions();
       setupUIEventListeners();
       updateControlUI();
-      updateMenuUI();
     });
 
     function resizeCanvas() {
@@ -691,15 +693,6 @@
       canvas.height = container.clientHeight;
     }
 
-    function updateMenuUI() {
-      const maxUnlocked = getMaxUnlockedLevel();
-      const playText = document.getElementById('menu-play-text');
-      if (playText) {
-        playText.innerText = `Select Level (Unlocked ${maxUnlocked}/${MAZE_CONFIGS.length})`;
-      }
-    }
-
-    // --- FLOATING & DRAGGABLE CONTROLS CUSTOMIZER LOGIC ---
     function setupDraggableControlCustomizer() {
       const controls = document.querySelectorAll('.floating-control');
 
@@ -786,18 +779,10 @@
 
     function resetControlPositions() {
       localStorage.removeItem('tm_control_positions');
-      
-      const wheel = document.getElementById('ctrl-wheel-wrapper');
-      wheel.style = "bottom: 16px; left: 24px;";
-
-      const btns = document.getElementById('ctrl-buttons-wrapper');
-      btns.style = "bottom: 24px; left: 24px;";
-
-      const brake = document.getElementById('ctrl-brake-wrapper');
-      brake.style = "bottom: 20px; right: 100px;";
-
-      const gas = document.getElementById('ctrl-gas-wrapper');
-      gas.style = "bottom: 20px; right: 24px;";
+      document.getElementById('ctrl-wheel-wrapper').style = "bottom: 16px; left: 24px;";
+      document.getElementById('ctrl-buttons-wrapper').style = "bottom: 24px; left: 24px;";
+      document.getElementById('ctrl-brake-wrapper').style = "bottom: 20px; right: 100px;";
+      document.getElementById('ctrl-gas-wrapper').style = "bottom: 20px; right: 24px;";
     }
 
     function toggleEditLayoutMode(enable) {
@@ -806,7 +791,6 @@
       document.getElementById('edit-layout-banner').classList.toggle('hidden', !enable);
     }
 
-    // --- TOUCH & STEERING WHEEL LOGIC ---
     function setupControls() {
       const btnGas = document.getElementById('btn-pedal-gas');
       const btnBrake = document.getElementById('btn-pedal-brake');
@@ -852,7 +836,6 @@
       bindSteerBtn(btnLeft, 'left');
       bindSteerBtn(btnRight, 'right');
 
-      // Rotating Wheel Controller
       const wheelContainer = document.getElementById('steering-wheel-container');
       const wheelElem = document.getElementById('steering-wheel');
       let isDraggingWheel = false;
@@ -902,7 +885,6 @@
       window.addEventListener('mousemove', onWheelMove);
       window.addEventListener('mouseup', onWheelEnd);
 
-      // Keyboard Controls
       window.addEventListener('keydown', (e) => {
         if (isPaused) return;
         if (e.key === 'ArrowUp' || e.key === 'w' || e.key === 'W') inputs.gas = true;
@@ -919,7 +901,6 @@
       });
     }
 
-    // --- GAME ENGINE & PHYSICS LOOP ---
     function openPreRaceModal(mazeConfig) {
       pendingStartMazeConfig = mazeConfig;
       renderTuningUI('pre-race-tuning-controls');
@@ -929,35 +910,32 @@
 
     function startLevel(mazeConfig) {
       currentMaze = getOrGenerateMaze(mazeConfig);
+      cacheMinimapBackground(); // Pre-draw minimap once for peak performance
+
       document.getElementById('hud-level-title').innerText = `${currentMaze.name} (${currentMaze.sizeLabel})`;
 
-      // Reset trail points history
       carTrailPath = [];
-
-      // Center car inside Start Tile (A)
       car.x = (currentMaze.start.x + 0.5) * TILE_SIZE;
       car.y = (currentMaze.start.y + 0.5) * TILE_SIZE;
       car.speed = 0;
       car.angle = 0;
       car.isColliding = false;
 
-      // Push initial position to trail path
       carTrailPath.push({ x: car.x, y: car.y });
 
-      // Update Local Track Record HUD
       const localPB = localStorage.getItem(`tm_pb_${currentMaze.id}`);
       document.getElementById('hud-best-val').innerText = localPB ? formatTime(parseFloat(localPB)) : '--:--.---';
 
-      // Hide all overlay modals
       document.querySelectorAll('[id^="modal-"]').forEach(m => m.classList.add('hidden'));
 
       gameActive = true;
       isPaused = false;
       startTime = performance.now();
       pausedTimeTotal = 0;
+      lastFrameTime = performance.now();
 
       if (animFrameId) cancelAnimationFrame(animFrameId);
-      gameLoop();
+      animFrameId = requestAnimationFrame(gameLoop);
     }
 
     function togglePause() {
@@ -970,17 +948,28 @@
         pauseModal.classList.remove('hidden');
       } else {
         pausedTimeTotal += (performance.now() - pauseStartedAt);
+        lastFrameTime = performance.now();
         pauseModal.classList.add('hidden');
         if (animFrameId) cancelAnimationFrame(animFrameId);
-        gameLoop();
+        animFrameId = requestAnimationFrame(gameLoop);
       }
     }
 
-    function gameLoop() {
+    function gameLoop(timestamp) {
       if (!gameActive) return;
-      if (isPaused) return;
+      if (isPaused) {
+        lastFrameTime = performance.now();
+        animFrameId = requestAnimationFrame(gameLoop);
+        return;
+      }
 
-      updatePhysics();
+      if (!lastFrameTime) lastFrameTime = timestamp;
+      const deltaTime = (timestamp - lastFrameTime) / 1000;
+      lastFrameTime = timestamp;
+
+      const clampedDt = Math.min(deltaTime, 0.1);
+
+      updatePhysics(clampedDt);
       renderWorld();
 
       elapsedTime = performance.now() - startTime - pausedTimeTotal;
@@ -989,7 +978,9 @@
       animFrameId = requestAnimationFrame(gameLoop);
     }
 
-    function updatePhysics() {
+    function updatePhysics(dt) {
+      const timeScale = dt * 60;
+
       let turnInput = 0;
       if (playerSettings.steeringMode === 'wheel') {
         turnInput = inputs.steerAngle;
@@ -999,19 +990,19 @@
       }
 
       if (Math.abs(car.speed) > 0.1) {
-        car.angle += turnInput * car.turnSpeed * (car.speed > 0 ? 1 : -1);
+        car.angle += turnInput * car.turnSpeed * timeScale * (car.speed > 0 ? 1 : -1);
       }
 
       if (inputs.gas) {
-        car.speed = Math.min(car.speed + car.accel, car.maxSpeed);
+        car.speed = Math.min(car.speed + (car.accel * timeScale), car.maxSpeed);
       } else if (inputs.brake) {
-        car.speed = Math.max(car.speed - car.accel * 1.3, -car.maxSpeed * 0.4);
+        car.speed = Math.max(car.speed - (car.accel * 1.3 * timeScale), -car.maxSpeed * 0.4);
       } else {
-        car.speed *= car.friction;
+        car.speed *= Math.pow(car.friction, timeScale);
       }
 
-      const vx = Math.sin(car.angle) * car.speed;
-      const vy = -Math.cos(car.angle) * car.speed;
+      const vx = Math.sin(car.angle) * car.speed * timeScale;
+      const vy = -Math.cos(car.angle) * car.speed * timeScale;
 
       const nextX = car.x + vx;
       const nextY = car.y + vy;
@@ -1029,7 +1020,6 @@
       if (!checkCollision(nextX + (vx > 0 ? collisionRadius : -collisionRadius), car.y)) {
         car.x = nextX;
       } else {
-        // Bounce back effect on X collision
         car.speed = Math.abs(car.speed) > 0.5 ? -car.speed * 0.4 : 0;
         collidedThisFrame = true;
       }
@@ -1037,22 +1027,18 @@
       if (!checkCollision(car.x, nextY + (vy > 0 ? collisionRadius : -collisionRadius))) {
         car.y = nextY;
       } else {
-        // Bounce back effect on Y collision
         car.speed = Math.abs(car.speed) > 0.5 ? -car.speed * 0.4 : 0;
         collidedThisFrame = true;
       }
 
-      // Trigger indicator state when user accelerates into a wall
       car.isColliding = collidedThisFrame && (inputs.gas || inputs.brake);
 
-      // Record trail coordinate if car moved enough distance
       const lastPoint = carTrailPath[carTrailPath.length - 1];
       const distFromLast = Math.hypot(car.x - lastPoint.x, car.y - lastPoint.y);
       if (distFromLast > 10) {
         carTrailPath.push({ x: car.x, y: car.y });
       }
 
-      // Check Finish Tile (B)
       const currentCol = Math.floor(car.x / TILE_SIZE);
       const currentRow = Math.floor(car.y / TILE_SIZE);
       if (currentCol === currentMaze.finish.x && currentRow === currentMaze.finish.y) {
@@ -1060,7 +1046,6 @@
       }
     }
 
-    // --- RENDER SYSTEM ---
     function renderWorld() {
       ctx.clearRect(0, 0, canvas.width, canvas.height);
 
@@ -1072,14 +1057,15 @@
       ctx.rotate(-car.angle);
       ctx.translate(-car.x, -car.y);
 
-      // Viewport Culling
-      const viewRadius = Math.max(canvas.width, canvas.height) * 0.85;
-      const minCol = Math.max(0, Math.floor((car.x - viewRadius) / TILE_SIZE));
-      const maxCol = Math.min(currentMaze.cols - 1, Math.ceil((car.x + viewRadius) / TILE_SIZE));
-      const minRow = Math.max(0, Math.floor((car.y - viewRadius) / TILE_SIZE));
-      const maxRow = Math.min(currentMaze.rows - 1, Math.ceil((car.y + viewRadius) / TILE_SIZE));
+      // Optimized strict viewport culling based on exact screen window size
+      const halfW = (canvas.width / 2) + TILE_SIZE;
+      const halfH = (canvas.height / 2) + TILE_SIZE;
 
-      // Draw Floor & Walls
+      const minCol = Math.max(0, Math.floor((car.x - halfW) / TILE_SIZE));
+      const maxCol = Math.min(currentMaze.cols - 1, Math.ceil((car.x + halfW) / TILE_SIZE));
+      const minRow = Math.max(0, Math.floor((car.y - halfH) / TILE_SIZE));
+      const maxRow = Math.min(currentMaze.rows - 1, Math.ceil((car.y + halfH) / TILE_SIZE));
+
       for (let r = minRow; r <= maxRow; r++) {
         for (let c = minCol; c <= maxCol; c++) {
           const x = c * TILE_SIZE;
@@ -1102,7 +1088,6 @@
         }
       }
 
-      // Draw Smooth Driving Trail Line
       if (carTrailPath.length > 1) {
         ctx.strokeStyle = '#38bdf8';
         ctx.lineWidth = 6;
@@ -1116,7 +1101,6 @@
         ctx.stroke();
       }
 
-      // Start Zone (Green)
       const startX = currentMaze.start.x * TILE_SIZE;
       const startY = currentMaze.start.y * TILE_SIZE;
       ctx.fillStyle = 'rgba(16, 185, 129, 0.4)';
@@ -1125,7 +1109,6 @@
       ctx.lineWidth = 4;
       ctx.strokeRect(startX, startY, TILE_SIZE, TILE_SIZE);
 
-      // Finish Zone (Gold)
       const finishX = currentMaze.finish.x * TILE_SIZE;
       const finishY = currentMaze.finish.y * TILE_SIZE;
       ctx.fillStyle = 'rgba(245, 158, 11, 0.4)';
@@ -1136,7 +1119,6 @@
 
       ctx.restore();
 
-      // DRAW CAR AT EXACT CENTER WITH COLLISION WARNING INDICATOR
       ctx.save();
       ctx.translate(screenCenterX, screenCenterY);
 
@@ -1152,11 +1134,9 @@
         ctx.restore();
       }
 
-      // Car Shadow
       ctx.fillStyle = 'rgba(0,0,0,0.5)';
       ctx.fillRect(-car.width / 2 + 4, -car.height / 2 + 4, car.width, car.height);
 
-      // Body
       ctx.fillStyle = car.isColliding ? '#dc2626' : '#0284c7';
       ctx.beginPath();
       ctx.roundRect(-car.width / 2, -car.height / 2, car.width, car.height, 8);
@@ -1165,11 +1145,9 @@
       ctx.lineWidth = 3;
       ctx.stroke();
 
-      // Windshield
       ctx.fillStyle = '#0f172a';
       ctx.fillRect(-car.width / 2 + 4, -car.height / 2 + 10, car.width - 8, 16);
 
-      // Headlights / Warning Hazards
       ctx.fillStyle = car.isColliding ? '#ef4444' : '#fef08a';
       ctx.fillRect(-car.width / 2 + 3, -car.height / 2 + 2, 6, 4);
       ctx.fillRect(car.width / 2 - 9, -car.height / 2 + 2, 6, 4);
@@ -1183,47 +1161,27 @@
 
       ctx.restore();
 
-      // Only render minimap if game is active and NOT paused
       if (gameActive && !isPaused) {
         renderMiniMap();
       }
     }
 
-    // --- CORNER MINIMAP HUD (DYNAMIC HEIGHT PLACEMENT & CAR DIRECTION ARROW) ---
     function renderMiniMap() {
       const mapSize = 105;
       const padding = 12;
       const x = canvas.width - mapSize - padding;
-      
-      // Dynamic positioning safely below HUD Header
       const hudElem = document.getElementById('game-hud');
       const y = (hudElem ? hudElem.offsetHeight : 55) + 10;
 
-      ctx.fillStyle = 'rgba(15, 23, 42, 0.9)';
+      // Draw pre-cached minimap canvas instantly (1 draw call instead of thousands!)
+      ctx.drawImage(minimapCacheCanvas, x, y);
       ctx.strokeStyle = '#334155';
       ctx.lineWidth = 2;
-      ctx.fillRect(x, y, mapSize, mapSize);
       ctx.strokeRect(x, y, mapSize, mapSize);
 
       const scaleX = mapSize / (currentMaze.cols * TILE_SIZE);
       const scaleY = mapSize / (currentMaze.rows * TILE_SIZE);
 
-      // Render walls on mini-map
-      for (let r = 0; r < currentMaze.rows; r++) {
-        for (let c = 0; c < currentMaze.cols; c++) {
-          const px = x + c * TILE_SIZE * scaleX;
-          const py = y + r * TILE_SIZE * scaleY;
-          const pw = Math.max(1, TILE_SIZE * scaleX);
-          const ph = Math.max(1, TILE_SIZE * scaleY);
-
-          if (currentMaze.grid[r][c] === 1) {
-            ctx.fillStyle = '#475569';
-            ctx.fillRect(px, py, pw, ph);
-          }
-        }
-      }
-
-      // Render trail path on minimap
       if (carTrailPath.length > 1) {
         ctx.strokeStyle = '#ec4899';
         ctx.lineWidth = 2;
@@ -1235,14 +1193,12 @@
         ctx.stroke();
       }
 
-      // Start & Finish
       ctx.fillStyle = '#10b981';
       ctx.fillRect(x + currentMaze.start.x * TILE_SIZE * scaleX, y + currentMaze.start.y * TILE_SIZE * scaleY, Math.max(3, TILE_SIZE * scaleX), Math.max(3, TILE_SIZE * scaleY));
 
       ctx.fillStyle = '#f59e0b';
       ctx.fillRect(x + currentMaze.finish.x * TILE_SIZE * scaleX, y + currentMaze.finish.y * TILE_SIZE * scaleY, Math.max(3, TILE_SIZE * scaleX), Math.max(3, TILE_SIZE * scaleY));
 
-      // Car Marker with Heading Direction Pointer Arrow
       const carMinimapX = x + car.x * scaleX;
       const carMinimapY = y + car.y * scaleY;
 
@@ -1250,7 +1206,6 @@
       ctx.translate(carMinimapX, carMinimapY);
       ctx.rotate(car.angle);
 
-      // Directional arrow head
       ctx.fillStyle = '#ef4444';
       ctx.beginPath();
       ctx.moveTo(0, -7);
@@ -1262,7 +1217,6 @@
       ctx.restore();
     }
 
-    // --- EXPANDED FULL MAZE MAP OVERLAY WITH PROPER ASPECT RATIO & DIRECTION ---
     function renderFullMazeMap() {
       const containerW = fullMapCanvas.parentElement.clientWidth - 20;
       const containerH = fullMapCanvas.parentElement.clientHeight - 20;
@@ -1272,7 +1226,6 @@
 
       fullMapCtx.clearRect(0, 0, containerW, containerH);
 
-      // Preserve square grid aspect ratios
       const maxTileW = containerW / currentMaze.cols;
       const maxTileH = containerH / currentMaze.rows;
       const tileSize = Math.min(maxTileW, maxTileH);
@@ -1296,7 +1249,6 @@
         }
       }
 
-      // Draw Trail Line on Full Map
       if (carTrailPath.length > 1) {
         fullMapCtx.strokeStyle = '#ec4899';
         fullMapCtx.lineWidth = Math.max(2, tileSize * 0.6);
@@ -1314,14 +1266,12 @@
         fullMapCtx.stroke();
       }
 
-      // Start A & Finish B
       fullMapCtx.fillStyle = '#10b981';
       fullMapCtx.fillRect(offsetX + currentMaze.start.x * tileSize, offsetY + currentMaze.start.y * tileSize, tileSize, tileSize);
 
       fullMapCtx.fillStyle = '#f59e0b';
       fullMapCtx.fillRect(offsetX + currentMaze.finish.x * tileSize, offsetY + currentMaze.finish.y * tileSize, tileSize, tileSize);
 
-      // Player Position Marker with Direction Arrow
       const carMapX = offsetX + (car.x / TILE_SIZE) * tileSize;
       const carMapY = offsetY + (car.y / TILE_SIZE) * tileSize;
 
@@ -1341,18 +1291,15 @@
       fullMapCtx.restore();
     }
 
-    // --- VICTORY & LEADERBOARD HANDLER ---
     function triggerVictory() {
       gameActive = false;
       isPaused = false;
       const timeMs = elapsedTime;
 
-      // Unlock next level progression
-      unlockNextLevel(currentMaze.levelNumber);
-      updateMenuUI();
-
       document.getElementById('victory-level-name').innerText = `${currentMaze.name} (${currentMaze.sizeLabel})`;
       document.getElementById('victory-final-time').innerText = formatTime(timeMs);
+
+      unlockNextLevel(currentMaze.levelNum);
 
       const recordKey = `tm_pb_${currentMaze.id}`;
       const prevBest = localStorage.getItem(recordKey);
@@ -1377,7 +1324,6 @@
       document.getElementById('modal-victory').classList.remove('hidden');
     }
 
-    // --- CAR STATS TUNING UI GENERATOR ---
     function renderTuningUI(targetContainerId) {
       const container = document.getElementById(targetContainerId);
       if (!container) return;
@@ -1420,7 +1366,6 @@
       const cfg = STAT_CONFIGS.find(c => c.key === key);
       const dec = cfg ? cfg.dec : 3;
 
-      // Sync value across both active tuning interfaces
       ['pre-race-tuning-controls', 'settings-tuning-controls'].forEach(cid => {
         const valSpan = document.getElementById(`${cid}-val-${key}`);
         const rangeInput = document.getElementById(`${cid}-range-${key}`);
@@ -1433,7 +1378,6 @@
       const cfg = STAT_CONFIGS.find(c => c.key === key);
       if (!cfg) return;
 
-      // Adjust maxSpeed by 0.1 and others by 0.001
       const actualDelta = key === 'maxSpeed' ? (delta > 0 ? 0.1 : -0.1) : delta;
       let newVal = car[key] + actualDelta;
       newVal = Math.max(cfg.min, Math.min(cfg.max, newVal));
@@ -1448,7 +1392,6 @@
       renderTuningUI('settings-tuning-controls');
     }
 
-    // --- UI EVENT LISTENERS ---
     function setupUIEventListeners() {
       const bindAction = (id, handler) => {
         const el = document.getElementById(id);
@@ -1457,7 +1400,7 @@
       };
 
       bindAction('menu-btn-play', () => {
-        renderCategoryTabs();
+        renderTierTabs();
         renderLevelSelector();
         document.getElementById('modal-levels').classList.remove('hidden');
       });
@@ -1476,7 +1419,6 @@
       bindAction('btn-back-menu', () => {
         gameActive = false;
         isPaused = false;
-        updateMenuUI();
         document.getElementById('modal-menu').classList.remove('hidden');
       });
 
@@ -1490,13 +1432,12 @@
         document.getElementById('modal-pause').classList.add('hidden');
         gameActive = false;
         isPaused = false;
-        updateMenuUI();
         document.getElementById('modal-menu').classList.remove('hidden');
       });
 
       bindAction('btn-open-settings', () => {
         renderTuningUI('settings-tuning-controls');
-        document.getElementById('modal-settings').classList.remove('hidden');
+        document.getElementById('modal-settings').classList.add('hidden');
       });
 
       bindAction('btn-edit-controls-hud', () => toggleEditLayoutMode(true));
@@ -1519,7 +1460,6 @@
 
       bindAction('btn-close-pre-race', () => {
         document.getElementById('modal-pre-race-tuning').classList.add('hidden');
-        renderLevelSelector();
         document.getElementById('modal-levels').classList.remove('hidden');
       });
 
@@ -1545,21 +1485,18 @@
         document.getElementById('modal-victory').classList.add('hidden');
         gameActive = false;
         isPaused = false;
-        updateMenuUI();
         document.getElementById('modal-menu').classList.remove('hidden');
       });
 
       bindAction('victory-btn-restart', () => startLevel(currentMaze));
       
       bindAction('victory-btn-next', () => {
-        const nextLevelNum = currentMaze.levelNumber + 1;
-        const nextCfg = MAZE_CONFIGS.find(m => m.levelNumber === nextLevelNum);
+        const nextLevelNum = currentMaze.levelNum + 1;
+        const nextCfg = MAZE_CONFIGS.find(m => m.levelNum === nextLevelNum);
         if (nextCfg) {
           openPreRaceModal(nextCfg);
         } else {
-          alert('Congratulations! You have completed all available levels!');
           document.getElementById('modal-victory').classList.add('hidden');
-          updateMenuUI();
           document.getElementById('modal-menu').classList.remove('hidden');
         }
       });
@@ -1600,18 +1537,18 @@
       }
     }
 
-    function renderCategoryTabs() {
-      const container = document.getElementById('category-tabs');
-      container.innerHTML = SIZE_CATEGORIES.map(cat => `
-        <button class="px-3 py-1.5 rounded-lg text-xs font-bold whitespace-nowrap transition ${selectedCategoryFilter === cat.key ? 'bg-blue-600 text-white shadow-md' : 'bg-slate-800 text-slate-400 hover:text-white'}" onclick="filterCategory('${cat.key}')">
-          ${cat.label}
+    function renderTierTabs() {
+      const container = document.getElementById('tier-tabs');
+      container.innerHTML = TIER_CATEGORIES.map(tier => `
+        <button class="px-3 py-1.5 rounded-lg text-xs font-bold whitespace-nowrap transition ${selectedTierKey === tier.key ? 'bg-blue-600 text-white shadow-md' : 'bg-slate-800 text-slate-400 hover:text-white'}" onclick="filterTier('${tier.key}')">
+          ${tier.label}
         </button>
       `).join('');
     }
 
-    window.filterCategory = function(key) {
-      selectedCategoryFilter = key;
-      renderCategoryTabs();
+    window.filterTier = function(key) {
+      selectedTierKey = key;
+      renderTierTabs();
       renderLevelSelector();
     };
 
@@ -1619,24 +1556,16 @@
       const container = document.getElementById('levels-container');
       container.innerHTML = '';
 
+      const tier = TIER_CATEGORIES.find(t => t.key === selectedTierKey) || TIER_CATEGORIES[0];
+      const filteredConfigs = MAZE_CONFIGS.filter(m => m.levelNum >= tier.min && m.levelNum <= tier.max);
       const maxUnlocked = getMaxUnlockedLevel();
-      const categoryObj = SIZE_CATEGORIES.find(c => c.key === selectedCategoryFilter);
-      if (!categoryObj) return;
-
-      const filteredConfigs = MAZE_CONFIGS.filter(
-        m => m.size >= categoryObj.minSize && m.size <= categoryObj.maxSize
-      );
 
       filteredConfigs.forEach((cfg) => {
+        const isUnlocked = cfg.levelNum <= maxUnlocked;
         const pb = localStorage.getItem(`tm_pb_${cfg.id}`);
-        const isUnlocked = cfg.levelNumber <= maxUnlocked;
-
         const card = document.createElement('div');
-        card.className = `p-3 border rounded-xl flex justify-between items-center transition ${
-          isUnlocked 
-            ? 'bg-slate-800/80 hover:bg-slate-700/80 border-slate-700 cursor-pointer active:scale-98' 
-            : 'bg-slate-900/50 border-slate-800/80 opacity-60 cursor-not-allowed'
-        }`;
+        
+        card.className = `p-3 rounded-xl border flex justify-between items-center transition ${isUnlocked ? 'bg-slate-800/80 hover:bg-slate-700/80 border-slate-700 cursor-pointer active:scale-98' : 'bg-slate-900/50 border-slate-800 opacity-60 cursor-not-allowed'}`;
         
         card.innerHTML = `
           <div>
@@ -1644,11 +1573,9 @@
               <span>${cfg.name}</span>
               <span class="text-[9px] bg-blue-900/80 text-blue-300 px-2 py-0.5 rounded border border-blue-600 font-mono">${cfg.size}x${cfg.size}</span>
             </div>
-            <div class="text-[10px] text-slate-400 mt-0.5">
-              ${isUnlocked ? (pb ? `Best Record: ${formatTime(parseFloat(pb))}` : 'Unlocked - Ready to Race') : '🔒 Complete previous level to unlock'}
-            </div>
+            <div class="text-[10px] text-slate-400 mt-0.5">${isUnlocked ? (pb ? `Best Record: ${formatTime(parseFloat(pb))}` : 'Unlocked • No time recorded') : '🔒 Locked (Complete prior level)'}</div>
           </div>
-          <button class="${isUnlocked ? 'bg-blue-600 hover:bg-blue-500 text-white' : 'bg-slate-800 text-slate-500'} p-2 rounded-lg shadow-md text-xs">
+          <button class="${isUnlocked ? 'bg-blue-600 hover:bg-blue-500 text-white shadow-md' : 'bg-slate-800 text-slate-600'} p-2 rounded-lg text-xs">
             <i class="fa-solid ${isUnlocked ? 'fa-play' : 'fa-lock'}"></i>
           </button>
         `;
@@ -1662,10 +1589,7 @@
 
     function populateLeaderboardMazeSelect() {
       const select = document.getElementById('leaderboard-maze-select');
-      const maxUnlocked = getMaxUnlockedLevel();
-      select.innerHTML = MAZE_CONFIGS.filter(m => m.levelNumber <= maxUnlocked)
-        .map(m => `<option value="${m.id}">${m.name} (${m.size}x${m.size})</option>`)
-        .join('');
+      select.innerHTML = MAZE_CONFIGS.map(m => `<option value="${m.id}">Level ${m.levelNum} (${m.size}x${m.size})</option>`).join('');
     }
 
     function renderLeaderboardUI() {
@@ -1676,7 +1600,7 @@
       const records = JSON.parse(localStorage.getItem(`tm_lb_${selectedId}`) || '[]');
 
       if (records.length === 0) {
-        list.innerHTML = '<div class="text-center text-slate-400 py-6 text-xs">No records logged for this maze level yet. Drive and set the benchmark!</div>';
+        list.innerHTML = '<div class="text-center text-slate-400 py-6 text-xs">No records logged for this level track yet. Drive and set the benchmark!</div>';
         return;
       }
 
