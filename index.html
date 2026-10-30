@@ -96,12 +96,12 @@
       filter: brightness(1.25);
     }
 
-    /* Custom Clean Scrollbars with Touch Pan-Y Enabled */
+    /* Custom Clean Scrollbars with Robust Mobile Touch Pan-Y Enabled */
     .custom-scroll::-webkit-scrollbar {
-      width: 4px;
+      width: 5px;
     }
     .custom-scroll::-webkit-scrollbar-track {
-      background: rgba(15, 23, 42, 0.6);
+      background: rgba(15, 23, 42, 0.8);
       border-radius: 4px;
     }
     .custom-scroll::-webkit-scrollbar-thumb {
@@ -110,9 +110,10 @@
     }
     .custom-scroll {
       scrollbar-width: thin;
-      scrollbar-color: #3b82f6 rgba(15, 23, 42, 0.6);
-      touch-action: pan-y;
-      -webkit-overflow-scrolling: touch;
+      scrollbar-color: #3b82f6 rgba(15, 23, 42, 0.8);
+      touch-action: pan-y !important;
+      -webkit-overflow-scrolling: touch !important;
+      overflow-y: auto !important;
     }
 
     input[type=range] {
@@ -125,7 +126,6 @@
   <!-- INITIAL LOADING SCREEN OVERLAY (5 SECONDS) WITH EMBEDDED LOGO -->
   <div id="modal-loading-screen" class="fixed inset-0 z-[100] bg-slate-950 flex flex-col items-center justify-center p-6 space-y-6 transition-opacity duration-700">
     <div class="max-w-xs w-full text-center space-y-4">
-      <!-- Embedded Vector Neon Logo -->
       <div class="w-32 h-32 mx-auto rounded-2xl overflow-hidden border-2 border-blue-500/60 shadow-2xl shadow-blue-500/30 bg-gradient-to-br from-slate-900 via-blue-950 to-slate-900 flex flex-col items-center justify-center relative p-3">
         <svg class="w-20 h-20 text-blue-400 drop-shadow-[0_0_12px_rgba(59,130,246,0.8)]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
           <path d="M19 17h2c.6 0 1-.4 1-1v-3c0-.9-.7-1.7-1.5-1.9C18.7 10.6 16 10 16 10s-1.3-1.4-2.2-2.3c-.5-.5-1.1-.7-1.8-.7H5c-.6 0-1 .4-1 1v9c0 .6.4 1 1 1h2" />
@@ -142,7 +142,7 @@
         <h1 class="text-3xl font-black italic tracking-wider text-transparent bg-clip-text bg-gradient-to-r from-blue-400 via-indigo-300 to-emerald-400 neon-text">
           TURBO MAZE
         </h1>
-        <p class="text-xs text-slate-400 mt-1 uppercase tracking-widest font-bold">Mobile Edition</p>
+        <p class="text-xs text-slate-400 mt-1 uppercase tracking-widest font-bold">Mobile Edition (10,100 Levels)</p>
       </div>
 
       <!-- Loading Bar -->
@@ -300,13 +300,13 @@
         <h1 class="text-4xl font-black italic tracking-wider text-transparent bg-clip-text bg-gradient-to-r from-blue-400 via-indigo-300 to-emerald-400 neon-text">
           TURBO MAZE
         </h1>
-        <p class="text-slate-400 text-xs mt-1">Progression (Levels 1 - 100) • Free Car Tuning</p>
+        <p class="text-slate-400 text-xs mt-1">10,100 Campaign Levels • Free Car Tuning</p>
       </div>
 
       <div class="space-y-3">
         <button id="menu-btn-play" class="w-full py-3.5 bg-blue-600 hover:bg-blue-500 text-white font-bold rounded-xl shadow-lg shadow-blue-500/30 flex items-center justify-center space-x-2 text-base transition transform active:scale-95">
           <i class="fa-solid fa-flag-checkered"></i>
-          <span>Campaign Levels (1-100)</span>
+          <span>Campaign Levels (1-10,100)</span>
         </button>
 
         <button id="menu-btn-leaderboard" class="w-full py-3 bg-slate-800 hover:bg-slate-700 text-slate-200 font-bold rounded-xl border border-slate-700 flex items-center justify-center space-x-2 transition">
@@ -322,31 +322,38 @@
     </div>
   </div>
 
-  <!-- LEVEL SELECT MODAL (LEVELS 1 - 100 WITH PROGRESSION & MOBILE SCROLL FIX) -->
-  <div id="modal-levels" class="fixed inset-0 z-50 bg-slate-950/90 backdrop-blur-lg hidden flex items-center justify-center p-3 sm:p-4">
-    <div class="max-w-2xl w-full bg-slate-900 border border-slate-700 rounded-2xl shadow-2xl p-4 sm:p-5 space-y-3 max-h-[92vh] h-[92vh] flex flex-col">
+  <!-- LEVEL SELECT MODAL (10,100 LEVELS WITH CHUNK PAGINATION & TOUCH SCROLL FIX) -->
+  <div id="modal-levels" class="fixed inset-0 z-50 bg-slate-950/90 backdrop-blur-lg hidden flex items-center justify-center p-3 sm:p-4" style="touch-action: auto;">
+    <div class="max-w-2xl w-full bg-slate-900 border border-slate-700 rounded-2xl shadow-2xl p-4 sm:p-5 space-y-3 max-h-[92vh] h-[92vh] flex flex-col" style="touch-action: auto;">
       <div class="flex justify-between items-center border-b border-slate-800 pb-3 shrink-0">
         <h2 class="text-base sm:text-lg font-bold text-white flex items-center gap-2">
-          <i class="fa-solid fa-layer-group text-blue-400"></i> Campaign Levels (1 - 100)
+          <i class="fa-solid fa-layer-group text-blue-400"></i> Campaign Levels (1 - 10,100)
         </h2>
         <button class="btn-close-modal text-slate-400 hover:text-white p-1">
           <i class="fa-solid fa-xmark text-lg"></i>
         </button>
       </div>
 
-      <!-- Tier Filter Tabs (Fully Visible, No Scrollbars) -->
+      <!-- Tier Filter Tabs -->
       <div class="grid grid-cols-2 sm:grid-cols-4 gap-2 pb-2 border-b border-slate-800 shrink-0" id="tier-tabs">
         <!-- Rendered dynamically -->
       </div>
 
+      <!-- Block Range Selector (Pagination for 10,100 levels) -->
+      <div class="flex items-center justify-between bg-slate-950/80 px-3 py-2 rounded-xl border border-slate-800 shrink-0">
+        <span class="text-xs text-slate-400 font-bold" id="block-range-label">Select Range:</span>
+        <select id="level-block-select" class="bg-slate-800 border border-slate-700 rounded-lg px-2 py-1 text-white text-xs font-bold focus:outline-none focus:border-blue-500">
+        </select>
+      </div>
+
       <!-- Scrollable Levels Container (Explicit min-h-0 and touch scrolling enabled) -->
-      <div id="levels-container" class="space-y-2.5 overflow-y-auto custom-scroll pr-1 flex-1 min-h-0">
+      <div id="levels-container" class="space-y-2.5 overflow-y-auto custom-scroll pr-1 flex-1 min-h-0" style="touch-action: pan-y !important;">
         <!-- Rendered dynamically -->
       </div>
     </div>
   </div>
 
-  <!-- PRE-RACE CAR TUNING MODAL (POPS UP BEFORE STARTING ANY LEVEL) -->
+  <!-- PRE-RACE CAR TUNING MODAL -->
   <div id="modal-pre-race-tuning" class="fixed inset-0 z-50 bg-slate-950/90 backdrop-blur-lg hidden flex items-center justify-center p-4">
     <div class="max-w-md w-full bg-slate-900 border border-blue-500/50 rounded-2xl shadow-2xl p-5 space-y-4 max-h-[90vh] overflow-y-auto custom-scroll min-h-0">
       <div class="flex justify-between items-center border-b border-slate-800 pb-2">
@@ -431,7 +438,7 @@
     </div>
   </div>
 
-  <!-- VICTORY MODAL WITH RETRY, NEXT, AND HOME BUTTONS -->
+  <!-- VICTORY MODAL -->
   <div id="modal-victory" class="fixed inset-0 z-50 bg-slate-950/90 backdrop-blur-lg hidden flex items-center justify-center p-4">
     <div class="max-w-md w-full bg-slate-900 border border-emerald-500/50 rounded-2xl shadow-2xl p-5 text-center space-y-4">
       <div class="w-14 h-14 bg-emerald-500/20 border-2 border-emerald-400 rounded-full flex items-center justify-center mx-auto text-emerald-400 text-2xl">
@@ -476,19 +483,18 @@
       </div>
 
       <div>
-        <label class="block text-[10px] uppercase text-slate-400 font-bold mb-1">Select Campaign Level</label>
-        <select id="leaderboard-maze-select" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-white text-xs font-bold focus:outline-none focus:border-blue-500">
-        </select>
+        <label class="block text-[10px] uppercase text-slate-400 font-bold mb-1">Select Campaign Level (1 - 10,100)</label>
+        <input type="number" id="leaderboard-level-input" min="1" max="10100" value="1" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-white text-xs font-bold focus:outline-none focus:border-blue-500">
       </div>
 
-      <div id="leaderboard-list" class="space-y-2 overflow-y-auto custom-scroll flex-1 pr-1 min-h-0">
+      <div id="leaderboard-list" class="space-y-2 overflow-y-auto custom-scroll flex-1 pr-1 min-h-0" style="touch-action: pan-y !important;">
       </div>
     </div>
   </div>
 
   <!-- GAME SCRIPT LOGIC -->
   <script>
-    // --- SEEDED PSEUDO-RANDOM GENERATOR FOR STABLE INTRICATE MAZES ---
+    // --- SEEDED PSEUDO-RANDOM GENERATOR FOR STABLE, UNIQUE MAZES ---
     function LCG(seed) {
       let s = seed;
       return function() {
@@ -554,35 +560,42 @@
       };
     }
 
-    // --- GENERATE 100 CAMPAIGN LEVELS (FROM 10x10 UP TO 100x100) ---
-    const MAZE_CONFIGS = [];
-    for (let i = 1; i <= 100; i++) {
+    // --- DYNAMIC LEVEL CONFIG GENERATOR (10,100 LEVELS) ---
+    function getMazeConfig(i) {
       let size = 10;
-      if (i >= 26 && i <= 50) size = 40;
-      else if (i >= 51 && i <= 75) size = 70;
-      else if (i >= 76) size = 100;
-      else {
-        size = 10 + Math.floor((i - 1) / 5) * 6;
-        if (size > 35) size = 35;
-      }
+      if (i <= 10) size = 10;                     // 10 levels of 10x10
+      else if (i <= 50) size = 20;              // 40 levels of 20x20 (11-50)
+      else if (i <= 140) size = 30;             // 90 levels of 30x30 (51-140)
+      else if (i <= 300) size = 40;             // 160 levels of 40x40 (141-300)
+      else if (i <= 550) size = 50;             // 250 levels of 50x50 (301-550)
+      else if (i <= 910) size = 60;             // 360 levels of 60x60 (551-910)
+      else if (i <= 1400) size = 70;            // 490 levels of 70x70 (911-1400)
+      else if (i <= 2040) size = 80;            // 640 levels of 80x80 (1401-2040)
+      else if (i <= 2850) size = 90;            // 810 levels of 90x90 (2041-2850)
+      else if (i <= 3850) size = 100;           // 1000 levels of 100x100 (2851-3850)
+      else if (i <= 6100) size = 150;           // 2250 levels of 150x150 (3851-6100)
+      else size = 200;                          // 4000 levels of 200x200 (6101-10100)
 
-      MAZE_CONFIGS.push({
+      return {
         id: `lvl_${i}`,
         levelNum: i,
         name: `Level ${i}`,
         size: size,
-        seed: 1000 + i * 37
-      });
+        seed: 1000 + i * 7919 // Unique prime multiplier ensures strictly unique, non-repeating paths per level
+      };
     }
 
+    const TOTAL_LEVELS = 10100;
+
     const TIER_CATEGORIES = [
-      { key: 't1', label: 'Tier 1 (1-25)', min: 1, max: 25 },
-      { key: 't2', label: 'Tier 2 (26-50)', min: 26, max: 50 },
-      { key: 't3', label: 'Tier 3 (51-75)', min: 51, max: 75 },
-      { key: 't4', label: 'Tier 4 (76-100)', min: 76, max: 100 }
+      { key: 't1', label: 'Tier 1 (1-2.5k)', min: 1, max: 2500 },
+      { key: 't2', label: 'Tier 2 (2.5k-5k)', min: 2501, max: 5000 },
+      { key: 't3', label: 'Tier 3 (5k-7.5k)', min: 5001, max: 7500 },
+      { key: 't4', label: 'Tier 4 (7.5k-10.1k)', min: 7501, max: 10100 }
     ];
 
     let selectedTierKey = 't1';
+    let selectedBlockStart = 1;
 
     // DEFAULT CAR STATS CONFIGURATION
     const DEFAULT_CAR_STATS = {
@@ -616,7 +629,6 @@
     let currentMaze = null;
     let pendingStartMazeConfig = null;
 
-    // Off-screen minimap cache canvas
     let minimapCacheCanvas = document.createElement('canvas');
     let minimapCacheCtx = minimapCacheCanvas.getContext('2d');
 
@@ -652,7 +664,7 @@
 
     function unlockNextLevel(completedLevelNum) {
       const currentMax = getMaxUnlockedLevel();
-      if (completedLevelNum >= currentMax && completedLevelNum < 100) {
+      if (completedLevelNum >= currentMax && completedLevelNum < TOTAL_LEVELS) {
         localStorage.setItem('tm_max_unlocked_level', (completedLevelNum + 1).toString());
       }
     }
@@ -1004,10 +1016,8 @@
 
       document.querySelectorAll('[id^="modal-"]').forEach(m => m.classList.add('hidden'));
 
-      // Render initial world state behind countdown
       renderWorld();
 
-      // Start 3-Second Countdown
       const countdownModal = document.getElementById('modal-countdown');
       const countdownNum = document.getElementById('countdown-number');
       countdownModal.classList.remove('hidden');
@@ -1501,6 +1511,7 @@
 
       bindAction('menu-btn-play', () => {
         renderTierTabs();
+        populateBlockSelector();
         renderLevelSelector();
         document.getElementById('modal-levels').classList.remove('hidden');
       });
@@ -1511,7 +1522,6 @@
       });
 
       bindAction('menu-btn-leaderboard', () => {
-        populateLeaderboardMazeSelect();
         renderLeaderboardUI();
         document.getElementById('modal-leaderboard').classList.remove('hidden');
       });
@@ -1592,8 +1602,8 @@
       
       bindAction('victory-btn-next', () => {
         const nextLevelNum = currentMaze.levelNum + 1;
-        const nextCfg = MAZE_CONFIGS.find(m => m.levelNum === nextLevelNum);
-        if (nextCfg) {
+        if (nextLevelNum <= TOTAL_LEVELS) {
+          const nextCfg = getMazeConfig(nextLevelNum);
           document.getElementById('modal-victory').classList.add('hidden');
           openPreRaceModal(nextCfg);
         } else {
@@ -1604,7 +1614,11 @@
 
       bindAction('opt-steer-wheel', () => selectSteerOption('wheel'));
       bindAction('opt-steer-buttons', () => selectSteerOption('buttons'));
-      document.getElementById('leaderboard-maze-select').onchange = renderLeaderboardUI;
+      document.getElementById('leaderboard-level-input').oninput = renderLeaderboardUI;
+      document.getElementById('level-block-select').onchange = (e) => {
+        selectedBlockStart = parseInt(e.target.value, 10);
+        renderLevelSelector();
+      };
     }
 
     function selectSteerOption(mode) {
@@ -1641,7 +1655,7 @@
     function renderTierTabs() {
       const container = document.getElementById('tier-tabs');
       container.innerHTML = TIER_CATEGORIES.map(tier => `
-        <button class="px-3 py-2 rounded-xl text-xs font-bold whitespace-nowrap transition ${selectedTierKey === tier.key ? 'bg-blue-600 text-white shadow-md' : 'bg-slate-800 text-slate-400 hover:text-white'}" onclick="filterTier('${tier.key}')">
+        <button class="px-2 py-2 rounded-xl text-xs font-bold whitespace-nowrap transition ${selectedTierKey === tier.key ? 'bg-blue-600 text-white shadow-md' : 'bg-slate-800 text-slate-400 hover:text-white'}" onclick="filterTier('${tier.key}')">
           ${tier.label}
         </button>
       `).join('');
@@ -1649,19 +1663,41 @@
 
     window.filterTier = function(key) {
       selectedTierKey = key;
+      const tier = TIER_CATEGORIES.find(t => t.key === key);
+      if (tier) {
+        selectedBlockStart = tier.min;
+      }
       renderTierTabs();
+      populateBlockSelector();
       renderLevelSelector();
     };
+
+    function populateBlockSelector() {
+      const tier = TIER_CATEGORIES.find(t => t.key === selectedTierKey) || TIER_CATEGORIES[0];
+      const select = document.getElementById('level-block-select');
+      
+      let optionsHTML = '';
+      for (let start = tier.min; start <= tier.max; start += 100) {
+        const end = Math.min(tier.max, start + 99);
+        optionsHTML += `<option value="${start}" ${selectedBlockStart === start ? 'selected' : ''}>Levels ${start} - ${end}</option>`;
+      }
+      select.innerHTML = optionsHTML;
+    }
 
     function renderLevelSelector() {
       const container = document.getElementById('levels-container');
       container.innerHTML = '';
 
       const tier = TIER_CATEGORIES.find(t => t.key === selectedTierKey) || TIER_CATEGORIES[0];
-      const filteredConfigs = MAZE_CONFIGS.filter(m => m.levelNum >= tier.min && m.levelNum <= tier.max);
+      if (selectedBlockStart < tier.min || selectedBlockStart > tier.max) {
+        selectedBlockStart = tier.min;
+      }
+
+      const blockEnd = Math.min(tier.max, selectedBlockStart + 99);
       const maxUnlocked = getMaxUnlockedLevel();
 
-      filteredConfigs.forEach((cfg) => {
+      for (let i = selectedBlockStart; i <= blockEnd; i++) {
+        const cfg = getMazeConfig(i);
         const isUnlocked = cfg.levelNum <= maxUnlocked;
         const pb = localStorage.getItem(`tm_pb_${cfg.id}`);
         const card = document.createElement('div');
@@ -1685,23 +1721,22 @@
           card.onclick = () => openPreRaceModal(cfg);
         }
         container.appendChild(card);
-      });
-    }
-
-    function populateLeaderboardMazeSelect() {
-      const select = document.getElementById('leaderboard-maze-select');
-      select.innerHTML = MAZE_CONFIGS.map(m => `<option value="${m.id}">Level ${m.levelNum} (${m.size}x${m.size})</option>`).join('');
+      }
     }
 
     function renderLeaderboardUI() {
-      const select = document.getElementById('leaderboard-maze-select');
-      const selectedId = select.value || MAZE_CONFIGS[0].id;
+      const input = document.getElementById('leaderboard-level-input');
+      let lvlNum = parseInt(input.value, 10);
+      if (isNaN(lvlNum) || lvlNum < 1) lvlNum = 1;
+      if (lvlNum > TOTAL_LEVELS) lvlNum = TOTAL_LEVELS;
+
+      const cfg = getMazeConfig(lvlNum);
       const list = document.getElementById('leaderboard-list');
 
-      const records = JSON.parse(localStorage.getItem(`tm_lb_${selectedId}`) || '[]');
+      const records = JSON.parse(localStorage.getItem(`tm_lb_${cfg.id}`) || '[]');
 
       if (records.length === 0) {
-        list.innerHTML = '<div class="text-center text-slate-400 py-6 text-xs">No records logged for this level track yet. Drive and set the benchmark!</div>';
+        list.innerHTML = `<div class="text-center text-slate-400 py-6 text-xs">No records logged for Level ${lvlNum} (${cfg.size}x${cfg.size}) yet. Drive and set the benchmark!</div>`;
         return;
       }
 
