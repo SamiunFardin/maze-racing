@@ -44,6 +44,35 @@
       cursor: move;
     }
 
+    /* ANALOG JOYSTICK UI STYLING */
+    .joystick-base {
+      width: 120px;
+      height: 120px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(30, 41, 59, 0.85) 0%, rgba(15, 23, 42, 0.95) 100%);
+      border: 3px solid rgba(56, 189, 248, 0.6);
+      box-shadow: 0 0 15px rgba(0, 0, 0, 0.6), inset 0 0 10px rgba(56, 189, 248, 0.2);
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .joystick-thumb {
+      width: 50px;
+      height: 50px;
+      border-radius: 50%;
+      background: radial-gradient(circle, #38bdf8 0%, #0284c7 100%);
+      border: 2px solid #e0f2fe;
+      box-shadow: 0 0 12px rgba(56, 189, 248, 0.8);
+      position: absolute;
+      transition: transform 0.04s ease-out;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-size: 18px;
+    }
+
     /* Touch Steering Wheel */
     #steering-wheel-container {
       width: 140px;
@@ -96,7 +125,7 @@
       filter: brightness(1.25);
     }
 
-    /* Custom Clean Scrollbars with Robust Mobile Touch Pan-Y Enabled */
+    /* Custom Clean Scrollbars with Mobile Touch Pan-Y Enabled */
     .custom-scroll::-webkit-scrollbar {
       width: 5px;
     }
@@ -123,27 +152,11 @@
 </head>
 <body class="bg-slate-950 text-white flex flex-col h-screen w-screen overflow-hidden">
 
-  <!-- INITIAL LOADING SCREEN OVERLAY (5 SECONDS) WITH NEW INTERESTING NEON LOGO -->
+  <!-- INITIAL LOADING SCREEN OVERLAY WITH LOGO -->
   <div id="modal-loading-screen" class="fixed inset-0 z-[100] bg-slate-950 flex flex-col items-center justify-center p-6 space-y-6 transition-opacity duration-700">
     <div class="max-w-xs w-full text-center space-y-4">
       <div class="w-32 h-32 mx-auto rounded-3xl overflow-hidden border-2 border-cyan-400/80 shadow-[0_0_25px_rgba(6,182,212,0.4)] bg-gradient-to-tr from-slate-900 via-indigo-950 to-blue-900 flex items-center justify-center relative">
-        <!-- New Detailed Neon Maze Racer Emblem Logo -->
-        <svg class="w-24 h-24 drop-shadow-[0_0_10px_rgba(6,182,212,0.8)]" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <!-- Outer Maze Border Grid -->
-          <rect x="10" y="10" width="80" height="80" rx="16" stroke="#06b6d4" stroke-width="4" stroke-dasharray="6 3" fill="rgba(15,23,42,0.6)"/>
-          <!-- Inner Maze Path Lines -->
-          <path d="M25 25H75V45H40V75H75" stroke="#3b82f6" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
-          <path d="M25 75V55H60V25" stroke="#10b981" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
-          <!-- Glowing Racer Car Icon in Center -->
-          <g transform="translate(42, 42)">
-            <rect x="0" y="2" width="16" height="28" rx="5" fill="#f43f5e" stroke="#ffe4e6" stroke-width="2"/>
-            <rect x="2" y="6" width="12" height="10" rx="2" fill="#0f172a"/>
-            <circle cx="3" cy="6" r="2" fill="#fbbf24"/>
-            <circle cx="13" cy="6" r="2" fill="#fbbf24"/>
-            <circle cx="3" cy="26" r="2" fill="#ef4444"/>
-            <circle cx="13" cy="26" r="2" fill="#ef4444"/>
-          </g>
-        </svg>
+        <img src="" alt="Turbo Maze Racer Logo" class="w-full h-full object-cover">
         <div class="absolute inset-0 bg-cyan-500/10 pointer-events-none"></div>
       </div>
 
@@ -159,19 +172,19 @@
         <div id="loading-progress-bar" class="bg-gradient-to-r from-cyan-400 to-emerald-400 h-full rounded-full transition-all duration-300" style="width: 0%;"></div>
       </div>
 
-      <!-- Enhanced Tip -->
+      <!-- Tip -->
       <div class="bg-slate-900/90 border border-slate-800 rounded-xl p-3 text-left space-y-1 shadow-lg">
         <div class="text-[10px] font-bold text-amber-400 uppercase flex items-center gap-1.5">
           <i class="fa-solid fa-lightbulb"></i> Pro Driver Tip
         </div>
         <p class="text-xs text-slate-300 leading-relaxed" id="loading-tip-text">
-          Tune your setup for peak velocity and conquer every maze against the clock!
+          Use the Dual Analog Joysticks for precise throttle and gradual steering control!
         </p>
       </div>
     </div>
   </div>
 
-  <!-- COUNTDOWN OVERLAY (3 SECONDS BEFORE RACE) - HIGH Z-INDEX & VISIBLE -->
+  <!-- COUNTDOWN OVERLAY (3 SECONDS BEFORE RACE) -->
   <div id="modal-countdown" class="fixed inset-0 z-[90] bg-slate-950/85 backdrop-blur-md hidden flex items-center justify-center">
     <div id="countdown-number" class="text-9xl font-black italic text-transparent bg-clip-text bg-gradient-to-r from-amber-400 via-orange-400 to-emerald-400 drop-shadow-[0_0_30px_rgba(245,158,11,0.6)] animate-pulse">
       3
@@ -225,7 +238,26 @@
   <div id="canvas-container" class="relative flex-1 w-full h-full overflow-hidden">
     <canvas id="gameCanvas" class="w-full h-full"></canvas>
 
-    <!-- FLOATING & REPOSITIONABLE TOUCH CONTROLS -->
+    <!-- NEW DEFAULT: DUAL ANALOG JOYSTICKS -->
+    <!-- Left Joystick: Throttle (Forward / Reverse) -->
+    <div id="ctrl-joystick-throttle-wrapper" class="floating-control" style="bottom: 24px; left: 24px;">
+      <div id="joystick-throttle-base" class="joystick-base">
+        <div id="joystick-throttle-thumb" class="joystick-thumb">
+          <i class="fa-solid fa-arrows-up-down"></i>
+        </div>
+      </div>
+    </div>
+
+    <!-- Right Joystick: Steering (Left / Right) -->
+    <div id="ctrl-joystick-steer-wrapper" class="floating-control" style="bottom: 24px; right: 24px;">
+      <div id="joystick-steer-base" class="joystick-base">
+        <div id="joystick-steer-thumb" class="joystick-thumb">
+          <i class="fa-solid fa-arrows-left-right"></i>
+        </div>
+      </div>
+    </div>
+
+    <!-- CLASSIC MODES CONTROLS (OPTIONAL SWITCHES) -->
     <div id="ctrl-wheel-wrapper" class="floating-control hidden" style="bottom: 16px; left: 24px;">
       <div id="steering-wheel-container">
         <div id="steering-wheel">
@@ -236,7 +268,7 @@
       </div>
     </div>
 
-    <div id="ctrl-buttons-wrapper" class="floating-control flex space-x-3" style="bottom: 24px; left: 24px;">
+    <div id="ctrl-buttons-wrapper" class="floating-control hidden flex space-x-3" style="bottom: 24px; left: 24px;">
       <button id="btn-steer-left" class="pedal w-16 h-16 bg-slate-900/90 border-2 border-blue-500 rounded-2xl flex items-center justify-center text-blue-400 text-2xl shadow-lg active:bg-blue-600 active:text-white">
         <i class="fa-solid fa-caret-left"></i>
       </button>
@@ -245,14 +277,14 @@
       </button>
     </div>
 
-    <div id="ctrl-brake-wrapper" class="floating-control flex flex-col items-center" style="bottom: 20px; right: 100px;">
+    <div id="ctrl-brake-wrapper" class="floating-control hidden flex flex-col items-center" style="bottom: 20px; right: 100px;">
       <span class="text-[9px] font-bold text-rose-400 uppercase tracking-widest mb-1">Brake</span>
       <button id="btn-pedal-brake" class="pedal w-14 h-24 bg-gradient-to-b from-rose-600 to-rose-800 border-2 border-rose-400 rounded-2xl flex items-center justify-center text-white text-xl shadow-lg active:bg-rose-500">
         <i class="fa-solid fa-angles-down"></i>
       </button>
     </div>
 
-    <div id="ctrl-gas-wrapper" class="floating-control flex flex-col items-center" style="bottom: 20px; right: 24px;">
+    <div id="ctrl-gas-wrapper" class="floating-control hidden flex flex-col items-center" style="bottom: 20px; right: 24px;">
       <span class="text-[9px] font-bold text-emerald-400 uppercase tracking-widest mb-1">Gas</span>
       <button id="btn-pedal-gas" class="pedal w-14 h-28 bg-gradient-to-b from-emerald-500 to-emerald-700 border-2 border-emerald-300 rounded-2xl flex items-center justify-center text-white text-xl shadow-lg active:bg-emerald-400">
         <i class="fa-solid fa-angles-up"></i>
@@ -331,7 +363,7 @@
     </div>
   </div>
 
-  <!-- LEVEL SELECT MODAL (10,100 LEVELS WITH CHUNK PAGINATION & TOUCH SCROLL FIX) -->
+  <!-- LEVEL SELECT MODAL (10 TIERS WITH 1K LEVELS EACH) -->
   <div id="modal-levels" class="fixed inset-0 z-50 bg-slate-950/90 backdrop-blur-lg hidden flex items-center justify-center p-3 sm:p-4" style="touch-action: auto;">
     <div class="max-w-2xl w-full bg-slate-900 border border-slate-700 rounded-2xl shadow-2xl p-4 sm:p-5 space-y-3 max-h-[92vh] h-[92vh] flex flex-col" style="touch-action: auto;">
       <div class="flex justify-between items-center border-b border-slate-800 pb-3 shrink-0">
@@ -343,19 +375,19 @@
         </button>
       </div>
 
-      <!-- Tier Filter Tabs -->
-      <div class="grid grid-cols-2 sm:grid-cols-4 gap-2 pb-2 border-b border-slate-800 shrink-0" id="tier-tabs">
+      <!-- 10 Tier Tabs -->
+      <div class="flex gap-2 overflow-x-auto pb-2 border-b border-slate-800 shrink-0 custom-scroll" id="tier-tabs" style="touch-action: pan-x !important;">
         <!-- Rendered dynamically -->
       </div>
 
-      <!-- Block Range Selector (Pagination for 10,100 levels) -->
+      <!-- Block Range Selector -->
       <div class="flex items-center justify-between bg-slate-950/80 px-3 py-2 rounded-xl border border-slate-800 shrink-0">
         <span class="text-xs text-slate-400 font-bold" id="block-range-label">Select Range:</span>
         <select id="level-block-select" class="bg-slate-800 border border-slate-700 rounded-lg px-2 py-1 text-white text-xs font-bold focus:outline-none focus:border-blue-500">
         </select>
       </div>
 
-      <!-- Scrollable Levels Container (Explicit min-h-0 and touch scrolling enabled) -->
+      <!-- Scrollable Levels Container -->
       <div id="levels-container" class="space-y-2.5 overflow-y-auto custom-scroll pr-1 flex-1 min-h-0" style="touch-action: pan-y !important;">
         <!-- Rendered dynamically -->
       </div>
@@ -406,14 +438,18 @@
       <div class="space-y-4">
         <div>
           <label class="block text-xs uppercase tracking-wider text-slate-400 font-bold mb-2">Steering Interface</label>
-          <div class="grid grid-cols-2 gap-3">
-            <button id="opt-steer-buttons" class="p-3 bg-blue-600/20 border-2 border-blue-500 rounded-xl text-left flex flex-col items-center space-y-1">
-              <i class="fa-solid fa-arrows-left-right text-2xl text-blue-400"></i>
-              <span class="text-xs font-bold text-white">L / R Buttons</span>
+          <div class="grid grid-cols-3 gap-2">
+            <button id="opt-steer-joysticks" class="p-2.5 bg-blue-600/20 border-2 border-blue-500 rounded-xl text-center flex flex-col items-center space-y-1">
+              <i class="fa-solid fa-gamepad text-xl text-blue-400"></i>
+              <span class="text-[10px] font-bold text-white">Dual Joysticks</span>
             </button>
-            <button id="opt-steer-wheel" class="p-3 bg-slate-800 border-2 border-transparent rounded-xl text-left flex flex-col items-center space-y-1">
-              <i class="fa-solid fa-steering-wheel text-2xl text-slate-400"></i>
-              <span class="text-xs font-bold text-white">Touch Wheel</span>
+            <button id="opt-steer-buttons" class="p-2.5 bg-slate-800 border-2 border-transparent rounded-xl text-center flex flex-col items-center space-y-1">
+              <i class="fa-solid fa-arrows-left-right text-xl text-slate-400"></i>
+              <span class="text-[10px] font-bold text-white">L/R Buttons</span>
+            </button>
+            <button id="opt-steer-wheel" class="p-2.5 bg-slate-800 border-2 border-transparent rounded-xl text-center flex flex-col items-center space-y-1">
+              <i class="fa-solid fa-steering-wheel text-xl text-slate-400"></i>
+              <span class="text-[10px] font-bold text-white">Touch Wheel</span>
             </button>
           </div>
         </div>
@@ -573,17 +609,17 @@
     function getMazeConfig(i) {
       let size = 10;
       if (i <= 10) size = 10;                     // 10 levels of 10x10
-      else if (i <= 50) size = 20;              // 40 levels of 20x20 (11-50)
-      else if (i <= 140) size = 30;             // 90 levels of 30x30 (51-140)
-      else if (i <= 300) size = 40;             // 160 levels of 40x40 (141-300)
-      else if (i <= 550) size = 50;             // 250 levels of 50x50 (301-550)
-      else if (i <= 910) size = 60;             // 360 levels of 60x60 (551-910)
-      else if (i <= 1400) size = 70;            // 490 levels of 70x70 (911-1400)
-      else if (i <= 2040) size = 80;            // 640 levels of 80x80 (1401-2040)
-      else if (i <= 2850) size = 90;            // 810 levels of 90x90 (2041-2850)
-      else if (i <= 3850) size = 100;           // 1000 levels of 100x100 (2851-3850)
-      else if (i <= 6100) size = 150;           // 2250 levels of 150x150 (3851-6100)
-      else size = 200;                          // 4000 levels of 200x200 (6101-10100)
+      else if (i <= 50) size = 20;              // 40 levels of 20x20
+      else if (i <= 140) size = 30;             // 90 levels of 30x30
+      else if (i <= 300) size = 40;             // 160 levels of 40x40
+      else if (i <= 550) size = 50;             // 250 levels of 50x50
+      else if (i <= 910) size = 60;             // 360 levels of 60x60
+      else if (i <= 1400) size = 70;            // 490 levels of 70x70
+      else if (i <= 2040) size = 80;            // 640 levels of 80x80
+      else if (i <= 2850) size = 90;            // 810 levels of 90x90
+      else if (i <= 3850) size = 100;           // 1000 levels of 100x100
+      else if (i <= 6100) size = 150;           // 2250 levels of 150x150
+      else size = 200;                          // 4000 levels of 200x200
 
       return {
         id: `lvl_${i}`,
@@ -596,29 +632,36 @@
 
     const TOTAL_LEVELS = 10100;
 
+    // 10 TIERS (1,000 LEVELS PER TIER)
     const TIER_CATEGORIES = [
-      { key: 't1', label: 'Tier 1 (1-2.5k)', min: 1, max: 2500 },
-      { key: 't2', label: 'Tier 2 (2.5k-5k)', min: 2501, max: 5000 },
-      { key: 't3', label: 'Tier 3 (5k-7.5k)', min: 5001, max: 7500 },
-      { key: 't4', label: 'Tier 4 (7.5k-10.1k)', min: 7501, max: 10100 }
+      { key: 't1', label: 'Tier 1 (1-1k)', min: 1, max: 1000 },
+      { key: 't2', label: 'Tier 2 (1k-2k)', min: 1001, max: 2000 },
+      { key: 't3', label: 'Tier 3 (2k-3k)', min: 2001, max: 3000 },
+      { key: 't4', label: 'Tier 4 (3k-4k)', min: 3001, max: 4000 },
+      { key: 't5', label: 'Tier 5 (4k-5k)', min: 4001, max: 5000 },
+      { key: 't6', label: 'Tier 6 (5k-6k)', min: 5001, max: 6000 },
+      { key: 't7', label: 'Tier 7 (6k-7k)', min: 6001, max: 7000 },
+      { key: 't8', label: 'Tier 8 (7k-8k)', min: 7001, max: 8000 },
+      { key: 't9', label: 'Tier 9 (8k-9k)', min: 8001, max: 9000 },
+      { key: 't10', label: 'Tier 10 (9k-10.1k)', min: 9001, max: 10100 }
     ];
 
     let selectedTierKey = 't1';
     let selectedBlockStart = 1;
 
-    // DEFAULT CAR STATS CONFIGURATION
+    // DEFAULT CAR STATS CONFIGURATION (OPTIMIZED FOR ANALOG INPUT)
     const DEFAULT_CAR_STATS = {
-      maxSpeed: 6.5,
-      accel: 0.050,
-      friction: 0.990,
-      turnSpeed: 0.040
+      maxSpeed: 8.0,
+      accel: 0.075,
+      friction: 0.992,
+      turnSpeed: 0.050
     };
 
     const STAT_CONFIGS = [
-      { key: 'maxSpeed', label: 'Max Speed', min: 4.0, max: 9.0, step: 0.1, dec: 1 },
-      { key: 'accel', label: 'Acceleration', min: 0.020, max: 0.100, step: 0.001, dec: 3 },
+      { key: 'maxSpeed', label: 'Max Speed', min: 4.0, max: 10.0, step: 0.1, dec: 1 },
+      { key: 'accel', label: 'Acceleration', min: 0.020, max: 0.120, step: 0.001, dec: 3 },
       { key: 'friction', label: 'Friction / Grip', min: 0.950, max: 0.998, step: 0.001, dec: 3 },
-      { key: 'turnSpeed', label: 'Turn Speed', min: 0.020, max: 0.070, step: 0.001, dec: 3 }
+      { key: 'turnSpeed', label: 'Turn Speed', min: 0.020, max: 0.090, step: 0.001, dec: 3 }
     ];
 
     const generatedMazesCache = {};
@@ -679,7 +722,7 @@
     }
 
     let playerSettings = {
-      steeringMode: localStorage.getItem('tm_steer_mode') || 'buttons',
+      steeringMode: localStorage.getItem('tm_steer_mode') || 'joysticks',
       playerName: localStorage.getItem('tm_player_name') || 'Driver' + Math.floor(Math.random()*1000)
     };
 
@@ -724,6 +767,8 @@
 
     let carTrailPath = [];
     const inputs = {
+      throttleVal: 0, // Analog range: -1.0 to 1.0
+      steerVal: 0,    // Analog range: -1.0 to 1.0
       gas: false,
       brake: false,
       steerAngle: 0,
@@ -751,6 +796,7 @@
       resizeCanvas();
       window.addEventListener('resize', resizeCanvas);
       setupControls();
+      setupJoystickControls();
       setupDraggableControlCustomizer();
       restoreSavedControlPositions();
       setupUIEventListeners();
@@ -762,7 +808,7 @@
       const loadingScreen = document.getElementById('modal-loading-screen');
       const progressBar = document.getElementById('loading-progress-bar');
       const tips = [
-        "Tune your setup for peak velocity and conquer every maze against the clock!",
+        "Use the Dual Analog Joysticks for precise throttle and gradual steering control!",
         "Master drifting around sharp corners to shave seconds off your personal best.",
         "Keep an eye on the full map overview to plan your navigation path ahead.",
         "Adjust your grip and steering responsiveness in the tuning menu for better control."
@@ -876,6 +922,8 @@
 
     function resetControlPositions() {
       localStorage.removeItem('tm_control_positions');
+      document.getElementById('ctrl-joystick-throttle-wrapper').style = "bottom: 24px; left: 24px;";
+      document.getElementById('ctrl-joystick-steer-wrapper').style = "bottom: 24px; right: 24px;";
       document.getElementById('ctrl-wheel-wrapper').style = "bottom: 16px; left: 24px;";
       document.getElementById('ctrl-buttons-wrapper').style = "bottom: 24px; left: 24px;";
       document.getElementById('ctrl-brake-wrapper').style = "bottom: 20px; right: 100px;";
@@ -886,6 +934,63 @@
       isEditingControls = enable;
       document.body.classList.toggle('edit-mode-active', enable);
       document.getElementById('edit-layout-banner').classList.toggle('hidden', !enable);
+    }
+
+    // --- SETUP ANALOG JOYSTICK HANDLERS ---
+    function setupJoystickControls() {
+      const bindAnalogStick = (baseId, thumbId, axisKey) => {
+        const base = document.getElementById(baseId);
+        const thumb = document.getElementById(thumbId);
+        let active = false;
+        let center = { x: 0, y: 0 };
+        const maxDist = 42;
+
+        const onStart = (e) => {
+          if (isEditingControls || isPaused) return;
+          e.preventDefault();
+          active = true;
+          const rect = base.getBoundingClientRect();
+          center = { x: rect.left + rect.width / 2, y: rect.top + rect.height / 2 };
+        };
+
+        const onMove = (e) => {
+          if (!active || isEditingControls || isPaused) return;
+          e.preventDefault();
+          const touch = e.touches ? e.touches[0] : e;
+          let dx = touch.clientX - center.x;
+          let dy = touch.clientY - center.y;
+
+          if (axisKey === 'throttle') {
+            dx = 0; // Constrain vertical throttle
+            dy = Math.max(-maxDist, Math.min(maxDist, dy));
+            thumb.style.transform = `translate(0px, ${dy}px)`;
+            inputs.throttleVal = -dy / maxDist; // Push up = positive throttle
+          } else {
+            dy = 0; // Constrain horizontal steering
+            dx = Math.max(-maxDist, Math.min(maxDist, dx));
+            thumb.style.transform = `translate(${dx}px, 0px)`;
+            inputs.steerVal = dx / maxDist; // Push right = positive steer angle
+          }
+        };
+
+        const onEnd = (e) => {
+          if (!active) return;
+          active = false;
+          thumb.style.transform = `translate(0px, 0px)`;
+          if (axisKey === 'throttle') inputs.throttleVal = 0;
+          else inputs.steerVal = 0;
+        };
+
+        base.addEventListener('touchstart', onStart, { passive: false });
+        window.addEventListener('touchmove', onMove, { passive: false });
+        window.addEventListener('touchend', onEnd);
+        base.addEventListener('mousedown', onStart);
+        window.addEventListener('mousemove', onMove);
+        window.addEventListener('mouseup', onEnd);
+      };
+
+      bindAnalogStick('joystick-throttle-base', 'joystick-throttle-thumb', 'throttle');
+      bindAnalogStick('joystick-steer-base', 'joystick-steer-thumb', 'steer');
     }
 
     function setupControls() {
@@ -1023,14 +1128,12 @@
       const localPB = localStorage.getItem(`tm_pb_${currentMaze.id}`);
       document.getElementById('hud-best-val').innerText = localPB ? formatTime(parseFloat(localPB)) : '--:--.---';
 
-      // Hide all modals including pre-race tuning modal so background game view is ready
       document.querySelectorAll('[id^="modal-"]').forEach(m => {
         if (m.id !== 'modal-loading-screen') m.classList.add('hidden');
       });
 
       renderWorld();
 
-      // Show countdown modal clearly
       const countdownModal = document.getElementById('modal-countdown');
       const countdownNum = document.getElementById('countdown-number');
       countdownModal.classList.remove('hidden');
@@ -1107,21 +1210,32 @@
       const timeScale = dt * 60;
 
       let turnInput = 0;
-      if (playerSettings.steeringMode === 'wheel') {
+      let forwardInput = 0; // -1 to 1
+
+      if (playerSettings.steeringMode === 'joysticks') {
+        forwardInput = inputs.throttleVal;
+        turnInput = inputs.steerVal;
+      } else if (playerSettings.steeringMode === 'wheel') {
         turnInput = inputs.steerAngle;
+        if (inputs.gas) forwardInput = 1;
+        if (inputs.brake) forwardInput = -0.5;
       } else {
         if (inputs.steerLeft) turnInput = -1;
         if (inputs.steerRight) turnInput = 1;
+        if (inputs.gas) forwardInput = 1;
+        if (inputs.brake) forwardInput = -0.5;
       }
 
       if (Math.abs(car.speed) > 0.1) {
         car.angle += turnInput * car.turnSpeed * timeScale * (car.speed > 0 ? 1 : -1);
       }
 
-      if (inputs.gas) {
-        car.speed = Math.min(car.speed + (car.accel * timeScale), car.maxSpeed);
-      } else if (inputs.brake) {
-        car.speed = Math.max(car.speed - (car.accel * 1.3 * timeScale), -car.maxSpeed * 0.4);
+      if (Math.abs(forwardInput) > 0.05) {
+        if (forwardInput > 0) {
+          car.speed = Math.min(car.speed + (car.accel * forwardInput * timeScale), car.maxSpeed * forwardInput);
+        } else {
+          car.speed = Math.max(car.speed + (car.accel * forwardInput * 1.3 * timeScale), -car.maxSpeed * 0.4 * Math.abs(forwardInput));
+        }
       } else {
         car.speed *= Math.pow(car.friction, timeScale);
       }
@@ -1156,7 +1270,7 @@
         collidedThisFrame = true;
       }
 
-      car.isColliding = collidedThisFrame && (inputs.gas || inputs.brake);
+      car.isColliding = collidedThisFrame && Math.abs(forwardInput) > 0.1;
 
       const lastPoint = carTrailPath[carTrailPath.length - 1];
       const distFromLast = Math.hypot(car.x - lastPoint.x, car.y - lastPoint.y);
@@ -1625,8 +1739,10 @@
         }
       });
 
-      bindAction('opt-steer-wheel', () => selectSteerOption('wheel'));
+      bindAction('opt-steer-joysticks', () => selectSteerOption('joysticks'));
       bindAction('opt-steer-buttons', () => selectSteerOption('buttons'));
+      bindAction('opt-steer-wheel', () => selectSteerOption('wheel'));
+
       document.getElementById('leaderboard-level-input').oninput = renderLeaderboardUI;
       document.getElementById('level-block-select').onchange = (e) => {
         selectedBlockStart = parseInt(e.target.value, 10);
@@ -1641,20 +1757,28 @@
     }
 
     function updateControlUI() {
-      const isWheel = playerSettings.steeringMode === 'wheel';
+      const mode = playerSettings.steeringMode;
+
+      const isJoysticks = mode === 'joysticks';
+      const isWheel = mode === 'wheel';
+      const isButtons = mode === 'buttons';
+
+      document.getElementById('ctrl-joystick-throttle-wrapper').classList.toggle('hidden', !isJoysticks);
+      document.getElementById('ctrl-joystick-steer-wrapper').classList.toggle('hidden', !isJoysticks);
+
       document.getElementById('ctrl-wheel-wrapper').classList.toggle('hidden', !isWheel);
-      document.getElementById('ctrl-buttons-wrapper').classList.toggle('hidden', isWheel);
+      document.getElementById('ctrl-buttons-wrapper').classList.toggle('hidden', !isButtons);
 
-      const btnWheel = document.getElementById('opt-steer-wheel');
+      document.getElementById('ctrl-brake-wrapper').classList.toggle('hidden', isJoysticks);
+      document.getElementById('ctrl-gas-wrapper').classList.toggle('hidden', isJoysticks);
+
+      const btnJoysticks = document.getElementById('opt-steer-joysticks');
       const btnButtons = document.getElementById('opt-steer-buttons');
+      const btnWheel = document.getElementById('opt-steer-wheel');
 
-      if (isWheel) {
-        btnWheel.className = "p-3 bg-blue-600/20 border-2 border-blue-500 rounded-xl text-left flex flex-col items-center space-y-1";
-        btnButtons.className = "p-3 bg-slate-800 border-2 border-transparent rounded-xl text-left flex flex-col items-center space-y-1";
-      } else {
-        btnWheel.className = "p-3 bg-slate-800 border-2 border-transparent rounded-xl text-left flex flex-col items-center space-y-1";
-        btnButtons.className = "p-3 bg-blue-600/20 border-2 border-blue-500 rounded-xl text-left flex flex-col items-center space-y-1";
-      }
+      btnJoysticks.className = isJoysticks ? "p-2.5 bg-blue-600/20 border-2 border-blue-500 rounded-xl text-center flex flex-col items-center space-y-1" : "p-2.5 bg-slate-800 border-2 border-transparent rounded-xl text-center flex flex-col items-center space-y-1";
+      btnButtons.className = isButtons ? "p-2.5 bg-blue-600/20 border-2 border-blue-500 rounded-xl text-center flex flex-col items-center space-y-1" : "p-2.5 bg-slate-800 border-2 border-transparent rounded-xl text-center flex flex-col items-center space-y-1";
+      btnWheel.className = isWheel ? "p-2.5 bg-blue-600/20 border-2 border-blue-500 rounded-xl text-center flex flex-col items-center space-y-1" : "p-2.5 bg-slate-800 border-2 border-transparent rounded-xl text-center flex flex-col items-center space-y-1";
     }
 
     function saveSettings() {
@@ -1668,7 +1792,7 @@
     function renderTierTabs() {
       const container = document.getElementById('tier-tabs');
       container.innerHTML = TIER_CATEGORIES.map(tier => `
-        <button class="px-2 py-2 rounded-xl text-xs font-bold whitespace-nowrap transition ${selectedTierKey === tier.key ? 'bg-blue-600 text-white shadow-md' : 'bg-slate-800 text-slate-400 hover:text-white'}" onclick="filterTier('${tier.key}')">
+        <button class="px-3 py-2 rounded-xl text-xs font-bold whitespace-nowrap transition ${selectedTierKey === tier.key ? 'bg-blue-600 text-white shadow-md' : 'bg-slate-800 text-slate-400 hover:text-white'}" onclick="filterTier('${tier.key}')">
           ${tier.label}
         </button>
       `).join('');
