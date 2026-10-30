@@ -123,31 +123,40 @@
 </head>
 <body class="bg-slate-950 text-white flex flex-col h-screen w-screen overflow-hidden">
 
-  <!-- INITIAL LOADING SCREEN OVERLAY (5 SECONDS) WITH EMBEDDED LOGO -->
+  <!-- INITIAL LOADING SCREEN OVERLAY (5 SECONDS) WITH NEW INTERESTING NEON LOGO -->
   <div id="modal-loading-screen" class="fixed inset-0 z-[100] bg-slate-950 flex flex-col items-center justify-center p-6 space-y-6 transition-opacity duration-700">
     <div class="max-w-xs w-full text-center space-y-4">
-      <div class="w-32 h-32 mx-auto rounded-2xl overflow-hidden border-2 border-blue-500/60 shadow-2xl shadow-blue-500/30 bg-gradient-to-br from-slate-900 via-blue-950 to-slate-900 flex flex-col items-center justify-center relative p-3">
-        <svg class="w-20 h-20 text-blue-400 drop-shadow-[0_0_12px_rgba(59,130,246,0.8)]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-          <path d="M19 17h2c.6 0 1-.4 1-1v-3c0-.9-.7-1.7-1.5-1.9C18.7 10.6 16 10 16 10s-1.3-1.4-2.2-2.3c-.5-.5-1.1-.7-1.8-.7H5c-.6 0-1 .4-1 1v9c0 .6.4 1 1 1h2" />
-          <circle cx="7" cy="17" r="2" />
-          <path d="M9 17h6" />
-          <circle cx="17" cy="17" r="2" />
-          <path d="M5 11l2-4h5.5l2.5 4" />
-          <path d="M12 3v4" stroke-dasharray="1 2" />
+      <div class="w-32 h-32 mx-auto rounded-3xl overflow-hidden border-2 border-cyan-400/80 shadow-[0_0_25px_rgba(6,182,212,0.4)] bg-gradient-to-tr from-slate-900 via-indigo-950 to-blue-900 flex items-center justify-center relative">
+        <!-- New Detailed Neon Maze Racer Emblem Logo -->
+        <svg class="w-24 h-24 drop-shadow-[0_0_10px_rgba(6,182,212,0.8)]" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <!-- Outer Maze Border Grid -->
+          <rect x="10" y="10" width="80" height="80" rx="16" stroke="#06b6d4" stroke-width="4" stroke-dasharray="6 3" fill="rgba(15,23,42,0.6)"/>
+          <!-- Inner Maze Path Lines -->
+          <path d="M25 25H75V45H40V75H75" stroke="#3b82f6" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+          <path d="M25 75V55H60V25" stroke="#10b981" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+          <!-- Glowing Racer Car Icon in Center -->
+          <g transform="translate(42, 42)">
+            <rect x="0" y="2" width="16" height="28" rx="5" fill="#f43f5e" stroke="#ffe4e6" stroke-width="2"/>
+            <rect x="2" y="6" width="12" height="10" rx="2" fill="#0f172a"/>
+            <circle cx="3" cy="6" r="2" fill="#fbbf24"/>
+            <circle cx="13" cy="6" r="2" fill="#fbbf24"/>
+            <circle cx="3" cy="26" r="2" fill="#ef4444"/>
+            <circle cx="13" cy="26" r="2" fill="#ef4444"/>
+          </g>
         </svg>
-        <div class="absolute inset-0 bg-blue-500/5 pointer-events-none"></div>
+        <div class="absolute inset-0 bg-cyan-500/10 pointer-events-none"></div>
       </div>
 
       <div>
-        <h1 class="text-3xl font-black italic tracking-wider text-transparent bg-clip-text bg-gradient-to-r from-blue-400 via-indigo-300 to-emerald-400 neon-text">
+        <h1 class="text-3xl font-black italic tracking-wider text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 via-blue-400 to-emerald-400 neon-text">
           TURBO MAZE
         </h1>
-        <p class="text-xs text-slate-400 mt-1 uppercase tracking-widest font-bold">Mobile Edition (10,100 Levels)</p>
+        <p class="text-xs text-slate-400 mt-1 uppercase tracking-widest font-bold">10,100 Levels • Ultimate Edition</p>
       </div>
 
       <!-- Loading Bar -->
       <div class="w-full bg-slate-900 border border-slate-800 rounded-full h-2.5 overflow-hidden p-0.5">
-        <div id="loading-progress-bar" class="bg-gradient-to-r from-blue-500 to-emerald-400 h-full rounded-full transition-all duration-300" style="width: 0%;"></div>
+        <div id="loading-progress-bar" class="bg-gradient-to-r from-cyan-400 to-emerald-400 h-full rounded-full transition-all duration-300" style="width: 0%;"></div>
       </div>
 
       <!-- Enhanced Tip -->
@@ -162,9 +171,9 @@
     </div>
   </div>
 
-  <!-- COUNTDOWN OVERLAY (3 SECONDS BEFORE RACE) -->
-  <div id="modal-countdown" class="fixed inset-0 z-60 bg-slate-950/80 backdrop-blur-md hidden flex items-center justify-center">
-    <div id="countdown-number" class="text-8xl font-black italic text-transparent bg-clip-text bg-gradient-to-r from-amber-400 to-emerald-400 animate-bounce">
+  <!-- COUNTDOWN OVERLAY (3 SECONDS BEFORE RACE) - HIGH Z-INDEX & VISIBLE -->
+  <div id="modal-countdown" class="fixed inset-0 z-[90] bg-slate-950/85 backdrop-blur-md hidden flex items-center justify-center">
+    <div id="countdown-number" class="text-9xl font-black italic text-transparent bg-clip-text bg-gradient-to-r from-amber-400 via-orange-400 to-emerald-400 drop-shadow-[0_0_30px_rgba(245,158,11,0.6)] animate-pulse">
       3
     </div>
   </div>
@@ -581,7 +590,7 @@
         levelNum: i,
         name: `Level ${i}`,
         size: size,
-        seed: 1000 + i * 7919 // Unique prime multiplier ensures strictly unique, non-repeating paths per level
+        seed: 1000 + i * 7919
       };
     }
 
@@ -1014,10 +1023,14 @@
       const localPB = localStorage.getItem(`tm_pb_${currentMaze.id}`);
       document.getElementById('hud-best-val').innerText = localPB ? formatTime(parseFloat(localPB)) : '--:--.---';
 
-      document.querySelectorAll('[id^="modal-"]').forEach(m => m.classList.add('hidden'));
+      // Hide all modals including pre-race tuning modal so background game view is ready
+      document.querySelectorAll('[id^="modal-"]').forEach(m => {
+        if (m.id !== 'modal-loading-screen') m.classList.add('hidden');
+      });
 
       renderWorld();
 
+      // Show countdown modal clearly
       const countdownModal = document.getElementById('modal-countdown');
       const countdownNum = document.getElementById('countdown-number');
       countdownModal.classList.remove('hidden');
