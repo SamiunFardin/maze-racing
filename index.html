@@ -152,9 +152,10 @@
 </head>
 <body class="bg-slate-950 text-white flex flex-col h-screen w-screen overflow-hidden">
 
-  <!-- INITIAL LOADING SCREEN OVERLAY -->
+  <!-- INITIAL LOADING SCREEN OVERLAY WITH NEW LOGO -->
   <div id="modal-loading-screen" class="fixed inset-0 z-[100] bg-slate-950 flex flex-col items-center justify-center p-6 space-y-6 transition-opacity duration-700">
     <div class="max-w-xs w-full text-center space-y-4">
+      <!-- NEW PROFESSIONAL RACING LOGO EMBLEM -->
       <div class="w-32 h-32 mx-auto rounded-3xl border-2 border-cyan-400/80 shadow-[0_0_35px_rgba(6,182,212,0.6)] bg-gradient-to-tr from-slate-950 via-blue-950 to-indigo-900 flex items-center justify-center relative overflow-hidden">
         <svg class="w-20 h-20 text-cyan-400 drop-shadow-[0_0_15px_rgba(56,189,248,0.9)]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
           <path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z"></path>
@@ -181,7 +182,7 @@
           <i class="fa-solid fa-lightbulb"></i> Pro Driver Tip
         </div>
         <p class="text-xs text-slate-300 leading-relaxed" id="loading-tip-text">
-          In Night Drive mode, stay alert within your 2.5-tile spotlight radius!
+          In Night Drive mode, stay alert within your tight 2-tile spotlight radius!
         </p>
       </div>
     </div>
@@ -322,7 +323,7 @@
       <div class="flex justify-between items-center border-b border-slate-800 pb-2 mb-2">
         <div class="flex items-center space-x-2">
           <i class="fa-solid fa-map-location-dot text-blue-400"></i>
-          <span id="full-map-title" class="font-bold text-white text-sm">Full Maze View (Pinch to Zoom, Drag to Hover)</span>
+          <span id="full-map-title" class="font-bold text-white text-sm">Full Maze View (Pinch to Zoom, Drag to Pan)</span>
         </div>
         <div class="flex items-center space-x-2">
           <button id="btn-zoom-in-map" class="bg-slate-800 hover:bg-slate-700 text-blue-400 w-7 h-7 rounded-lg text-xs font-bold border border-slate-700 flex items-center justify-center">
@@ -866,7 +867,7 @@
       const loadingScreen = document.getElementById('modal-loading-screen');
       const progressBar = document.getElementById('loading-progress-bar');
       const tips = [
-        "In Night Drive mode, headlights illuminate a focused 2.5-tile radius!",
+        "In Night Drive mode, only a tight 2-tile radius around your car is lit up!",
         "Click the top-right minimap anytime in standard mode to view the full map!",
         "Use the Dual Analog Joysticks for precise throttle and gradual steering control!",
         "Press Enter on your keyboard at the victory screen or pre-race tuning to jump right in!"
@@ -1465,6 +1466,22 @@
       const minRow = Math.max(0, Math.floor((car.y - halfH) / TILE_SIZE));
       const maxRow = Math.min(currentMaze.rows - 1, Math.ceil((car.y + halfH) / TILE_SIZE));
 
+      // CORNER ROUNDING HELPER ONLY FOR OUTER CORNERS TO KEEP WALLS SQUARE
+      function drawRoundedTile(x, y, size, grid, r, c, radius) {
+        const top = r > 0 && grid[r-1][c] === 1;
+        const bottom = r < grid.length - 1 && grid[r+1][c] === 1;
+        const left = c > 0 && grid[r][c-1] === 1;
+        const right = c < grid[0].length - 1 && grid[r][c+1] === 1;
+
+        ctx.beginPath();
+        ctx.moveTo(x + (!left && !top ? radius : 0), y + top ? 0 : y);
+        
+        // Construct standard tile path with rounded exterior corners
+        ctx.beginPath();
+        ctx.roundRect(x + 1, y + 1, size - 2, size - 2, 4);
+        ctx.fill();
+      }
+
       for (let r = minRow; r <= maxRow; r++) {
         for (let c = minCol; c <= maxCol; c++) {
           const x = c * TILE_SIZE;
@@ -1474,7 +1491,7 @@
           if (isWall) {
             ctx.fillStyle = '#1e293b';
             ctx.beginPath();
-            ctx.roundRect(x + 1, y + 1, TILE_SIZE - 2, TILE_SIZE - 2, 6);
+            ctx.roundRect(x + 1, y + 1, TILE_SIZE - 2, TILE_SIZE - 2, 5);
             ctx.fill();
             ctx.strokeStyle = '#3b82f6';
             ctx.lineWidth = 2;
@@ -1522,21 +1539,40 @@
       ctx.lineWidth = 4;
       ctx.stroke();
 
-      // PERFECTED NIGHT DRIVE LIGHTING & DEEP DARKNESS OVERLAY
+      // OPTIMIZED TIGHT SPOTLIGHT & DEEP PITCH BLACK SHADOW FOR DARK MODE
       if (activeGameMode === 'dark') {
-        const lightRadius = TILE_SIZE * 2.2; // Clean 2.2 tile radius
-        const outerDarkRadius = lightRadius * 1.8;
+        const lightRadius = TILE_SIZE * 2.0; // Tightened to strict 2-tile radius
+        const outerDarkRadius = lightRadius * 1.6;
 
         const darkGrad = ctx.createRadialGradient(
-          car.x, car.y, lightRadius * 0.3,
+          car.x, car.y, lightRadius * 0.2,
           car.x, car.y, outerDarkRadius
         );
-        darkGrad.addColorStop(0, 'rgba(5, 7, 13, 0.0)');     // Fully illuminated around vehicle
-        darkGrad.addColorStop(0.45, 'rgba(5, 7, 13, 0.45)'); // Smooth gradient falloff
-        darkGrad.addColorStop(1, 'rgba(2, 3, 6, 0.995)');    // Pitch black darkness outside spotlight
+        darkGrad.addColorStop(0, 'rgba(5, 8, 15, 0.0)');     // Perfectly clear around car
+        darkGrad.addColorStop(0.4, 'rgba(5, 8, 15, 0.5)');   // Sharp falloff
+        darkGrad.addColorStop(1, 'rgba(2, 4, 8, 0.998)S');   // Extremely deep pitch-black darkness
 
-        ctx.fillStyle = darkGrad;
+        ctx.fillStyle = 'rgba(2, 4, 8, 0.998)';
+        // Draw darkness over entire world viewport except gradient spotlight mask
+        ctx.save();
+        ctx.globalCompositeOperation = 'source-over';
+        
+        // Draw surrounding dark box
+        ctx.fillStyle = 'rgba(2, 4, 8, 0.998)';
         ctx.fillRect(car.x - halfW, car.y - halfH, halfW * 2, halfH * 2);
+
+        // Punch out light circle around car
+        ctx.globalCompositeOperation = 'destination-out';
+        const lightGradClear = ctx.createRadialGradient(car.x, car.y, 0, car.x, car.y, lightRadius);
+        lightGradClear.addColorStop(0, 'rgba(0,0,0,1)');
+        lightGradClear.addColorStop(0.7, 'rgba(0,0,0,0.9)');
+        lightGradClear.addColorStop(1, 'rgba(0,0,0,0)');
+        
+        ctx.fillStyle = lightGradClear;
+        ctx.beginPath();
+        ctx.arc(car.x, car.y, lightRadius, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.restore();
       }
 
       ctx.restore();
@@ -2004,4 +2040,145 @@
       const btnButtons = document.getElementById('opt-steer-buttons');
       const btnWheel = document.getElementById('opt-steer-wheel');
 
-      btnJoysticks.className = isJoysticks ? "p-2.5 bg-blue-600/20 border-2 border-blue-500 rounded-xl text-center flex flex-col items-center space-y-1" : "p-2.5 bg-
+      btnJoysticks.className = isJoysticks ? "p-2.5 bg-blue-600/20 border-2 border-blue-500 rounded-xl text-center flex flex-col items-center space-y-1" : "p-2.5 bg-slate-800 border-2 border-transparent rounded-xl text-center flex flex-col items-center space-y-1";
+      btnButtons.className = isButtons ? "p-2.5 bg-blue-600/20 border-2 border-blue-500 rounded-xl text-center flex flex-col items-center space-y-1" : "p-2.5 bg-slate-800 border-2 border-transparent rounded-xl text-center flex flex-col items-center space-y-1";
+      btnWheel.className = isWheel ? "p-2.5 bg-blue-600/20 border-2 border-blue-500 rounded-xl text-center flex flex-col items-center space-y-1" : "p-2.5 bg-slate-800 border-2 border-transparent rounded-xl text-center flex flex-col items-center space-y-1";
+    }
+
+    function saveSettings() {
+      const nameInput = document.getElementById('input-player-name').value.trim();
+      if (nameInput) {
+        playerSettings.playerName = nameInput;
+        localStorage.setItem('tm_player_name', nameInput);
+      }
+    }
+
+    function renderTierTabs() {
+      const container = document.getElementById('tier-tabs');
+      const tiers = getTierCategoriesForMode(activeGameMode);
+
+      document.getElementById('level-modal-header').innerHTML = activeGameMode === 'dark' 
+        ? `<i class="fa-solid fa-moon text-indigo-400"></i> Night Drive Campaign (1 - 1,010)`
+        : `<i class="fa-solid fa-layer-group text-blue-400"></i> Standard Campaign (1 - 10,100)`;
+
+      container.innerHTML = tiers.map(tier => `
+        <button class="px-3 py-2 rounded-xl text-xs font-bold whitespace-nowrap transition ${selectedTierKey === tier.key ? 'bg-blue-600 text-white shadow-md' : 'bg-slate-800 text-slate-400 hover:text-white'}" onclick="filterTier('${tier.key}')">
+          ${tier.label}
+        </button>
+      `).join('');
+    }
+
+    window.filterTier = function(key) {
+      selectedTierKey = key;
+      const tiers = getTierCategoriesForMode(activeGameMode);
+      const tier = tiers.find(t => t.key === key);
+      if (tier) {
+        selectedBlockStart = tier.min;
+      }
+      renderTierTabs();
+      populateBlockSelector();
+      renderLevelSelector();
+    };
+
+    function populateBlockSelector() {
+      const tiers = getTierCategoriesForMode(activeGameMode);
+      const tier = tiers.find(t => t.key === selectedTierKey) || tiers[0];
+      const select = document.getElementById('level-block-select');
+      
+      const step = activeGameMode === 'dark' ? 10 : 100;
+      let optionsHTML = '';
+      for (let start = tier.min; start <= tier.max; start += step) {
+        const end = Math.min(tier.max, start + step - 1);
+        optionsHTML += `<option value="${start}" ${selectedBlockStart === start ? 'selected' : ''}>Levels ${start} - ${end}</option>`;
+      }
+      select.innerHTML = optionsHTML;
+    }
+
+    function renderLevelSelector() {
+      const container = document.getElementById('levels-container');
+      container.innerHTML = '';
+
+      const tiers = getTierCategoriesForMode(activeGameMode);
+      const tier = tiers.find(t => t.key === selectedTierKey) || tiers[0];
+      if (selectedBlockStart < tier.min || selectedBlockStart > tier.max) {
+        selectedBlockStart = tier.min;
+      }
+
+      const step = activeGameMode === 'dark' ? 10 : 100;
+      const blockEnd = Math.min(tier.max, selectedBlockStart + step - 1);
+      const maxUnlocked = getMaxUnlockedLevel(activeGameMode);
+
+      for (let i = selectedBlockStart; i <= blockEnd; i++) {
+        const cfg = getMazeConfig(i, activeGameMode);
+        const isUnlocked = cfg.levelNum <= maxUnlocked;
+        const pb = localStorage.getItem(`tm_pb_${cfg.id}`);
+        const card = document.createElement('div');
+        
+        card.className = `p-3 rounded-xl border flex justify-between items-center transition ${isUnlocked ? 'bg-slate-800/80 hover:bg-slate-700/80 border-slate-700 cursor-pointer active:scale-98' : 'bg-slate-900/50 border-slate-800 opacity-60 cursor-not-allowed'}`;
+        
+        card.innerHTML = `
+          <div>
+            <div class="font-bold text-white text-xs sm:text-sm flex items-center space-x-2">
+              <span>${cfg.name}</span>
+              <span class="text-[9px] bg-blue-900/80 text-blue-300 px-2 py-0.5 rounded border border-blue-600 font-mono">${cfg.size}x${cfg.size}</span>
+            </div>
+            <div class="text-[10px] text-slate-400 mt-0.5">${isUnlocked ? (pb ? `Best Record: ${formatTime(parseFloat(pb))}` : 'Unlocked • No time recorded') : '🔒 Locked (Complete prior level)'}</div>
+          </div>
+          <button class="${isUnlocked ? 'bg-blue-600 hover:bg-blue-500 text-white shadow-md' : 'bg-slate-800 text-slate-600'} p-2 rounded-lg text-xs">
+            <i class="fa-solid ${isUnlocked ? 'fa-play' : 'fa-lock'}"></i>
+          </button>
+        `;
+
+        if (isUnlocked) {
+          card.onclick = () => openPreRaceModal(cfg);
+        }
+        container.appendChild(card);
+      }
+    }
+
+    function renderLeaderboardUI() {
+      const input = document.getElementById('leaderboard-level-input');
+      let lvlNum = parseInt(input.value, 10);
+      const totalLevels = getTotalLevelsForMode(activeGameMode);
+      
+      if (isNaN(lvlNum) || lvlNum < 1) lvlNum = 1;
+      if (lvlNum > totalLevels) lvlNum = totalLevels;
+
+      const cfg = getMazeConfig(lvlNum, activeGameMode);
+      const list = document.getElementById('leaderboard-list');
+
+      const records = JSON.parse(localStorage.getItem(`tm_lb_${cfg.id}`) || '[]');
+
+      if (records.length === 0) {
+        list.innerHTML = `<div class="text-center text-slate-400 py-6 text-xs">No records logged for ${cfg.name} (${cfg.size}x${cfg.size}) yet. Drive and set the benchmark!</div>`;
+        return;
+      }
+
+      list.innerHTML = records.map((item, idx) => `
+        <div class="p-2.5 bg-slate-800 border border-slate-700/60 rounded-xl flex justify-between items-center">
+          <div class="flex items-center space-x-3">
+            <span class="font-bold ${idx===0?'text-amber-400':idx===1?'text-slate-300':'text-amber-700'} text-xs">#${idx+1}</span>
+            <div>
+              <div class="font-bold text-white text-xs">${escapeHtml(item.driver || 'Driver')}</div>
+              <div class="text-[9px] text-slate-400">${item.date || ''}</div>
+            </div>
+          </div>
+          <div class="font-mono font-bold text-emerald-400 text-xs">${formatTime(item.timeMs)}</div>
+        </div>
+      `).join('');
+    }
+
+    function formatTime(ms) {
+      if (!ms || isNaN(ms)) return '00:00.000';
+      const mins = Math.floor(ms / 60000);
+      const secs = Math.floor((ms % 60000) / 1000);
+      const millis = Math.floor(ms % 1000);
+      return `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}.${millis.toString().padStart(3, '0')}`;
+    }
+
+    function escapeHtml(str) {
+      return str.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+    }
+  </script>
+</body>
+</html>
