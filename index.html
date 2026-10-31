@@ -152,19 +152,18 @@
 </head>
 <body class="bg-slate-950 text-white flex flex-col h-screen w-screen overflow-hidden">
 
-  <!-- INITIAL LOADING SCREEN OVERLAY WITH FIXED LOGO -->
+  <!-- INITIAL LOADING SCREEN OVERLAY WITH NEW LOGO -->
   <div id="modal-loading-screen" class="fixed inset-0 z-[100] bg-slate-950 flex flex-col items-center justify-center p-6 space-y-6 transition-opacity duration-700">
     <div class="max-w-xs w-full text-center space-y-4">
-      <!-- LOGO CONTAINER -->
-      <div class="w-32 h-32 mx-auto rounded-3xl border-2 border-cyan-400/80 shadow-[0_0_30px_rgba(6,182,212,0.5)] bg-gradient-to-tr from-slate-900 via-indigo-950 to-blue-900 flex items-center justify-center relative overflow-hidden">
-        <svg class="w-20 h-20 text-cyan-400 drop-shadow-[0_0_12px_rgba(56,189,248,0.8)]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-          <circle cx="12" cy="12" r="10" stroke-opacity="0.3"></circle>
-          <path d="M12 2a10 10 0 0 1 10 10" stroke="#38bdf8" stroke-width="2.5"></path>
-          <path d="M12 12l4-4"></path>
-          <circle cx="12" cy="12" r="2" fill="currentColor"></circle>
-          <path d="M6 16l-2 2M18 16l2 2M12 18v3" stroke-width="2"></path>
+      <!-- NEW PROFESSIONAL RACING LOGO EMBLEM -->
+      <div class="w-32 h-32 mx-auto rounded-3xl border-2 border-cyan-400/80 shadow-[0_0_35px_rgba(6,182,212,0.6)] bg-gradient-to-tr from-slate-950 via-blue-950 to-indigo-900 flex items-center justify-center relative overflow-hidden">
+        <svg class="w-20 h-20 text-cyan-400 drop-shadow-[0_0_15px_rgba(56,189,248,0.9)]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z"></path>
+          <line x1="4" y1="22" x2="4" y2="15"></line>
+          <circle cx="12" cy="12" r="3" fill="#38bdf8" fill-opacity="0.3"></circle>
+          <path d="M10 12l2-4 2 4"></path>
         </svg>
-        <div class="absolute inset-0 bg-cyan-500/10 pointer-events-none"></div>
+        <div class="absolute inset-0 bg-gradient-to-b from-cyan-500/10 to-transparent pointer-events-none"></div>
       </div>
 
       <div>
@@ -183,7 +182,7 @@
           <i class="fa-solid fa-lightbulb"></i> Pro Driver Tip
         </div>
         <p class="text-xs text-slate-300 leading-relaxed" id="loading-tip-text">
-          Try "Night Drive" mode for a challenging dark maze experience with no minimap!
+          In Night Drive mode, stay alert within your tight 2-tile spotlight radius!
         </p>
       </div>
     </div>
@@ -324,7 +323,7 @@
       <div class="flex justify-between items-center border-b border-slate-800 pb-2 mb-2">
         <div class="flex items-center space-x-2">
           <i class="fa-solid fa-map-location-dot text-blue-400"></i>
-          <span id="full-map-title" class="font-bold text-white text-sm">Full Maze View</span>
+          <span id="full-map-title" class="font-bold text-white text-sm">Full Maze View (Pinch to Zoom, Drag to Pan)</span>
         </div>
         <div class="flex items-center space-x-2">
           <button id="btn-zoom-in-map" class="bg-slate-800 hover:bg-slate-700 text-blue-400 w-7 h-7 rounded-lg text-xs font-bold border border-slate-700 flex items-center justify-center">
@@ -341,8 +340,8 @@
           </button>
         </div>
       </div>
-      <div class="flex-1 w-full h-full flex items-center justify-center bg-slate-950 rounded-xl overflow-hidden p-2 relative">
-        <canvas id="fullMapCanvas" class="max-w-full max-h-full object-contain cursor-grab active:cursor-grabbing"></canvas>
+      <div id="full-map-canvas-wrapper" class="flex-1 w-full h-full flex items-center justify-center bg-slate-950 rounded-xl overflow-hidden p-2 relative touch-none">
+        <canvas id="fullMapCanvas" class="cursor-grab active:cursor-grabbing"></canvas>
       </div>
     </div>
   </div>
@@ -424,7 +423,7 @@
         </button>
       </div>
 
-      <p class="text-xs text-slate-400">Fine-tune your performance for free before launching into the track!</p>
+      <p class="text-xs text-slate-400">Fine-tune your performance for free before launching into the track! (Press Enter to Start)</p>
 
       <div id="pre-race-tuning-controls" class="space-y-3.5">
       </div>
@@ -841,6 +840,8 @@
     let lastFrameTime = 0;
 
     let mapZoomScale = 1.0;
+    let mapPanX = 0;
+    let mapPanY = 0;
 
     const canvas = document.getElementById('gameCanvas');
     const ctx = canvas.getContext('2d');
@@ -857,6 +858,7 @@
       setupDraggableControlCustomizer();
       restoreSavedControlPositions();
       setupUIEventListeners();
+      setupFullMapInteractions();
       updateControlUI();
       runInitialLoadingScreen();
     });
@@ -865,10 +867,10 @@
       const loadingScreen = document.getElementById('modal-loading-screen');
       const progressBar = document.getElementById('loading-progress-bar');
       const tips = [
-        "In Night Drive mode, only 2-3 tile radius around your car is lit up!",
+        "In Night Drive mode, only a tight 2-tile radius around your car is lit up!",
         "Click the top-right minimap anytime in standard mode to view the full map!",
         "Use the Dual Analog Joysticks for precise throttle and gradual steering control!",
-        "Press Enter on your keyboard at the victory screen to jump right into the next track!"
+        "Press Enter on your keyboard at the victory screen or pre-race tuning to jump right in!"
       ];
       
       document.getElementById('loading-tip-text').innerText = tips[Math.floor(Math.random() * tips.length)];
@@ -1151,6 +1153,12 @@
             document.getElementById('victory-btn-next').click();
             return;
           }
+          const preRaceModal = document.getElementById('modal-pre-race-tuning');
+          if (!preRaceModal.classList.contains('hidden') && pendingStartMazeConfig) {
+            e.preventDefault();
+            document.getElementById('btn-start-race-now').click();
+            return;
+          }
         }
 
         if (isPaused) return;
@@ -1184,6 +1192,70 @@
         if (clickX >= minX && clickX <= maxX && clickY >= minY && clickY <= maxY) {
           openFullMapModal();
         }
+      });
+    }
+
+    function setupFullMapInteractions() {
+      let isDragging = false;
+      let startX, startY;
+      let initialPinchDist = null;
+      let initialZoom = 1.0;
+
+      const wrapper = document.getElementById('full-map-canvas-wrapper');
+
+      wrapper.addEventListener('mousedown', (e) => {
+        isDragging = true;
+        startX = e.clientX - mapPanX;
+        startY = e.clientY - mapPanY;
+      });
+
+      window.addEventListener('mousemove', (e) => {
+        if (!isDragging) return;
+        mapPanX = e.clientX - startX;
+        mapPanY = e.clientY - startY;
+        renderFullMazeMap();
+      });
+
+      window.addEventListener('mouseup', () => {
+        isDragging = false;
+      });
+
+      wrapper.addEventListener('touchstart', (e) => {
+        if (e.touches.length === 1) {
+          isDragging = true;
+          startX = e.touches[0].clientX - mapPanX;
+          startY = e.touches[0].clientY - mapPanY;
+          initialPinchDist = null;
+        } else if (e.touches.length === 2) {
+          isDragging = false;
+          initialPinchDist = Math.hypot(
+            e.touches[0].clientX - e.touches[1].clientX,
+            e.touches[0].clientY - e.touches[1].clientY
+          );
+          initialZoom = mapZoomScale;
+        }
+      }, { passive: false });
+
+      wrapper.addEventListener('touchmove', (e) => {
+        e.preventDefault();
+        if (e.touches.length === 1 && isDragging) {
+          mapPanX = e.touches[0].clientX - startX;
+          mapPanY = e.touches[0].clientY - startY;
+          renderFullMazeMap();
+        } else if (e.touches.length === 2 && initialPinchDist !== null) {
+          const currentDist = Math.hypot(
+            e.touches[0].clientX - e.touches[1].clientX,
+            e.touches[0].clientY - e.touches[1].clientY
+          );
+          const factor = currentDist / initialPinchDist;
+          mapZoomScale = Math.max(0.5, Math.min(4.0, initialZoom * factor));
+          renderFullMazeMap();
+        }
+      }, { passive: false });
+
+      wrapper.addEventListener('touchend', (e) => {
+        if (e.touches.length < 2) initialPinchDist = null;
+        if (e.touches.length === 0) isDragging = false;
       });
     }
 
@@ -1394,7 +1466,21 @@
       const minRow = Math.max(0, Math.floor((car.y - halfH) / TILE_SIZE));
       const maxRow = Math.min(currentMaze.rows - 1, Math.ceil((car.y + halfH) / TILE_SIZE));
 
-      const wallCornerRadius = 8;
+      // CORNER ROUNDING HELPER ONLY FOR OUTER CORNERS TO KEEP WALLS SQUARE
+      function drawRoundedTile(x, y, size, grid, r, c, radius) {
+        const top = r > 0 && grid[r-1][c] === 1;
+        const bottom = r < grid.length - 1 && grid[r+1][c] === 1;
+        const left = c > 0 && grid[r][c-1] === 1;
+        const right = c < grid[0].length - 1 && grid[r][c+1] === 1;
+
+        ctx.beginPath();
+        ctx.moveTo(x + (!left && !top ? radius : 0), y + top ? 0 : y);
+        
+        // Construct standard tile path with rounded exterior corners
+        ctx.beginPath();
+        ctx.roundRect(x + 1, y + 1, size - 2, size - 2, 4);
+        ctx.fill();
+      }
 
       for (let r = minRow; r <= maxRow; r++) {
         for (let c = minCol; c <= maxCol; c++) {
@@ -1405,7 +1491,7 @@
           if (isWall) {
             ctx.fillStyle = '#1e293b';
             ctx.beginPath();
-            ctx.roundRect(x + 1, y + 1, TILE_SIZE - 2, TILE_SIZE - 2, wallCornerRadius);
+            ctx.roundRect(x + 1, y + 1, TILE_SIZE - 2, TILE_SIZE - 2, 5);
             ctx.fill();
             ctx.strokeStyle = '#3b82f6';
             ctx.lineWidth = 2;
@@ -1437,7 +1523,7 @@
       const startY = currentMaze.start.y * TILE_SIZE;
       ctx.fillStyle = 'rgba(16, 185, 129, 0.4)';
       ctx.beginPath();
-      ctx.roundRect(startX + 2, startY + 2, TILE_SIZE - 4, TILE_SIZE - 4, wallCornerRadius);
+      ctx.roundRect(startX + 2, startY + 2, TILE_SIZE - 4, TILE_SIZE - 4, 6);
       ctx.fill();
       ctx.strokeStyle = '#10b981';
       ctx.lineWidth = 4;
@@ -1447,26 +1533,46 @@
       const finishY = currentMaze.finish.y * TILE_SIZE;
       ctx.fillStyle = 'rgba(245, 158, 11, 0.4)';
       ctx.beginPath();
-      ctx.roundRect(finishX + 2, finishY + 2, TILE_SIZE - 4, TILE_SIZE - 4, wallCornerRadius);
+      ctx.roundRect(finishX + 2, finishY + 2, TILE_SIZE - 4, TILE_SIZE - 4, 6);
       ctx.fill();
       ctx.strokeStyle = '#f59e0b';
       ctx.lineWidth = 4;
       ctx.stroke();
 
+      // OPTIMIZED TIGHT SPOTLIGHT & DEEP PITCH BLACK SHADOW FOR DARK MODE
       if (activeGameMode === 'dark') {
-        const lightRadius = TILE_SIZE * 2.8;
-        const outerDarkRadius = lightRadius * 1.5;
+        const lightRadius = TILE_SIZE * 2.0; // Tightened to strict 2-tile radius
+        const outerDarkRadius = lightRadius * 1.6;
 
         const darkGrad = ctx.createRadialGradient(
-          car.x, car.y, lightRadius * 0.4,
+          car.x, car.y, lightRadius * 0.2,
           car.x, car.y, outerDarkRadius
         );
-        darkGrad.addColorStop(0, 'rgba(11, 15, 25, 0.0)');
-        darkGrad.addColorStop(0.5, 'rgba(11, 15, 25, 0.7)');
-        darkGrad.addColorStop(1, 'rgba(11, 15, 25, 0.985)');
+        darkGrad.addColorStop(0, 'rgba(5, 8, 15, 0.0)');     // Perfectly clear around car
+        darkGrad.addColorStop(0.4, 'rgba(5, 8, 15, 0.5)');   // Sharp falloff
+        darkGrad.addColorStop(1, 'rgba(2, 4, 8, 0.998)S');   // Extremely deep pitch-black darkness
 
-        ctx.fillStyle = darkGrad;
+        ctx.fillStyle = 'rgba(2, 4, 8, 0.998)';
+        // Draw darkness over entire world viewport except gradient spotlight mask
+        ctx.save();
+        ctx.globalCompositeOperation = 'source-over';
+        
+        // Draw surrounding dark box
+        ctx.fillStyle = 'rgba(2, 4, 8, 0.998)';
         ctx.fillRect(car.x - halfW, car.y - halfH, halfW * 2, halfH * 2);
+
+        // Punch out light circle around car
+        ctx.globalCompositeOperation = 'destination-out';
+        const lightGradClear = ctx.createRadialGradient(car.x, car.y, 0, car.x, car.y, lightRadius);
+        lightGradClear.addColorStop(0, 'rgba(0,0,0,1)');
+        lightGradClear.addColorStop(0.7, 'rgba(0,0,0,0.9)');
+        lightGradClear.addColorStop(1, 'rgba(0,0,0,0)');
+        
+        ctx.fillStyle = lightGradClear;
+        ctx.beginPath();
+        ctx.arc(car.x, car.y, lightRadius, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.restore();
       }
 
       ctx.restore();
@@ -1571,7 +1677,9 @@
     function openFullMapModal() {
       if (activeGameMode === 'dark') return;
       mapZoomScale = 1.0;
-      document.getElementById('full-map-title').innerText = `${currentMaze.name} (${currentMaze.sizeLabel})`;
+      mapPanX = 0;
+      mapPanY = 0;
+      document.getElementById('full-map-title').innerText = `${currentMaze.name} (${currentMaze.sizeLabel}) - Pinch / Buttons to Zoom, Drag to Hover`;
       document.getElementById('modal-full-map').classList.remove('hidden');
       renderFullMazeMap();
     }
@@ -1592,8 +1700,8 @@
 
       const mapWidth = tileSize * currentMaze.cols;
       const mapHeight = tileSize * currentMaze.rows;
-      const offsetX = (containerW - mapWidth) / 2;
-      const offsetY = (containerH - mapHeight) / 2;
+      const offsetX = ((containerW - mapWidth) / 2) + mapPanX;
+      const offsetY = ((containerH - mapHeight) / 2) + mapPanY;
 
       for (let r = 0; r < currentMaze.rows; r++) {
         for (let c = 0; c < currentMaze.cols; c++) {
@@ -1818,17 +1926,19 @@
       });
 
       bindAction('btn-zoom-in-map', () => {
-        mapZoomScale = Math.min(3.5, mapZoomScale + 0.3);
+        mapZoomScale = Math.min(4.0, mapZoomScale + 0.3);
         renderFullMazeMap();
       });
 
       bindAction('btn-zoom-out-map', () => {
-        mapZoomScale = Math.max(0.6, mapZoomScale - 0.3);
+        mapZoomScale = Math.max(0.5, mapZoomScale - 0.3);
         renderFullMazeMap();
       });
 
       bindAction('btn-reset-zoom-map', () => {
         mapZoomScale = 1.0;
+        mapPanX = 0;
+        mapPanY = 0;
         renderFullMazeMap();
       });
 
