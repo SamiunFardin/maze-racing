@@ -125,7 +125,7 @@
       filter: brightness(1.25);
     }
 
-    /* Custom Clean Scrollbars with Mobile Touch Pan-Y Enabled */
+    /* Custom Clean Scrollbars */
     .custom-scroll::-webkit-scrollbar {
       width: 5px;
     }
@@ -152,11 +152,18 @@
 </head>
 <body class="bg-slate-950 text-white flex flex-col h-screen w-screen overflow-hidden">
 
-  <!-- INITIAL LOADING SCREEN OVERLAY WITH LOGO -->
+  <!-- INITIAL LOADING SCREEN OVERLAY WITH FIXED LOGO -->
   <div id="modal-loading-screen" class="fixed inset-0 z-[100] bg-slate-950 flex flex-col items-center justify-center p-6 space-y-6 transition-opacity duration-700">
     <div class="max-w-xs w-full text-center space-y-4">
-      <div class="w-32 h-32 mx-auto rounded-3xl overflow-hidden border-2 border-cyan-400/80 shadow-[0_0_25px_rgba(6,182,212,0.4)] bg-gradient-to-tr from-slate-900 via-indigo-950 to-blue-900 flex items-center justify-center relative">
-        <img src="" alt="Turbo Maze Racer Logo" class="w-full h-full object-cover">
+      <!-- LOGO CONTAINER -->
+      <div class="w-32 h-32 mx-auto rounded-3xl border-2 border-cyan-400/80 shadow-[0_0_30px_rgba(6,182,212,0.5)] bg-gradient-to-tr from-slate-900 via-indigo-950 to-blue-900 flex items-center justify-center relative overflow-hidden">
+        <svg class="w-20 h-20 text-cyan-400 drop-shadow-[0_0_12px_rgba(56,189,248,0.8)]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="12" cy="12" r="10" stroke-opacity="0.3"></circle>
+          <path d="M12 2a10 10 0 0 1 10 10" stroke="#38bdf8" stroke-width="2.5"></path>
+          <path d="M12 12l4-4"></path>
+          <circle cx="12" cy="12" r="2" fill="currentColor"></circle>
+          <path d="M6 16l-2 2M18 16l2 2M12 18v3" stroke-width="2"></path>
+        </svg>
         <div class="absolute inset-0 bg-cyan-500/10 pointer-events-none"></div>
       </div>
 
@@ -164,34 +171,32 @@
         <h1 class="text-3xl font-black italic tracking-wider text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 via-blue-400 to-emerald-400 neon-text">
           TURBO MAZE
         </h1>
-        <p class="text-xs text-slate-400 mt-1 uppercase tracking-widest font-bold">10,100 Levels • Ultimate Edition</p>
+        <p class="text-xs text-slate-400 mt-1 uppercase tracking-widest font-bold">Standard & Night Drive Modes</p>
       </div>
 
-      <!-- Loading Bar -->
       <div class="w-full bg-slate-900 border border-slate-800 rounded-full h-2.5 overflow-hidden p-0.5">
         <div id="loading-progress-bar" class="bg-gradient-to-r from-cyan-400 to-emerald-400 h-full rounded-full transition-all duration-300" style="width: 0%;"></div>
       </div>
 
-      <!-- Tip -->
       <div class="bg-slate-900/90 border border-slate-800 rounded-xl p-3 text-left space-y-1 shadow-lg">
         <div class="text-[10px] font-bold text-amber-400 uppercase flex items-center gap-1.5">
           <i class="fa-solid fa-lightbulb"></i> Pro Driver Tip
         </div>
         <p class="text-xs text-slate-300 leading-relaxed" id="loading-tip-text">
-          Use the Dual Analog Joysticks for precise throttle and gradual steering control!
+          Try "Night Drive" mode for a challenging dark maze experience with no minimap!
         </p>
       </div>
     </div>
   </div>
 
-  <!-- COUNTDOWN OVERLAY (3 SECONDS BEFORE RACE) -->
+  <!-- COUNTDOWN OVERLAY -->
   <div id="modal-countdown" class="fixed inset-0 z-[90] bg-slate-950/85 backdrop-blur-md hidden flex items-center justify-center">
     <div id="countdown-number" class="text-9xl font-black italic text-transparent bg-clip-text bg-gradient-to-r from-amber-400 via-orange-400 to-emerald-400 drop-shadow-[0_0_30px_rgba(245,158,11,0.6)] animate-pulse">
       3
     </div>
   </div>
 
-  <!-- TOP HUD HEADER (LANDSCAPE OPTIMIZED) -->
+  <!-- TOP HUD HEADER -->
   <div id="game-hud" class="absolute top-0 left-0 right-0 z-40 flex justify-between items-center px-4 py-2 bg-slate-900/85 backdrop-blur-md border-b border-slate-800 pointer-events-auto">
     <div class="flex items-center space-x-3">
       <button id="btn-back-menu" class="bg-slate-800 hover:bg-slate-700 text-slate-200 px-3 py-1.5 rounded-lg border border-slate-700 flex items-center justify-center">
@@ -203,7 +208,6 @@
       </div>
     </div>
 
-    <!-- HUD Action Controls -->
     <div class="flex items-center space-x-2">
       <div id="hud-best-time" class="hidden sm:block text-right mr-2">
         <div class="text-[9px] uppercase text-slate-400 font-bold">Track Record</div>
@@ -227,7 +231,7 @@
     </div>
   </div>
 
-  <!-- EDIT LAYOUT BANNER OVERLAY -->
+  <!-- EDIT LAYOUT BANNER -->
   <div id="edit-layout-banner" class="absolute top-14 left-1/2 -translate-x-1/2 z-40 bg-amber-500 text-slate-950 font-bold text-xs px-4 py-1.5 rounded-full shadow-lg hidden flex items-center space-x-3 pointer-events-auto">
     <span>Drag control elements to customize position</span>
     <button id="btn-reset-controls" class="bg-slate-900 text-white px-2 py-0.5 rounded text-[10px] uppercase">Reset</button>
@@ -238,8 +242,7 @@
   <div id="canvas-container" class="relative flex-1 w-full h-full overflow-hidden">
     <canvas id="gameCanvas" class="w-full h-full"></canvas>
 
-    <!-- NEW DEFAULT: DUAL ANALOG JOYSTICKS -->
-    <!-- Left Joystick: Throttle (Forward / Reverse) -->
+    <!-- DUAL ANALOG JOYSTICKS -->
     <div id="ctrl-joystick-throttle-wrapper" class="floating-control" style="bottom: 24px; left: 24px;">
       <div id="joystick-throttle-base" class="joystick-base">
         <div id="joystick-throttle-thumb" class="joystick-thumb">
@@ -248,7 +251,6 @@
       </div>
     </div>
 
-    <!-- Right Joystick: Steering (Left / Right) -->
     <div id="ctrl-joystick-steer-wrapper" class="floating-control" style="bottom: 24px; right: 24px;">
       <div id="joystick-steer-base" class="joystick-base">
         <div id="joystick-steer-thumb" class="joystick-thumb">
@@ -257,7 +259,7 @@
       </div>
     </div>
 
-    <!-- CLASSIC MODES CONTROLS (OPTIONAL SWITCHES) -->
+    <!-- CLASSIC CONTROLS -->
     <div id="ctrl-wheel-wrapper" class="floating-control hidden" style="bottom: 16px; left: 24px;">
       <div id="steering-wheel-container">
         <div id="steering-wheel">
@@ -324,12 +326,23 @@
           <i class="fa-solid fa-map-location-dot text-blue-400"></i>
           <span id="full-map-title" class="font-bold text-white text-sm">Full Maze View</span>
         </div>
-        <button id="btn-close-full-map" class="bg-slate-800 hover:bg-slate-700 text-slate-300 px-3 py-1 rounded-lg text-xs font-bold border border-slate-700">
-          Close Map
-        </button>
+        <div class="flex items-center space-x-2">
+          <button id="btn-zoom-in-map" class="bg-slate-800 hover:bg-slate-700 text-blue-400 w-7 h-7 rounded-lg text-xs font-bold border border-slate-700 flex items-center justify-center">
+            <i class="fa-solid fa-plus"></i>
+          </button>
+          <button id="btn-zoom-out-map" class="bg-slate-800 hover:bg-slate-700 text-blue-400 w-7 h-7 rounded-lg text-xs font-bold border border-slate-700 flex items-center justify-center">
+            <i class="fa-solid fa-minus"></i>
+          </button>
+          <button id="btn-reset-zoom-map" class="bg-slate-800 hover:bg-slate-700 text-slate-300 px-2 py-1 rounded-lg text-xs font-bold border border-slate-700">
+            Reset
+          </button>
+          <button id="btn-close-full-map" class="bg-slate-800 hover:bg-slate-700 text-slate-300 px-3 py-1 rounded-lg text-xs font-bold border border-slate-700">
+            Close
+          </button>
+        </div>
       </div>
-      <div class="flex-1 w-full h-full flex items-center justify-center bg-slate-950 rounded-xl overflow-hidden p-2">
-        <canvas id="fullMapCanvas" class="max-w-full max-h-full object-contain"></canvas>
+      <div class="flex-1 w-full h-full flex items-center justify-center bg-slate-950 rounded-xl overflow-hidden p-2 relative">
+        <canvas id="fullMapCanvas" class="max-w-full max-h-full object-contain cursor-grab active:cursor-grabbing"></canvas>
       </div>
     </div>
   </div>
@@ -341,13 +354,23 @@
         <h1 class="text-4xl font-black italic tracking-wider text-transparent bg-clip-text bg-gradient-to-r from-blue-400 via-indigo-300 to-emerald-400 neon-text">
           TURBO MAZE
         </h1>
-        <p class="text-slate-400 text-xs mt-1">10,100 Campaign Levels • Free Car Tuning</p>
+        <p class="text-slate-400 text-xs mt-1">Standard & Night Drive Modes</p>
+      </div>
+
+      <!-- MODE SELECTION SWITCH -->
+      <div class="bg-slate-950 p-1.5 rounded-xl border border-slate-800 flex">
+        <button id="menu-tab-standard" class="w-1/2 py-2 rounded-lg text-xs font-bold transition bg-blue-600 text-white shadow">
+          ☀️ Standard
+        </button>
+        <button id="menu-tab-dark" class="w-1/2 py-2 rounded-lg text-xs font-bold transition text-slate-400 hover:text-white">
+          🌙 Night Drive
+        </button>
       </div>
 
       <div class="space-y-3">
         <button id="menu-btn-play" class="w-full py-3.5 bg-blue-600 hover:bg-blue-500 text-white font-bold rounded-xl shadow-lg shadow-blue-500/30 flex items-center justify-center space-x-2 text-base transition transform active:scale-95">
           <i class="fa-solid fa-flag-checkered"></i>
-          <span>Campaign Levels (1-10,100)</span>
+          <span id="menu-play-btn-label">Standard Campaign (1-10,100)</span>
         </button>
 
         <button id="menu-btn-leaderboard" class="w-full py-3 bg-slate-800 hover:bg-slate-700 text-slate-200 font-bold rounded-xl border border-slate-700 flex items-center justify-center space-x-2 transition">
@@ -363,33 +386,28 @@
     </div>
   </div>
 
-  <!-- LEVEL SELECT MODAL (10 TIERS WITH 1K LEVELS EACH) -->
+  <!-- LEVEL SELECT MODAL -->
   <div id="modal-levels" class="fixed inset-0 z-50 bg-slate-950/90 backdrop-blur-lg hidden flex items-center justify-center p-3 sm:p-4" style="touch-action: auto;">
     <div class="max-w-2xl w-full bg-slate-900 border border-slate-700 rounded-2xl shadow-2xl p-4 sm:p-5 space-y-3 max-h-[92vh] h-[92vh] flex flex-col" style="touch-action: auto;">
       <div class="flex justify-between items-center border-b border-slate-800 pb-3 shrink-0">
-        <h2 class="text-base sm:text-lg font-bold text-white flex items-center gap-2">
-          <i class="fa-solid fa-layer-group text-blue-400"></i> Campaign Levels (1 - 10,100)
+        <h2 class="text-base sm:text-lg font-bold text-white flex items-center gap-2" id="level-modal-header">
+          <i class="fa-solid fa-layer-group text-blue-400"></i> Campaign Levels
         </h2>
         <button class="btn-close-modal text-slate-400 hover:text-white p-1">
           <i class="fa-solid fa-xmark text-lg"></i>
         </button>
       </div>
 
-      <!-- 10 Tier Tabs -->
       <div class="flex gap-2 overflow-x-auto pb-2 border-b border-slate-800 shrink-0 custom-scroll" id="tier-tabs" style="touch-action: pan-x !important;">
-        <!-- Rendered dynamically -->
       </div>
 
-      <!-- Block Range Selector -->
       <div class="flex items-center justify-between bg-slate-950/80 px-3 py-2 rounded-xl border border-slate-800 shrink-0">
         <span class="text-xs text-slate-400 font-bold" id="block-range-label">Select Range:</span>
         <select id="level-block-select" class="bg-slate-800 border border-slate-700 rounded-lg px-2 py-1 text-white text-xs font-bold focus:outline-none focus:border-blue-500">
         </select>
       </div>
 
-      <!-- Scrollable Levels Container -->
       <div id="levels-container" class="space-y-2.5 overflow-y-auto custom-scroll pr-1 flex-1 min-h-0" style="touch-action: pan-y !important;">
-        <!-- Rendered dynamically -->
       </div>
     </div>
   </div>
@@ -409,7 +427,6 @@
       <p class="text-xs text-slate-400">Fine-tune your performance for free before launching into the track!</p>
 
       <div id="pre-race-tuning-controls" class="space-y-3.5">
-        <!-- Injected dynamically -->
       </div>
 
       <div class="pt-2 flex gap-2">
@@ -472,7 +489,6 @@
             <button id="btn-reset-tuning-settings" class="text-[10px] text-slate-400 hover:text-white underline">Reset Default</button>
           </div>
           <div id="settings-tuning-controls" class="space-y-3.5">
-            <!-- Injected dynamically -->
           </div>
         </div>
       </div>
@@ -528,7 +544,7 @@
       </div>
 
       <div>
-        <label class="block text-[10px] uppercase text-slate-400 font-bold mb-1">Select Campaign Level (1 - 10,100)</label>
+        <label class="block text-[10px] uppercase text-slate-400 font-bold mb-1">Select Level</label>
         <input type="number" id="leaderboard-level-input" min="1" max="10100" value="1" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-white text-xs font-bold focus:outline-none focus:border-blue-500">
       </div>
 
@@ -539,7 +555,6 @@
 
   <!-- GAME SCRIPT LOGIC -->
   <script>
-    // --- SEEDED PSEUDO-RANDOM GENERATOR FOR STABLE, UNIQUE MAZES ---
     function LCG(seed) {
       let s = seed;
       return function() {
@@ -548,7 +563,6 @@
       };
     }
 
-    // --- ALGORITHM: COMPLEX DEPTH-FIRST SEARCH (DFS) MAZE GENERATOR ---
     function generateDFSComplexMaze(cols, rows, seed) {
       const rng = LCG(seed);
       const gridCols = cols % 2 === 0 ? cols + 1 : cols;
@@ -605,51 +619,88 @@
       };
     }
 
-    // --- DYNAMIC LEVEL CONFIG GENERATOR (10,100 LEVELS) ---
-    function getMazeConfig(i) {
+    let activeGameMode = 'standard';
+
+    function getMazeConfig(i, mode = activeGameMode) {
+      const isDark = mode === 'dark';
       let size = 10;
-      if (i <= 10) size = 10;                     // 10 levels of 10x10
-      else if (i <= 50) size = 20;              // 40 levels of 20x20
-      else if (i <= 140) size = 30;             // 90 levels of 30x30
-      else if (i <= 300) size = 40;             // 160 levels of 40x40
-      else if (i <= 550) size = 50;             // 250 levels of 50x50
-      else if (i <= 910) size = 60;             // 360 levels of 60x60
-      else if (i <= 1400) size = 70;            // 490 levels of 70x70
-      else if (i <= 2040) size = 80;            // 640 levels of 80x80
-      else if (i <= 2850) size = 90;            // 810 levels of 90x90
-      else if (i <= 3850) size = 100;           // 1000 levels of 100x100
-      else if (i <= 6100) size = 150;           // 2250 levels of 150x150
-      else size = 200;                          // 4000 levels of 200x200
+      
+      if (isDark) {
+        if (i <= 1) size = 10;
+        else if (i <= 5) size = 20;
+        else if (i <= 14) size = 30;
+        else if (i <= 30) size = 40;
+        else if (i <= 55) size = 50;
+        else if (i <= 91) size = 60;
+        else if (i <= 140) size = 70;
+        else if (i <= 204) size = 80;
+        else if (i <= 285) size = 90;
+        else if (i <= 385) size = 100;
+        else if (i <= 610) size = 150;
+        else size = 200;
+      } else {
+        if (i <= 10) size = 10;
+        else if (i <= 50) size = 20;
+        else if (i <= 140) size = 30;
+        else if (i <= 300) size = 40;
+        else if (i <= 550) size = 50;
+        else if (i <= 910) size = 60;
+        else if (i <= 1400) size = 70;
+        else if (i <= 2040) size = 80;
+        else if (i <= 2850) size = 90;
+        else if (i <= 3850) size = 100;
+        else if (i <= 6100) size = 150;
+        else size = 200;
+      }
+
+      const modePrefix = isDark ? 'dark_' : 'std_';
 
       return {
-        id: `lvl_${i}`,
+        id: `${modePrefix}lvl_${i}`,
         levelNum: i,
-        name: `Level ${i}`,
+        name: isDark ? `Night Level ${i}` : `Level ${i}`,
         size: size,
-        seed: 1000 + i * 7919
+        seed: (isDark ? 99999 : 1000) + i * 7919,
+        mode: mode
       };
     }
 
-    const TOTAL_LEVELS = 10100;
+    function getTotalLevelsForMode(mode = activeGameMode) {
+      return mode === 'dark' ? 1010 : 10100;
+    }
 
-    // 10 TIERS (1,000 LEVELS PER TIER)
-    const TIER_CATEGORIES = [
-      { key: 't1', label: 'Tier 1 (1-1k)', min: 1, max: 1000 },
-      { key: 't2', label: 'Tier 2 (1k-2k)', min: 1001, max: 2000 },
-      { key: 't3', label: 'Tier 3 (2k-3k)', min: 2001, max: 3000 },
-      { key: 't4', label: 'Tier 4 (3k-4k)', min: 3001, max: 4000 },
-      { key: 't5', label: 'Tier 5 (4k-5k)', min: 4001, max: 5000 },
-      { key: 't6', label: 'Tier 6 (5k-6k)', min: 5001, max: 6000 },
-      { key: 't7', label: 'Tier 7 (6k-7k)', min: 6001, max: 7000 },
-      { key: 't8', label: 'Tier 8 (7k-8k)', min: 7001, max: 8000 },
-      { key: 't9', label: 'Tier 9 (8k-9k)', min: 8001, max: 9000 },
-      { key: 't10', label: 'Tier 10 (9k-10.1k)', min: 9001, max: 10100 }
-    ];
+    function getTierCategoriesForMode(mode = activeGameMode) {
+      if (mode === 'dark') {
+        return [
+          { key: 't1', label: 'Tier 1 (1-100)', min: 1, max: 100 },
+          { key: 't2', label: 'Tier 2 (101-200)', min: 101, max: 200 },
+          { key: 't3', label: 'Tier 3 (201-300)', min: 201, max: 300 },
+          { key: 't4', label: 'Tier 4 (301-400)', min: 301, max: 400 },
+          { key: 't5', label: 'Tier 5 (401-500)', min: 401, max: 500 },
+          { key: 't6', label: 'Tier 6 (501-600)', min: 501, max: 600 },
+          { key: 't7', label: 'Tier 7 (601-700)', min: 601, max: 700 },
+          { key: 't8', label: 'Tier 8 (701-800)', min: 701, max: 800 },
+          { key: 't9', label: 'Tier 9 (801-900)', min: 801, max: 900 },
+          { key: 't10', label: 'Tier 10 (901-1.01k)', min: 901, max: 1010 }
+        ];
+      }
+      return [
+        { key: 't1', label: 'Tier 1 (1-1k)', min: 1, max: 1000 },
+        { key: 't2', label: 'Tier 2 (1k-2k)', min: 1001, max: 2000 },
+        { key: 't3', label: 'Tier 3 (2k-3k)', min: 2001, max: 3000 },
+        { key: 't4', label: 'Tier 4 (3k-4k)', min: 3001, max: 4000 },
+        { key: 't5', label: 'Tier 5 (4k-5k)', min: 4001, max: 5000 },
+        { key: 't6', label: 'Tier 6 (5k-6k)', min: 5001, max: 6000 },
+        { key: 't7', label: 'Tier 7 (6k-7k)', min: 6001, max: 7000 },
+        { key: 't8', label: 'Tier 8 (7k-8k)', min: 7001, max: 8000 },
+        { key: 't9', label: 'Tier 9 (8k-9k)', min: 8001, max: 9000 },
+        { key: 't10', label: 'Tier 10 (9k-10.1k)', min: 9001, max: 10100 }
+      ];
+    }
 
     let selectedTierKey = 't1';
     let selectedBlockStart = 1;
 
-    // DEFAULT CAR STATS CONFIGURATION (OPTIMIZED FOR ANALOG INPUT)
     const DEFAULT_CAR_STATS = {
       maxSpeed: 8.0,
       accel: 0.075,
@@ -709,15 +760,19 @@
       }
     }
 
-    function getMaxUnlockedLevel() {
-      const saved = localStorage.getItem('tm_max_unlocked_level');
+    function getMaxUnlockedLevel(mode = activeGameMode) {
+      const key = mode === 'dark' ? 'tm_max_unlocked_level_dark' : 'tm_max_unlocked_level';
+      const saved = localStorage.getItem(key);
       return saved ? parseInt(saved, 10) : 1;
     }
 
-    function unlockNextLevel(completedLevelNum) {
-      const currentMax = getMaxUnlockedLevel();
-      if (completedLevelNum >= currentMax && completedLevelNum < TOTAL_LEVELS) {
-        localStorage.setItem('tm_max_unlocked_level', (completedLevelNum + 1).toString());
+    function unlockNextLevel(completedLevelNum, mode = activeGameMode) {
+      const currentMax = getMaxUnlockedLevel(mode);
+      const totalLevels = getTotalLevelsForMode(mode);
+      const key = mode === 'dark' ? 'tm_max_unlocked_level_dark' : 'tm_max_unlocked_level';
+      
+      if (completedLevelNum >= currentMax && completedLevelNum < totalLevels) {
+        localStorage.setItem(key, (completedLevelNum + 1).toString());
       }
     }
 
@@ -767,8 +822,8 @@
 
     let carTrailPath = [];
     const inputs = {
-      throttleVal: 0, // Analog range: -1.0 to 1.0
-      steerVal: 0,    // Analog range: -1.0 to 1.0
+      throttleVal: 0,
+      steerVal: 0,
       gas: false,
       brake: false,
       steerAngle: 0,
@@ -784,6 +839,8 @@
     let elapsedTime = 0;
     let animFrameId = null;
     let lastFrameTime = 0;
+
+    let mapZoomScale = 1.0;
 
     const canvas = document.getElementById('gameCanvas');
     const ctx = canvas.getContext('2d');
@@ -808,10 +865,10 @@
       const loadingScreen = document.getElementById('modal-loading-screen');
       const progressBar = document.getElementById('loading-progress-bar');
       const tips = [
+        "In Night Drive mode, only 2-3 tile radius around your car is lit up!",
+        "Click the top-right minimap anytime in standard mode to view the full map!",
         "Use the Dual Analog Joysticks for precise throttle and gradual steering control!",
-        "Master drifting around sharp corners to shave seconds off your personal best.",
-        "Keep an eye on the full map overview to plan your navigation path ahead.",
-        "Adjust your grip and steering responsiveness in the tuning menu for better control."
+        "Press Enter on your keyboard at the victory screen to jump right into the next track!"
       ];
       
       document.getElementById('loading-tip-text').innerText = tips[Math.floor(Math.random() * tips.length)];
@@ -936,7 +993,6 @@
       document.getElementById('edit-layout-banner').classList.toggle('hidden', !enable);
     }
 
-    // --- SETUP ANALOG JOYSTICK HANDLERS ---
     function setupJoystickControls() {
       const bindAnalogStick = (baseId, thumbId, axisKey) => {
         const base = document.getElementById(baseId);
@@ -961,15 +1017,15 @@
           let dy = touch.clientY - center.y;
 
           if (axisKey === 'throttle') {
-            dx = 0; // Constrain vertical throttle
+            dx = 0;
             dy = Math.max(-maxDist, Math.min(maxDist, dy));
             thumb.style.transform = `translate(0px, ${dy}px)`;
-            inputs.throttleVal = -dy / maxDist; // Push up = positive throttle
+            inputs.throttleVal = -dy / maxDist;
           } else {
-            dy = 0; // Constrain horizontal steering
+            dy = 0;
             dx = Math.max(-maxDist, Math.min(maxDist, dx));
             thumb.style.transform = `translate(${dx}px, 0px)`;
-            inputs.steerVal = dx / maxDist; // Push right = positive steer angle
+            inputs.steerVal = dx / maxDist;
           }
         };
 
@@ -1088,6 +1144,15 @@
       window.addEventListener('mouseup', onWheelEnd);
 
       window.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter') {
+          const victoryModal = document.getElementById('modal-victory');
+          if (!victoryModal.classList.contains('hidden')) {
+            e.preventDefault();
+            document.getElementById('victory-btn-next').click();
+            return;
+          }
+        }
+
         if (isPaused) return;
         if (e.key === 'ArrowUp' || e.key === 'w' || e.key === 'W') inputs.gas = true;
         if (e.key === 'ArrowDown' || e.key === 's' || e.key === 'S') inputs.brake = true;
@@ -1101,6 +1166,25 @@
         if (e.key === 'ArrowLeft' || e.key === 'a' || e.key === 'A') inputs.steerLeft = false;
         if (e.key === 'ArrowRight' || e.key === 'd' || e.key === 'D') inputs.steerRight = false;
       });
+
+      canvas.addEventListener('click', (e) => {
+        if (!gameActive || isPaused || isEditingControls || activeGameMode === 'dark') return;
+        const rect = canvas.getBoundingClientRect();
+        const clickX = e.clientX - rect.left;
+        const clickY = e.clientY - rect.top;
+
+        const mapSize = 105;
+        const padding = 12;
+        const minX = canvas.width - mapSize - padding;
+        const hudElem = document.getElementById('game-hud');
+        const minY = (hudElem ? hudElem.offsetHeight : 55) + 10;
+        const maxX = minX + mapSize;
+        const maxY = minY + mapSize;
+
+        if (clickX >= minX && clickX <= maxX && clickY >= minY && clickY <= maxY) {
+          openFullMapModal();
+        }
+      });
     }
 
     function openPreRaceModal(mazeConfig) {
@@ -1112,7 +1196,13 @@
 
     function startCountdownAndRace(mazeConfig) {
       currentMaze = getOrGenerateMaze(mazeConfig);
-      cacheMinimapBackground();
+      activeGameMode = currentMaze.mode || 'standard';
+
+      document.getElementById('btn-full-map').classList.toggle('hidden', activeGameMode === 'dark');
+
+      if (activeGameMode !== 'dark') {
+        cacheMinimapBackground();
+      }
 
       document.getElementById('hud-level-title').innerText = `${currentMaze.name} (${currentMaze.sizeLabel})`;
 
@@ -1210,7 +1300,7 @@
       const timeScale = dt * 60;
 
       let turnInput = 0;
-      let forwardInput = 0; // -1 to 1
+      let forwardInput = 0;
 
       if (playerSettings.steeringMode === 'joysticks') {
         forwardInput = inputs.throttleVal;
@@ -1296,13 +1386,15 @@
       ctx.rotate(-car.angle);
       ctx.translate(-car.x, -car.y);
 
-      const halfW = (canvas.width / 2) + TILE_SIZE;
-      const halfH = (canvas.height / 2) + TILE_SIZE;
+      const halfW = (canvas.width / 2) + (TILE_SIZE * 4);
+      const halfH = (canvas.height / 2) + (TILE_SIZE * 4);
 
       const minCol = Math.max(0, Math.floor((car.x - halfW) / TILE_SIZE));
       const maxCol = Math.min(currentMaze.cols - 1, Math.ceil((car.x + halfW) / TILE_SIZE));
       const minRow = Math.max(0, Math.floor((car.y - halfH) / TILE_SIZE));
       const maxRow = Math.min(currentMaze.rows - 1, Math.ceil((car.y + halfH) / TILE_SIZE));
+
+      const wallCornerRadius = 8;
 
       for (let r = minRow; r <= maxRow; r++) {
         for (let c = minCol; c <= maxCol; c++) {
@@ -1312,10 +1404,12 @@
 
           if (isWall) {
             ctx.fillStyle = '#1e293b';
-            ctx.fillRect(x, y, TILE_SIZE, TILE_SIZE);
+            ctx.beginPath();
+            ctx.roundRect(x + 1, y + 1, TILE_SIZE - 2, TILE_SIZE - 2, wallCornerRadius);
+            ctx.fill();
             ctx.strokeStyle = '#3b82f6';
             ctx.lineWidth = 2;
-            ctx.strokeRect(x + 1, y + 1, TILE_SIZE - 2, TILE_SIZE - 2);
+            ctx.stroke();
           } else {
             ctx.fillStyle = '#0f172a';
             ctx.fillRect(x, y, TILE_SIZE, TILE_SIZE);
@@ -1342,18 +1436,38 @@
       const startX = currentMaze.start.x * TILE_SIZE;
       const startY = currentMaze.start.y * TILE_SIZE;
       ctx.fillStyle = 'rgba(16, 185, 129, 0.4)';
-      ctx.fillRect(startX, startY, TILE_SIZE, TILE_SIZE);
+      ctx.beginPath();
+      ctx.roundRect(startX + 2, startY + 2, TILE_SIZE - 4, TILE_SIZE - 4, wallCornerRadius);
+      ctx.fill();
       ctx.strokeStyle = '#10b981';
       ctx.lineWidth = 4;
-      ctx.strokeRect(startX, startY, TILE_SIZE, TILE_SIZE);
+      ctx.stroke();
 
       const finishX = currentMaze.finish.x * TILE_SIZE;
       const finishY = currentMaze.finish.y * TILE_SIZE;
       ctx.fillStyle = 'rgba(245, 158, 11, 0.4)';
-      ctx.fillRect(finishX, finishY, TILE_SIZE, TILE_SIZE);
+      ctx.beginPath();
+      ctx.roundRect(finishX + 2, finishY + 2, TILE_SIZE - 4, TILE_SIZE - 4, wallCornerRadius);
+      ctx.fill();
       ctx.strokeStyle = '#f59e0b';
       ctx.lineWidth = 4;
-      ctx.strokeRect(finishX, finishY, TILE_SIZE, TILE_SIZE);
+      ctx.stroke();
+
+      if (activeGameMode === 'dark') {
+        const lightRadius = TILE_SIZE * 2.8;
+        const outerDarkRadius = lightRadius * 1.5;
+
+        const darkGrad = ctx.createRadialGradient(
+          car.x, car.y, lightRadius * 0.4,
+          car.x, car.y, outerDarkRadius
+        );
+        darkGrad.addColorStop(0, 'rgba(11, 15, 25, 0.0)');
+        darkGrad.addColorStop(0.5, 'rgba(11, 15, 25, 0.7)');
+        darkGrad.addColorStop(1, 'rgba(11, 15, 25, 0.985)');
+
+        ctx.fillStyle = darkGrad;
+        ctx.fillRect(car.x - halfW, car.y - halfH, halfW * 2, halfH * 2);
+      }
 
       ctx.restore();
 
@@ -1399,7 +1513,7 @@
 
       ctx.restore();
 
-      if (gameActive && !isPaused) {
+      if (gameActive && !isPaused && activeGameMode !== 'dark') {
         renderMiniMap();
       }
     }
@@ -1412,7 +1526,7 @@
       const y = (hudElem ? hudElem.offsetHeight : 55) + 10;
 
       ctx.drawImage(minimapCacheCanvas, x, y);
-      ctx.strokeStyle = '#334155';
+      ctx.strokeStyle = '#38bdf8';
       ctx.lineWidth = 2;
       ctx.strokeRect(x, y, mapSize, mapSize);
 
@@ -1454,6 +1568,14 @@
       ctx.restore();
     }
 
+    function openFullMapModal() {
+      if (activeGameMode === 'dark') return;
+      mapZoomScale = 1.0;
+      document.getElementById('full-map-title').innerText = `${currentMaze.name} (${currentMaze.sizeLabel})`;
+      document.getElementById('modal-full-map').classList.remove('hidden');
+      renderFullMazeMap();
+    }
+
     function renderFullMazeMap() {
       const containerW = fullMapCanvas.parentElement.clientWidth - 20;
       const containerH = fullMapCanvas.parentElement.clientHeight - 20;
@@ -1465,7 +1587,8 @@
 
       const maxTileW = containerW / currentMaze.cols;
       const maxTileH = containerH / currentMaze.rows;
-      const tileSize = Math.min(maxTileW, maxTileH);
+      const baseTileSize = Math.min(maxTileW, maxTileH);
+      const tileSize = baseTileSize * mapZoomScale;
 
       const mapWidth = tileSize * currentMaze.cols;
       const mapHeight = tileSize * currentMaze.rows;
@@ -1536,7 +1659,7 @@
       document.getElementById('victory-level-name').innerText = `${currentMaze.name} (${currentMaze.sizeLabel})`;
       document.getElementById('victory-final-time').innerText = formatTime(timeMs);
 
-      unlockNextLevel(currentMaze.levelNum);
+      unlockNextLevel(currentMaze.levelNum, activeGameMode);
 
       const recordKey = `tm_pb_${currentMaze.id}`;
       const prevBest = localStorage.getItem(recordKey);
@@ -1636,6 +1759,9 @@
         el.onclick = (e) => { e.preventDefault(); handler(); };
       };
 
+      bindAction('menu-tab-standard', () => setMenuGameMode('standard'));
+      bindAction('menu-tab-dark', () => setMenuGameMode('dark'));
+
       bindAction('menu-btn-play', () => {
         renderTierTabs();
         populateBlockSelector();
@@ -1685,14 +1811,25 @@
       bindAction('btn-save-controls', () => toggleEditLayoutMode(false));
       bindAction('btn-reset-controls', () => resetControlPositions());
 
-      bindAction('btn-full-map', () => {
-        document.getElementById('full-map-title').innerText = `${currentMaze.name} (${currentMaze.sizeLabel})`;
-        document.getElementById('modal-full-map').classList.remove('hidden');
-        renderFullMazeMap();
-      });
+      bindAction('btn-full-map', () => openFullMapModal());
 
       bindAction('btn-close-full-map', () => {
         document.getElementById('modal-full-map').classList.add('hidden');
+      });
+
+      bindAction('btn-zoom-in-map', () => {
+        mapZoomScale = Math.min(3.5, mapZoomScale + 0.3);
+        renderFullMazeMap();
+      });
+
+      bindAction('btn-zoom-out-map', () => {
+        mapZoomScale = Math.max(0.6, mapZoomScale - 0.3);
+        renderFullMazeMap();
+      });
+
+      bindAction('btn-reset-zoom-map', () => {
+        mapZoomScale = 1.0;
+        renderFullMazeMap();
       });
 
       bindAction('btn-close-pre-race', () => {
@@ -1729,8 +1866,9 @@
       
       bindAction('victory-btn-next', () => {
         const nextLevelNum = currentMaze.levelNum + 1;
-        if (nextLevelNum <= TOTAL_LEVELS) {
-          const nextCfg = getMazeConfig(nextLevelNum);
+        const totalLevels = getTotalLevelsForMode(activeGameMode);
+        if (nextLevelNum <= totalLevels) {
+          const nextCfg = getMazeConfig(nextLevelNum, activeGameMode);
           document.getElementById('modal-victory').classList.add('hidden');
           openPreRaceModal(nextCfg);
         } else {
@@ -1748,6 +1886,22 @@
         selectedBlockStart = parseInt(e.target.value, 10);
         renderLevelSelector();
       };
+    }
+
+    function setMenuGameMode(mode) {
+      activeGameMode = mode;
+      const isDark = mode === 'dark';
+      
+      const btnStd = document.getElementById('menu-tab-standard');
+      const btnDark = document.getElementById('menu-tab-dark');
+
+      btnStd.className = !isDark ? "w-1/2 py-2 rounded-lg text-xs font-bold transition bg-blue-600 text-white shadow" : "w-1/2 py-2 rounded-lg text-xs font-bold transition text-slate-400 hover:text-white";
+      btnDark.className = isDark ? "w-1/2 py-2 rounded-lg text-xs font-bold transition bg-indigo-600 text-white shadow" : "w-1/2 py-2 rounded-lg text-xs font-bold transition text-slate-400 hover:text-white";
+
+      document.getElementById('menu-play-btn-label').innerText = isDark ? "Night Drive Campaign (1-1,010)" : "Standard Campaign (1-10,100)";
+      
+      selectedTierKey = 't1';
+      selectedBlockStart = 1;
     }
 
     function selectSteerOption(mode) {
@@ -1791,7 +1945,13 @@
 
     function renderTierTabs() {
       const container = document.getElementById('tier-tabs');
-      container.innerHTML = TIER_CATEGORIES.map(tier => `
+      const tiers = getTierCategoriesForMode(activeGameMode);
+
+      document.getElementById('level-modal-header').innerHTML = activeGameMode === 'dark' 
+        ? `<i class="fa-solid fa-moon text-indigo-400"></i> Night Drive Campaign (1 - 1,010)`
+        : `<i class="fa-solid fa-layer-group text-blue-400"></i> Standard Campaign (1 - 10,100)`;
+
+      container.innerHTML = tiers.map(tier => `
         <button class="px-3 py-2 rounded-xl text-xs font-bold whitespace-nowrap transition ${selectedTierKey === tier.key ? 'bg-blue-600 text-white shadow-md' : 'bg-slate-800 text-slate-400 hover:text-white'}" onclick="filterTier('${tier.key}')">
           ${tier.label}
         </button>
@@ -1800,7 +1960,8 @@
 
     window.filterTier = function(key) {
       selectedTierKey = key;
-      const tier = TIER_CATEGORIES.find(t => t.key === key);
+      const tiers = getTierCategoriesForMode(activeGameMode);
+      const tier = tiers.find(t => t.key === key);
       if (tier) {
         selectedBlockStart = tier.min;
       }
@@ -1810,12 +1971,14 @@
     };
 
     function populateBlockSelector() {
-      const tier = TIER_CATEGORIES.find(t => t.key === selectedTierKey) || TIER_CATEGORIES[0];
+      const tiers = getTierCategoriesForMode(activeGameMode);
+      const tier = tiers.find(t => t.key === selectedTierKey) || tiers[0];
       const select = document.getElementById('level-block-select');
       
+      const step = activeGameMode === 'dark' ? 10 : 100;
       let optionsHTML = '';
-      for (let start = tier.min; start <= tier.max; start += 100) {
-        const end = Math.min(tier.max, start + 99);
+      for (let start = tier.min; start <= tier.max; start += step) {
+        const end = Math.min(tier.max, start + step - 1);
         optionsHTML += `<option value="${start}" ${selectedBlockStart === start ? 'selected' : ''}>Levels ${start} - ${end}</option>`;
       }
       select.innerHTML = optionsHTML;
@@ -1825,16 +1988,18 @@
       const container = document.getElementById('levels-container');
       container.innerHTML = '';
 
-      const tier = TIER_CATEGORIES.find(t => t.key === selectedTierKey) || TIER_CATEGORIES[0];
+      const tiers = getTierCategoriesForMode(activeGameMode);
+      const tier = tiers.find(t => t.key === selectedTierKey) || tiers[0];
       if (selectedBlockStart < tier.min || selectedBlockStart > tier.max) {
         selectedBlockStart = tier.min;
       }
 
-      const blockEnd = Math.min(tier.max, selectedBlockStart + 99);
-      const maxUnlocked = getMaxUnlockedLevel();
+      const step = activeGameMode === 'dark' ? 10 : 100;
+      const blockEnd = Math.min(tier.max, selectedBlockStart + step - 1);
+      const maxUnlocked = getMaxUnlockedLevel(activeGameMode);
 
       for (let i = selectedBlockStart; i <= blockEnd; i++) {
-        const cfg = getMazeConfig(i);
+        const cfg = getMazeConfig(i, activeGameMode);
         const isUnlocked = cfg.levelNum <= maxUnlocked;
         const pb = localStorage.getItem(`tm_pb_${cfg.id}`);
         const card = document.createElement('div');
@@ -1864,16 +2029,18 @@
     function renderLeaderboardUI() {
       const input = document.getElementById('leaderboard-level-input');
       let lvlNum = parseInt(input.value, 10);
+      const totalLevels = getTotalLevelsForMode(activeGameMode);
+      
       if (isNaN(lvlNum) || lvlNum < 1) lvlNum = 1;
-      if (lvlNum > TOTAL_LEVELS) lvlNum = TOTAL_LEVELS;
+      if (lvlNum > totalLevels) lvlNum = totalLevels;
 
-      const cfg = getMazeConfig(lvlNum);
+      const cfg = getMazeConfig(lvlNum, activeGameMode);
       const list = document.getElementById('leaderboard-list');
 
       const records = JSON.parse(localStorage.getItem(`tm_lb_${cfg.id}`) || '[]');
 
       if (records.length === 0) {
-        list.innerHTML = `<div class="text-center text-slate-400 py-6 text-xs">No records logged for Level ${lvlNum} (${cfg.size}x${cfg.size}) yet. Drive and set the benchmark!</div>`;
+        list.innerHTML = `<div class="text-center text-slate-400 py-6 text-xs">No records logged for ${cfg.name} (${cfg.size}x${cfg.size}) yet. Drive and set the benchmark!</div>`;
         return;
       }
 
