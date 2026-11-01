@@ -155,7 +155,7 @@
   <!-- INITIAL LOADING SCREEN OVERLAY WITH NEW LOGO -->
   <div id="modal-loading-screen" class="fixed inset-0 z-[100] bg-slate-950 flex flex-col items-center justify-center p-6 space-y-6 transition-opacity duration-700">
     <div class="max-w-xs w-full text-center space-y-4">
-      <!-- NEW PROFESSIONAL RACING LOGO EMBLEM -->
+      <!-- RACING LOGO EMBLEM -->
       <div class="w-32 h-32 mx-auto rounded-3xl border-2 border-cyan-400/80 shadow-[0_0_35px_rgba(6,182,212,0.6)] bg-gradient-to-tr from-slate-950 via-blue-950 to-indigo-900 flex items-center justify-center relative overflow-hidden">
         <svg class="w-20 h-20 text-cyan-400 drop-shadow-[0_0_15px_rgba(56,189,248,0.9)]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
           <path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z"></path>
@@ -182,7 +182,7 @@
           <i class="fa-solid fa-lightbulb"></i> Pro Driver Tip
         </div>
         <p class="text-xs text-slate-300 leading-relaxed" id="loading-tip-text">
-          In Night Drive mode, stay alert within your tight 2-tile spotlight radius!
+          In Night Drive mode, rely on your headlights and rear brake lights to illuminate the maze ahead!
         </p>
       </div>
     </div>
@@ -867,7 +867,7 @@
       const loadingScreen = document.getElementById('modal-loading-screen');
       const progressBar = document.getElementById('loading-progress-bar');
       const tips = [
-        "In Night Drive mode, only a tight 2-tile radius around your car is lit up!",
+        "In Night Drive mode, rely on your front headlights and rear lights to illuminate the maze ahead!",
         "Click the top-right minimap anytime in standard mode to view the full map!",
         "Use the Dual Analog Joysticks for precise throttle and gradual steering control!",
         "Press Enter on your keyboard at the victory screen or pre-race tuning to jump right in!"
@@ -1466,22 +1466,7 @@
       const minRow = Math.max(0, Math.floor((car.y - halfH) / TILE_SIZE));
       const maxRow = Math.min(currentMaze.rows - 1, Math.ceil((car.y + halfH) / TILE_SIZE));
 
-      // CORNER ROUNDING HELPER ONLY FOR OUTER CORNERS TO KEEP WALLS SQUARE
-      function drawRoundedTile(x, y, size, grid, r, c, radius) {
-        const top = r > 0 && grid[r-1][c] === 1;
-        const bottom = r < grid.length - 1 && grid[r+1][c] === 1;
-        const left = c > 0 && grid[r][c-1] === 1;
-        const right = c < grid[0].length - 1 && grid[r][c+1] === 1;
-
-        ctx.beginPath();
-        ctx.moveTo(x + (!left && !top ? radius : 0), y + top ? 0 : y);
-        
-        // Construct standard tile path with rounded exterior corners
-        ctx.beginPath();
-        ctx.roundRect(x + 1, y + 1, size - 2, size - 2, 4);
-        ctx.fill();
-      }
-
+      // RENDER MAZE TILES (Standard or Base tiles)
       for (let r = minRow; r <= maxRow; r++) {
         for (let c = minCol; c <= maxCol; c++) {
           const x = c * TILE_SIZE;
@@ -1506,6 +1491,7 @@
         }
       }
 
+      // TRAIL PATH
       if (carTrailPath.length > 1) {
         ctx.strokeStyle = '#38bdf8';
         ctx.lineWidth = 6;
@@ -1519,6 +1505,7 @@
         ctx.stroke();
       }
 
+      // START & FINISH MARKERS
       const startX = currentMaze.start.x * TILE_SIZE;
       const startY = currentMaze.start.y * TILE_SIZE;
       ctx.fillStyle = 'rgba(16, 185, 129, 0.4)';
@@ -1539,44 +1526,43 @@
       ctx.lineWidth = 4;
       ctx.stroke();
 
-      // OPTIMIZED TIGHT SPOTLIGHT & DEEP PITCH BLACK SHADOW FOR DARK MODE
+      // DYNAMIC NIGHT DRIVE DIRECTIONAL LIGHT CONES AND MASKING
       if (activeGameMode === 'dark') {
-        const lightRadius = TILE_SIZE * 2.0; // Tightened to strict 2-tile radius
-        const outerDarkRadius = lightRadius * 1.6;
-
-        const darkGrad = ctx.createRadialGradient(
-          car.x, car.y, lightRadius * 0.2,
-          car.x, car.y, outerDarkRadius
-        );
-        darkGrad.addColorStop(0, 'rgba(5, 8, 15, 0.0)');     // Perfectly clear around car
-        darkGrad.addColorStop(0.4, 'rgba(5, 8, 15, 0.5)');   // Sharp falloff
-        darkGrad.addColorStop(1, 'rgba(2, 4, 8, 0.998)S');   // Extremely deep pitch-black darkness
-
-        ctx.fillStyle = 'rgba(2, 4, 8, 0.998)';
-        // Draw darkness over entire world viewport except gradient spotlight mask
         ctx.save();
-        ctx.globalCompositeOperation = 'source-over';
-        
-        // Draw surrounding dark box
-        ctx.fillStyle = 'rgba(2, 4, 8, 0.998)';
-        ctx.fillRect(car.x - halfW, car.y - halfH, halfW * 2, halfH * 2);
-
-        // Punch out light circle around car
-        ctx.globalCompositeOperation = 'destination-out';
-        const lightGradClear = ctx.createRadialGradient(car.x, car.y, 0, car.x, car.y, lightRadius);
-        lightGradClear.addColorStop(0, 'rgba(0,0,0,1)');
-        lightGradClear.addColorStop(0.7, 'rgba(0,0,0,0.9)');
-        lightGradClear.addColorStop(1, 'rgba(0,0,0,0)');
-        
-        ctx.fillStyle = lightGradClear;
+        // Mask out everything outside the directional light beams
+        ctx.globalCompositeOperation = 'destination-in';
+        ctx.fillStyle = 'rgba(0, 0, 0, 1)';
         ctx.beginPath();
-        ctx.arc(car.x, car.y, lightRadius, 0, Math.PI * 2);
+
+        // 1. Immediate ambient light around car footprint
+        ctx.arc(car.x, car.y, TILE_SIZE * 0.65, 0, Math.PI * 2);
+
+        // 2. Front Headlight Cone (Extends forward from car angle)
+        const frontLength = TILE_SIZE * 3.8;
+        const frontAngleSpan = 0.52; // Cone angle in radians
+        const frontStartAngle = car.angle - Math.PI / 2 - frontAngleSpan / 2;
+        const frontEndAngle = car.angle - Math.PI / 2 + frontAngleSpan / 2;
+
+        ctx.moveTo(car.x, car.y);
+        ctx.arc(car.x, car.y, frontLength, frontStartAngle, frontEndAngle);
+        ctx.lineTo(car.x, car.y);
+
+        // 3. Rear Taillight Cone (Extends backward from car angle)
+        const rearLength = TILE_SIZE * 1.5;
+        const rearAngleSpan = 0.65;
+        const rearStartAngle = car.angle + Math.PI / 2 - rearAngleSpan / 2;
+        const rearEndAngle = car.angle + Math.PI / 2 + rearAngleSpan / 2;
+
+        ctx.arc(car.x, car.y, rearLength, rearStartAngle, rearEndAngle);
+        ctx.lineTo(car.x, car.y);
+
         ctx.fill();
         ctx.restore();
       }
 
-      ctx.restore();
+      ctx.restore(); // Restore main world canvas transform
 
+      // RENDER CAR AT CENTER OF SCREEN
       ctx.save();
       ctx.translate(screenCenterX, screenCenterY);
 
@@ -1606,9 +1592,14 @@
       ctx.fillStyle = '#0f172a';
       ctx.fillRect(-car.width / 2 + 4, -car.height / 2 + 10, car.width - 8, 16);
 
+      // Headlights / Taillights glows on car body
       ctx.fillStyle = car.isColliding ? '#ef4444' : '#fef08a';
       ctx.fillRect(-car.width / 2 + 3, -car.height / 2 + 2, 6, 4);
       ctx.fillRect(car.width / 2 - 9, -car.height / 2 + 2, 6, 4);
+
+      ctx.fillStyle = '#f43f5e';
+      ctx.fillRect(-car.width / 2 + 3, car.height / 2 - 6, 6, 4);
+      ctx.fillRect(car.width / 2 - 9, car.height / 2 - 6, 6, 4);
 
       if (car.isColliding) {
         ctx.fillStyle = '#facc15';
@@ -1619,6 +1610,7 @@
 
       ctx.restore();
 
+      // RENDER MINIMAP (ONLY IN STANDARD MODE)
       if (gameActive && !isPaused && activeGameMode !== 'dark') {
         renderMiniMap();
       }
