@@ -181,7 +181,7 @@
           <i class="fa-solid fa-lightbulb"></i> Pro Driver Tip
         </div>
         <p class="text-xs text-slate-300 leading-relaxed" id="loading-tip-text">
-          In Night Drive mode, headlights and taillights illuminate only the road and are blocked by walls!
+          In Night Drive mode, stay alert within your tight 2-tile spotlight radius!
         </p>
       </div>
     </div>
@@ -866,7 +866,7 @@
       const loadingScreen = document.getElementById('modal-loading-screen');
       const progressBar = document.getElementById('loading-progress-bar');
       const tips = [
-        "In Night Drive mode, headlights and taillights illuminate only the road and are blocked by walls!",
+        "In Night Drive mode, stay alert within your tight 2-tile spotlight radius!",
         "Click the top-right minimap anytime in standard mode to view the full map!",
         "Use the Dual Analog Joysticks for precise throttle and gradual steering control!",
         "Press Enter on your keyboard at the victory screen or pre-race tuning to jump right in!"
@@ -1446,31 +1446,6 @@
       }
     }
 
-    // RAYCAST HELPER TO BLOCK LIGHT AT WALLS
-    function castLightRay(startX, startY, angle, maxDist) {
-      let rx = startX;
-      let ry = startY;
-      const step = 8; // step increment
-      let dist = 0;
-      
-      while (dist < maxDist) {
-        rx += Math.sin(angle) * step;
-        ry -= Math.cos(angle) * step;
-        dist += step;
-        
-        const col = Math.floor(rx / TILE_SIZE);
-        const row = Math.floor(ry / TILE_SIZE);
-        
-        if (row < 0 || row >= currentMaze.rows || col < 0 || col >= currentMaze.cols) {
-          break;
-        }
-        if (currentMaze.grid[row][col] === 1) {
-          break; // Hit wall! Stop ray here.
-        }
-      }
-      return { x: rx, y: ry };
-    }
-
     function renderWorld() {
       ctx.clearRect(0, 0, canvas.width, canvas.height);
 
@@ -1547,51 +1522,34 @@
       ctx.lineWidth = 4;
       ctx.stroke();
 
-      // NIGHT MODE: REALISTIC WALL-BLOCKED LIGHTING (HEADLIGHTS & TAILLIGHTS)
+      // NIGHT MODE: CLEAN 2-TILE CIRCULAR SPOTLIGHT
       if (activeGameMode === 'dark') {
+        const lightRadius = TILE_SIZE * 2.0; // Strict 2-tile radius
+
         ctx.save();
+        ctx.globalCompositeOperation = 'source-over';
+        
+        // Fill full dark background mask
         ctx.fillStyle = 'rgba(2, 4, 8, 0.995)';
-        ctx.fillRect(car.x - halfW * 2, car.y - halfH * 2, halfW * 4, halfH * 4);
+        ctx.fillRect(car.x - halfW, car.y - halfH, halfW * 2, halfH * 2);
 
+        // Punch out clear circular spotlight around car position
         ctx.globalCompositeOperation = 'destination-out';
-
-        // 1. Headlights Forward Cone (Blocked by walls)
-        const headlightMaxDist = TILE_SIZE * 3.5;
-        const startAngle = car.angle - Math.PI * 0.45;
-        const endAngle = car.angle + Math.PI * 0.45;
-        const rayCount = 30;
-
+        const lightGradClear = ctx.createRadialGradient(car.x, car.y, 0, car.x, car.y, lightRadius);
+        lightGradClear.addColorStop(0, 'rgba(0,0,0,1)');
+        lightGradClear.addColorStop(0.7, 'rgba(0,0,0,0.9)');
+        lightGradClear.addColorStop(1, 'rgba(0,0,0,0)');
+        
+        ctx.fillStyle = lightGradClear;
         ctx.beginPath();
-        ctx.moveTo(car.x, car.y);
-        for (let i = 0; i <= rayCount; i++) {
-          const a = startAngle + (i / rayCount) * (endAngle - startAngle);
-          const hit = castLightRay(car.x, car.y, a, headlightMaxDist);
-          ctx.lineTo(hit.x, hit.y);
-        }
-        ctx.closePath();
+        ctx.arc(car.x, car.y, lightRadius, 0, Math.PI * 2);
         ctx.fill();
-
-        // 2. Taillights Rear Cone (Shorter, softer glow)
-        const taillightMaxDist = TILE_SIZE * 1.8;
-        const rearStartAngle = car.angle + Math.PI - Math.PI * 0.35;
-        const rearEndAngle = car.angle + Math.PI + Math.PI * 0.35;
-
-        ctx.beginPath();
-        ctx.moveTo(car.x, car.y);
-        for (let i = 0; i <= 20; i++) {
-          const a = rearStartAngle + (i / 20) * (rearEndAngle - rearStartAngle);
-          const hit = castLightRay(car.x, car.y, a, taillightMaxDist);
-          ctx.lineTo(hit.x, hit.y);
-        }
-        ctx.closePath();
-        ctx.fill();
-
         ctx.restore();
       }
 
       ctx.restore();
 
-      // RENDER CAR SPRITE (Always fully visible)
+      // RENDER CAR SPRITE (Always centered and fully visible)
       ctx.save();
       ctx.translate(screenCenterX, screenCenterY);
 
