@@ -7,6 +7,9 @@
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <style>
+    /* ==========================================================================
+       1. GLOBAL RESET & BASE STYLES
+       ========================================================================== */
     * {
       user-select: none;
       -webkit-user-select: none;
@@ -31,7 +34,9 @@
       text-shadow: 0 0 10px rgba(59, 130, 246, 0.7);
     }
 
-    /* FLOATING & DRAGGABLE TOUCH CONTROLS OVERLAYS */
+    /* ==========================================================================
+       2. FLOATING & DRAGGABLE TOUCH CONTROLS OVERLAYS
+       ========================================================================== */
     .floating-control {
       position: absolute;
       z-index: 30;
@@ -44,7 +49,9 @@
       cursor: move;
     }
 
-    /* ANALOG JOYSTICK UI STYLING */
+    /* ==========================================================================
+       3. ANALOG JOYSTICK UI STYLING
+       ========================================================================== */
     .joystick-base {
       width: 120px;
       height: 120px;
@@ -73,7 +80,9 @@
       font-size: 18px;
     }
 
-    /* Touch Steering Wheel */
+    /* ==========================================================================
+       4. TOUCH STEERING WHEEL STYLING
+       ========================================================================== */
     #steering-wheel-container {
       width: 140px;
       height: 140px;
@@ -125,7 +134,9 @@
       filter: brightness(1.25);
     }
 
-    /* Custom Clean Scrollbars */
+    /* ==========================================================================
+       5. UTILITY SCROLLBARS & ACCENT COLORS
+       ========================================================================== */
     .custom-scroll::-webkit-scrollbar {
       width: 5px;
     }
@@ -152,15 +163,15 @@
 </head>
 <body class="bg-slate-950 text-white flex flex-col h-screen w-screen overflow-hidden">
 
-  <!-- INITIAL LOADING SCREEN OVERLAY -->
+  <!-- ==========================================================================
+     [UI OVERLAY] INITIAL LOADING SCREEN (Option 6 Logo Integrated)
+     ========================================================================== -->
   <div id="modal-loading-screen" class="fixed inset-0 z-[100] bg-slate-950 flex flex-col items-center justify-center p-6 space-y-6 transition-opacity duration-700">
     <div class="max-w-xs w-full text-center space-y-4">
       <div class="w-32 h-32 mx-auto rounded-3xl border-2 border-cyan-400/80 shadow-[0_0_35px_rgba(6,182,212,0.6)] bg-gradient-to-tr from-slate-950 via-blue-950 to-indigo-900 flex items-center justify-center relative overflow-hidden">
         <svg class="w-20 h-20 text-cyan-400 drop-shadow-[0_0_15px_rgba(56,189,248,0.9)]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-          <path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z"></path>
-          <line x1="4" y1="22" x2="4" y2="15"></line>
-          <circle cx="12" cy="12" r="3" fill="#38bdf8" fill-opacity="0.3"></circle>
-          <path d="M10 12l2-4 2 4"></path>
+          <path d="M3 3v18h18V3H3zm12 12l6 6m0-6l-6 6" class="animate-pulse"></path>
+          <path d="M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0z" fill="currentColor" fill-opacity="0.2"></path>
         </svg>
         <div class="absolute inset-0 bg-gradient-to-b from-cyan-500/10 to-transparent pointer-events-none"></div>
       </div>
@@ -187,14 +198,14 @@
     </div>
   </div>
 
-  <!-- COUNTDOWN OVERLAY -->
+  <!-- [UI OVERLAY] RACE START COUNTDOWN -->
   <div id="modal-countdown" class="fixed inset-0 z-[90] bg-slate-950/85 backdrop-blur-md hidden flex items-center justify-center">
     <div id="countdown-number" class="text-9xl font-black italic text-transparent bg-clip-text bg-gradient-to-r from-amber-400 via-orange-400 to-emerald-400 drop-shadow-[0_0_30px_rgba(245,158,11,0.6)] animate-pulse">
       3
     </div>
   </div>
 
-  <!-- TOP HUD HEADER -->
+  <!-- [UI OVERLAY] TOP GAME HUD HEADER -->
   <div id="game-hud" class="absolute top-0 left-0 right-0 z-40 flex justify-between items-center px-4 py-2 bg-slate-900/85 backdrop-blur-md border-b border-slate-800 pointer-events-auto">
     <div class="flex items-center space-x-3">
       <button id="btn-back-menu" class="bg-slate-800 hover:bg-slate-700 text-slate-200 px-3 py-1.5 rounded-lg border border-slate-700 flex items-center justify-center">
@@ -229,14 +240,16 @@
     </div>
   </div>
 
-  <!-- EDIT LAYOUT BANNER -->
+  <!-- [UI OVERLAY] EDIT CONTROL LAYOUT BANNER -->
   <div id="edit-layout-banner" class="absolute top-14 left-1/2 -translate-x-1/2 z-40 bg-amber-500 text-slate-950 font-bold text-xs px-4 py-1.5 rounded-full shadow-lg hidden flex items-center space-x-3 pointer-events-auto">
     <span>Drag control elements to customize position</span>
     <button id="btn-reset-controls" class="bg-slate-900 text-white px-2 py-0.5 rounded text-[10px] uppercase">Reset</button>
     <button id="btn-save-controls" class="bg-emerald-700 text-white px-2.5 py-0.5 rounded text-[10px] uppercase">Done</button>
   </div>
 
-  <!-- MAIN CANVAS AREA -->
+  <!-- ==========================================================================
+     [MAIN GAME CANVAS & DRAGGABLE CONTROLS]
+     ========================================================================== -->
   <div id="canvas-container" class="relative flex-1 w-full h-full overflow-hidden">
     <canvas id="gameCanvas" class="w-full h-full"></canvas>
 
@@ -257,7 +270,7 @@
       </div>
     </div>
 
-    <!-- CLASSIC CONTROLS -->
+    <!-- CLASSIC TOUCH WHEEL -->
     <div id="ctrl-wheel-wrapper" class="floating-control hidden" style="bottom: 16px; left: 24px;">
       <div id="steering-wheel-container">
         <div id="steering-wheel">
@@ -268,6 +281,7 @@
       </div>
     </div>
 
+    <!-- CLASSIC LEFT / RIGHT BUTTONS -->
     <div id="ctrl-buttons-wrapper" class="floating-control hidden flex space-x-3" style="bottom: 24px; left: 24px;">
       <button id="btn-steer-left" class="pedal w-16 h-16 bg-slate-900/90 border-2 border-blue-500 rounded-2xl flex items-center justify-center text-blue-400 text-2xl shadow-lg active:bg-blue-600 active:text-white">
         <i class="fa-solid fa-caret-left"></i>
@@ -277,6 +291,7 @@
       </button>
     </div>
 
+    <!-- BRAKE PEDAL -->
     <div id="ctrl-brake-wrapper" class="floating-control hidden flex flex-col items-center" style="bottom: 20px; right: 100px;">
       <span class="text-[9px] font-bold text-rose-400 uppercase tracking-widest mb-1">Brake</span>
       <button id="btn-pedal-brake" class="pedal w-14 h-24 bg-gradient-to-b from-rose-600 to-rose-800 border-2 border-rose-400 rounded-2xl flex items-center justify-center text-white text-xl shadow-lg active:bg-rose-500">
@@ -284,6 +299,7 @@
       </button>
     </div>
 
+    <!-- GAS PEDAL -->
     <div id="ctrl-gas-wrapper" class="floating-control hidden flex flex-col items-center" style="bottom: 20px; right: 24px;">
       <span class="text-[9px] font-bold text-emerald-400 uppercase tracking-widest mb-1">Gas</span>
       <button id="btn-pedal-gas" class="pedal w-14 h-28 bg-gradient-to-b from-emerald-500 to-emerald-700 border-2 border-emerald-300 rounded-2xl flex items-center justify-center text-white text-xl shadow-lg active:bg-emerald-400">
@@ -292,7 +308,11 @@
     </div>
   </div>
 
-  <!-- PAUSE MODAL OVERLAY -->
+  <!-- ==========================================================================
+     [MODALS & MENUS]
+     ========================================================================== -->
+
+  <!-- PAUSE MODAL -->
   <div id="modal-pause" class="fixed inset-0 z-50 bg-slate-950/85 backdrop-blur-md hidden flex items-center justify-center p-4">
     <div class="max-w-sm w-full bg-slate-900 border border-slate-700 rounded-2xl shadow-2xl p-6 text-center space-y-4">
       <div class="w-12 h-12 bg-amber-500/20 border-2 border-amber-400 rounded-full flex items-center justify-center mx-auto text-amber-400 text-xl">
@@ -551,8 +571,15 @@
     </div>
   </div>
 
-  <!-- GAME SCRIPT LOGIC -->
+  <!-- ==========================================================================
+     [JAVASCRIPT CORE LOGIC & ENGINE]
+     ========================================================================== -->
   <script>
+    /* --------------------------------------------------------------------------
+       SECTION 1: PROCEDURAL MAZE GENERATION (Deterministic LCG & DFS Algorithm)
+       -------------------------------------------------------------------------- */
+    
+    // Linear Congruential Generator for reproducible pseudo-random maze layouts per level seed
     function LCG(seed) {
       let s = seed;
       return function() {
@@ -561,6 +588,7 @@
       };
     }
 
+    // Generates complex, solvable mazes using Depth-First Search (DFS) backtracker
     function generateDFSComplexMaze(cols, rows, seed) {
       const rng = LCG(seed);
       const gridCols = cols % 2 === 0 ? cols + 1 : cols;
@@ -603,6 +631,7 @@
         }
       }
 
+      // Ensure clear starting and finishing zones
       grid[1][1] = 0; grid[1][2] = 0; grid[2][1] = 0;
       grid[gridRows - 2][gridCols - 2] = 0; 
       grid[gridRows - 2][gridCols - 3] = 0; 
@@ -617,8 +646,13 @@
       };
     }
 
+    /* --------------------------------------------------------------------------
+       SECTION 2: CAMPAIGN CONFIGURATION & LEVEL MANAGEMENT
+       -------------------------------------------------------------------------- */
+    
     let activeGameMode = 'standard';
 
+    // Determines grid dimension and seed configurations based on level index and mode
     function getMazeConfig(i, mode = activeGameMode) {
       const isDark = mode === 'dark';
       let size = 10;
@@ -699,20 +733,7 @@
     let selectedTierKey = 't1';
     let selectedBlockStart = 1;
 
-    const DEFAULT_CAR_STATS = {
-      maxSpeed: 8.0,
-      accel: 0.075,
-      friction: 0.992,
-      turnSpeed: 0.050
-    };
-
-    const STAT_CONFIGS = [
-      { key: 'maxSpeed', label: 'Max Speed', min: 4.0, max: 10.0, step: 0.1, dec: 1 },
-      { key: 'accel', label: 'Acceleration', min: 0.020, max: 0.120, step: 0.001, dec: 3 },
-      { key: 'friction', label: 'Friction / Grip', min: 0.950, max: 0.998, step: 0.001, dec: 3 },
-      { key: 'turnSpeed', label: 'Turn Speed', min: 0.020, max: 0.090, step: 0.001, dec: 3 }
-    ];
-
+    // Caching generated mazes for seamless level retries and navigation
     const generatedMazesCache = {};
 
     function getOrGenerateMaze(cfg) {
@@ -730,6 +751,7 @@
     let currentMaze = null;
     let pendingStartMazeConfig = null;
 
+    // Minimap rendering cache to optimize performance
     let minimapCacheCanvas = document.createElement('canvas');
     let minimapCacheCtx = minimapCacheCanvas.getContext('2d');
 
@@ -773,6 +795,24 @@
         localStorage.setItem(key, (completedLevelNum + 1).toString());
       }
     }
+
+    /* --------------------------------------------------------------------------
+       SECTION 3: CAR PHYSICS, TUNING & STATE MANAGEMENT
+       -------------------------------------------------------------------------- */
+    
+    const DEFAULT_CAR_STATS = {
+      maxSpeed: 8.0,
+      accel: 0.075,
+      friction: 0.992,
+      turnSpeed: 0.050
+    };
+
+    const STAT_CONFIGS = [
+      { key: 'maxSpeed', label: 'Max Speed', min: 4.0, max: 10.0, step: 0.1, dec: 1 },
+      { key: 'accel', label: 'Acceleration', min: 0.020, max: 0.120, step: 0.001, dec: 3 },
+      { key: 'friction', label: 'Friction / Grip', min: 0.950, max: 0.998, step: 0.001, dec: 3 },
+      { key: 'turnSpeed', label: 'Turn Speed', min: 0.020, max: 0.090, step: 0.001, dec: 3 }
+    ];
 
     let playerSettings = {
       steeringMode: localStorage.getItem('tm_steer_mode') || 'joysticks',
@@ -829,6 +869,10 @@
       steerRight: false
     };
 
+    /* --------------------------------------------------------------------------
+       SECTION 4: GAME ENGINE LOOP & RUNTIME STATE
+       -------------------------------------------------------------------------- */
+    
     let gameActive = false;
     let isPaused = false;
     let startTime = 0;
@@ -849,6 +893,7 @@
 
     const TILE_SIZE = 70;
 
+    // Initialization lifecycle on window load
     window.addEventListener('load', () => {
       resizeCanvas();
       window.addEventListener('resize', resizeCanvas);
@@ -894,6 +939,10 @@
       canvas.height = container.clientHeight;
     }
 
+    /* --------------------------------------------------------------------------
+       SECTION 5: TOUCH CONTROLS & LAYOUT CUSTOMIZER
+       -------------------------------------------------------------------------- */
+    
     function setupDraggableControlCustomizer() {
       const controls = document.querySelectorAll('.floating-control');
 
@@ -1144,6 +1193,7 @@
       window.addEventListener('mousemove', onWheelMove);
       window.addEventListener('mouseup', onWheelEnd);
 
+      // Keyboard Controls (Desktop Support)
       window.addEventListener('keydown', (e) => {
         if (e.key === 'Enter') {
           const victoryModal = document.getElementById('modal-victory');
@@ -1174,6 +1224,7 @@
         if (e.key === 'ArrowRight' || e.key === 'd' || e.key === 'D') inputs.steerRight = false;
       });
 
+      // Minimap interaction to trigger full map modal in standard mode
       canvas.addEventListener('click', (e) => {
         if (!gameActive || isPaused || isEditingControls || activeGameMode === 'dark') return;
         const rect = canvas.getBoundingClientRect();
@@ -1194,6 +1245,10 @@
       });
     }
 
+    /* --------------------------------------------------------------------------
+       SECTION 6: FULL MAP ZOOM & PAN INTERACTIONS
+       -------------------------------------------------------------------------- */
+    
     function setupFullMapInteractions() {
       let isDragging = false;
       let startX, startY;
@@ -1258,6 +1313,10 @@
       });
     }
 
+    /* --------------------------------------------------------------------------
+       SECTION 7: RACE LIFECYCLE (Countdown, Pause, Victory & Reset)
+       -------------------------------------------------------------------------- */
+    
     function openPreRaceModal(mazeConfig) {
       pendingStartMazeConfig = mazeConfig;
       renderTuningUI('pre-race-tuning-controls');
@@ -1344,6 +1403,10 @@
       }
     }
 
+    /* --------------------------------------------------------------------------
+       SECTION 8: PHYSICS UPDATE & COLLISION DETECTION
+       -------------------------------------------------------------------------- */
+    
     function gameLoop(timestamp) {
       if (!gameActive) return;
       if (isPaused) {
@@ -1373,6 +1436,7 @@
       let turnInput = 0;
       let forwardInput = 0;
 
+      // Handle input mapping based on selected control method
       if (playerSettings.steeringMode === 'joysticks') {
         forwardInput = inputs.throttleVal;
         turnInput = inputs.steerVal;
@@ -1417,6 +1481,7 @@
       const collisionRadius = 18;
       let collidedThisFrame = false;
 
+      // Axis-separated collision detection for smooth wall sliding
       if (!checkCollision(nextX + (vx > 0 ? collisionRadius : -collisionRadius), car.y)) {
         car.x = nextX;
       } else {
@@ -1433,12 +1498,14 @@
 
       car.isColliding = collidedThisFrame && Math.abs(forwardInput) > 0.1;
 
+      // Track trail recording
       const lastPoint = carTrailPath[carTrailPath.length - 1];
       const distFromLast = Math.hypot(car.x - lastPoint.x, car.y - lastPoint.y);
       if (distFromLast > 10) {
         carTrailPath.push({ x: car.x, y: car.y });
       }
 
+      // Check finish line cell arrival
       const currentCol = Math.floor(car.x / TILE_SIZE);
       const currentRow = Math.floor(car.y / TILE_SIZE);
       if (currentCol === currentMaze.finish.x && currentRow === currentMaze.finish.y) {
@@ -1446,6 +1513,10 @@
       }
     }
 
+    /* --------------------------------------------------------------------------
+       SECTION 9: CANVAS RENDERING (World, Lighting & Minimap)
+       -------------------------------------------------------------------------- */
+    
     function renderWorld() {
       ctx.clearRect(0, 0, canvas.width, canvas.height);
 
@@ -1465,6 +1536,7 @@
       const minRow = Math.max(0, Math.floor((car.y - halfH) / TILE_SIZE));
       const maxRow = Math.min(currentMaze.rows - 1, Math.ceil((car.y + halfH) / TILE_SIZE));
 
+      // Render visible maze grid tiles
       for (let r = minRow; r <= maxRow; r++) {
         for (let c = minCol; c <= maxCol; c++) {
           const x = c * TILE_SIZE;
@@ -1489,6 +1561,7 @@
         }
       }
 
+      // Render car path trail
       if (carTrailPath.length > 1) {
         ctx.strokeStyle = '#38bdf8';
         ctx.lineWidth = 6;
@@ -1502,6 +1575,7 @@
         ctx.stroke();
       }
 
+      // Render Start Zone
       const startX = currentMaze.start.x * TILE_SIZE;
       const startY = currentMaze.start.y * TILE_SIZE;
       ctx.fillStyle = 'rgba(16, 185, 129, 0.4)';
@@ -1512,6 +1586,7 @@
       ctx.lineWidth = 4;
       ctx.stroke();
 
+      // Render Finish Zone
       const finishX = currentMaze.finish.x * TILE_SIZE;
       const finishY = currentMaze.finish.y * TILE_SIZE;
       ctx.fillStyle = 'rgba(245, 158, 11, 0.4)';
@@ -1522,29 +1597,22 @@
       ctx.lineWidth = 4;
       ctx.stroke();
 
-      // NIGHT MODE: 2-TILE CIRCULAR SPOTLIGHT MASK
+      // NIGHT MODE: 2-TILE CIRCULAR SPOTLIGHT GRADIENT OVERLAY
       if (activeGameMode === 'dark') {
         const lightRadius = TILE_SIZE * 2.0;
 
         ctx.save();
         ctx.globalCompositeOperation = 'source-over';
         
-        // Fill darkness over world viewport
-        ctx.fillStyle = 'rgba(2, 4, 8, 0.995)';
-        ctx.fillRect(car.x - halfW, car.y - halfH, halfW * 2, halfH * 2);
+        const spotlightGrad = ctx.createRadialGradient(car.x, car.y, 0, car.x, car.y, lightRadius);
+        spotlightGrad.addColorStop(0, 'rgba(2, 4, 8, 0.0)');   // Transparent center revealing maze
+        spotlightGrad.addColorStop(0.65, 'rgba(2, 4, 8, 0.85)'); // Soft penumbra edge
+        spotlightGrad.addColorStop(1, 'rgba(2, 4, 8, 0.998)'); // Pitch black outside radius
 
-        // Punch out clear spotlight around car
-        ctx.globalCompositeOperation = 'destination-out';
-        const lightGradClear = ctx.createRadialGradient(car.x, car.y, 0, car.x, car.y, lightRadius);
-        lightGradClear.addColorStop(0, 'rgba(0,0,0,1)');
-        lightGradClear.addColorStop(0.7, 'rgba(0,0,0,0.9)');
-        lightGradClear.addColorStop(1, 'rgba(0,0,0,0)');
+        ctx.fillStyle = spotlightGrad;
+        ctx.fillRect(car.x - halfW, car.y - halfH, halfW * 2, halfH * 2);
         
-        ctx.fillStyle = lightGradClear;
-        ctx.beginPath();
-        ctx.arc(car.x, car.y, lightRadius, 0, Math.PI * 2);
-        ctx.fill();
-        ctx.restore(); // Restores globalCompositeOperation to 'source-over'
+        ctx.restore();
       }
 
       ctx.restore();
@@ -1765,6 +1833,10 @@
       document.getElementById('modal-victory').classList.remove('hidden');
     }
 
+    /* --------------------------------------------------------------------------
+       SECTION 10: UI RENDERING & EVENT LISTENERS
+       -------------------------------------------------------------------------- */
+    
     function renderTuningUI(targetContainerId) {
       const container = document.getElementById(targetContainerId);
       if (!container) return;
