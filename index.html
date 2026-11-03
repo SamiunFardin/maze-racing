@@ -191,10 +191,10 @@
 
       <div class="bg-slate-900/90 border border-slate-800 rounded-xl p-3 text-left space-y-1 shadow-lg">
         <div class="text-[10px] font-bold text-amber-400 uppercase flex items-center gap-1.5">
-          <i class="fa-solid fa-car"></i> Garage Tip
+          <i class="fa-solid fa-volume-high"></i> Audio & Version Check Ready
         </div>
         <p class="text-xs text-slate-300 leading-relaxed" id="loading-tip-text">
-          Visit the Garage to customize your car's model, paint, decals, and tuning stats!
+          Auto-refreshing cache system enabled. Starter car set to minimal stats!
         </p>
       </div>
     </div>
@@ -424,36 +424,28 @@
       </div>
 
       <div class="grid grid-cols-1 md:grid-cols-2 gap-4 flex-1 overflow-y-auto custom-scroll pr-1 min-h-0">
-        <!-- LEFT COLUMN: LIVE CAR PREVIEW & MODEL SELECTOR -->
         <div class="space-y-4 flex flex-col">
           <div class="bg-slate-950 border border-slate-800 rounded-2xl p-4 flex flex-col items-center justify-center relative overflow-hidden h-52 shrink-0 shadow-inner">
             <div class="absolute top-2 left-3 text-[10px] font-bold text-slate-400 uppercase tracking-widest">Live 2D Preview</div>
             <canvas id="garagePreviewCanvas" class="w-48 h-48 cursor-grab active:cursor-grabbing"></canvas>
-            <div id="garage-car-model-badge" class="absolute bottom-2 text-xs font-mono font-bold text-amber-400 bg-slate-900/90 px-3 py-1 rounded-full border border-slate-700">Coupe GT</div>
+            <div id="garage-car-model-badge" class="absolute bottom-2 text-xs font-mono font-bold text-amber-400 bg-slate-900/90 px-3 py-1 rounded-full border border-slate-700">Starter Buggy</div>
           </div>
 
           <div>
             <label class="block text-xs uppercase tracking-wider text-slate-400 font-bold mb-2">Select Car Model</label>
-            <div id="garage-model-grid" class="grid grid-cols-2 gap-2">
-              <!-- Rendered dynamically -->
-            </div>
+            <div id="garage-model-grid" class="grid grid-cols-2 gap-2"></div>
           </div>
         </div>
 
-        <!-- RIGHT COLUMN: PAINT, DECALS & TUNING STAT RANGES -->
         <div class="space-y-4 flex flex-col">
           <div>
             <label class="block text-xs uppercase tracking-wider text-slate-400 font-bold mb-1.5">Body Paint Color</label>
-            <div id="garage-color-palette" class="flex flex-wrap gap-2">
-              <!-- Rendered dynamically -->
-            </div>
+            <div id="garage-color-palette" class="flex flex-wrap gap-2"></div>
           </div>
 
           <div>
             <label class="block text-xs uppercase tracking-wider text-slate-400 font-bold mb-1.5">Decal / Livery Design</label>
-            <div id="garage-decal-options" class="grid grid-cols-2 gap-2">
-              <!-- Rendered dynamically -->
-            </div>
+            <div id="garage-decal-options" class="grid grid-cols-2 gap-2"></div>
           </div>
 
           <div class="border-t border-slate-800 pt-3">
@@ -461,9 +453,7 @@
               <label class="block text-xs uppercase tracking-wider text-amber-400 font-bold">Model Tuning (Stat Ranges)</label>
               <button id="btn-reset-garage-tuning" class="text-[10px] text-slate-400 hover:text-white underline">Reset Default</button>
             </div>
-            <div id="garage-tuning-controls" class="space-y-3">
-              <!-- Rendered dynamically -->
-            </div>
+            <div id="garage-tuning-controls" class="space-y-3"></div>
           </div>
         </div>
       </div>
@@ -488,17 +478,14 @@
         </button>
       </div>
 
-      <div class="flex gap-2 overflow-x-auto pb-2 border-b border-slate-800 shrink-0 custom-scroll" id="tier-tabs" style="touch-action: pan-x !important;">
-      </div>
+      <div class="flex gap-2 overflow-x-auto pb-2 border-b border-slate-800 shrink-0 custom-scroll" id="tier-tabs" style="touch-action: pan-x !important;"></div>
 
       <div class="flex items-center justify-between bg-slate-950/80 px-3 py-2 rounded-xl border border-slate-800 shrink-0">
         <span class="text-xs text-slate-400 font-bold" id="block-range-label">Select Range:</span>
-        <select id="level-block-select" class="bg-slate-800 border border-slate-700 rounded-lg px-2 py-1 text-white text-xs font-bold focus:outline-none focus:border-blue-500">
-        </select>
+        <select id="level-block-select" class="bg-slate-800 border border-slate-700 rounded-lg px-2 py-1 text-white text-xs font-bold focus:outline-none focus:border-blue-500"></select>
       </div>
 
-      <div id="levels-container" class="space-y-2.5 overflow-y-auto custom-scroll pr-1 flex-1 min-h-0" style="touch-action: pan-y !important;">
-      </div>
+      <div id="levels-container" class="space-y-2.5 overflow-y-auto custom-scroll pr-1 flex-1 min-h-0" style="touch-action: pan-y !important;"></div>
     </div>
   </div>
 
@@ -516,8 +503,7 @@
 
       <p class="text-xs text-slate-400">Fine-tune your performance within your car model's spec range before launching! (Press Enter to Start)</p>
 
-      <div id="pre-race-tuning-controls" class="space-y-3.5">
-      </div>
+      <div id="pre-race-tuning-controls" class="space-y-3.5"></div>
 
       <div class="pt-2 flex gap-2">
         <button id="btn-reset-tuning-pr" class="w-1/3 py-3 bg-slate-800 hover:bg-slate-700 text-slate-300 font-bold rounded-xl border border-slate-700 text-xs">
@@ -530,12 +516,12 @@
     </div>
   </div>
 
-  <!-- CONTROL SETTINGS & SIZE SCALING MODAL -->
+  <!-- CONTROL SETTINGS & AUDIO PREFERENCES MODAL -->
   <div id="modal-settings" class="fixed inset-0 z-50 bg-slate-950/90 backdrop-blur-lg hidden flex items-center justify-center p-4">
     <div class="max-w-md w-full bg-slate-900 border border-slate-700 rounded-2xl shadow-2xl p-5 space-y-4 max-h-[90vh] overflow-y-auto custom-scroll min-h-0">
       <div class="flex justify-between items-center border-b border-slate-800 pb-3">
         <h2 class="text-lg font-bold text-white flex items-center gap-2">
-          <i class="fa-solid fa-sliders text-blue-400"></i> Preferences & Tuning
+          <i class="fa-solid fa-sliders text-blue-400"></i> Preferences & Audio
         </h2>
         <button class="btn-close-modal text-slate-400 hover:text-white p-1">
           <i class="fa-solid fa-xmark text-lg"></i>
@@ -543,6 +529,37 @@
       </div>
 
       <div class="space-y-4">
+        <!-- AUDIO VOLUME CONTROLS -->
+        <div class="bg-slate-800/80 p-3 rounded-xl border border-slate-700 space-y-3">
+          <div class="text-xs uppercase tracking-wider text-amber-400 font-bold flex items-center gap-1.5">
+            <i class="fa-solid fa-volume-high"></i> Sound & Music Volume
+          </div>
+
+          <div>
+            <div class="flex justify-between items-center text-xs mb-1">
+              <span class="text-slate-300 font-medium">Master Volume</span>
+              <span class="font-mono text-cyan-400 font-bold" id="vol-master-val">100%</span>
+            </div>
+            <input type="range" id="vol-master-range" min="0" max="1" step="0.05" value="1.0" class="w-full h-2 bg-slate-900 rounded-lg appearance-none cursor-pointer">
+          </div>
+
+          <div>
+            <div class="flex justify-between items-center text-xs mb-1">
+              <span class="text-slate-300 font-medium">Sound Effects (SFX)</span>
+              <span class="font-mono text-cyan-400 font-bold" id="vol-sfx-val">100%</span>
+            </div>
+            <input type="range" id="vol-sfx-range" min="0" max="1" step="0.05" value="1.0" class="w-full h-2 bg-slate-900 rounded-lg appearance-none cursor-pointer">
+          </div>
+
+          <div>
+            <div class="flex justify-between items-center text-xs mb-1">
+              <span class="text-slate-300 font-medium">Background Music (BGM)</span>
+              <span class="font-mono text-cyan-400 font-bold" id="vol-bgm-val">70%</span>
+            </div>
+            <input type="range" id="vol-bgm-range" min="0" max="1" step="0.05" value="0.7" class="w-full h-2 bg-slate-900 rounded-lg appearance-none cursor-pointer">
+          </div>
+        </div>
+
         <div>
           <label class="block text-xs uppercase tracking-wider text-slate-400 font-bold mb-2">Steering Interface</label>
           <div class="grid grid-cols-3 gap-2">
@@ -561,7 +578,6 @@
           </div>
         </div>
 
-        <!-- CONTROL SIZE SCALING SLIDER -->
         <div class="bg-slate-800/80 p-3 rounded-xl border border-slate-700">
           <div class="flex justify-between items-center text-xs mb-1.5">
             <span class="font-bold text-slate-300">Control Size Scale</span>
@@ -580,15 +596,6 @@
         <div>
           <label class="block text-xs uppercase tracking-wider text-slate-400 font-bold mb-1">Driver Name</label>
           <input type="text" id="input-player-name" maxlength="14" placeholder="SpeedRacer" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-4 py-2 text-white text-sm focus:outline-none focus:border-blue-500">
-        </div>
-
-        <div class="border-t border-slate-800 pt-3">
-          <div class="flex justify-between items-center mb-2">
-            <label class="block text-xs uppercase tracking-wider text-amber-400 font-bold">Car Tuning (Model Range)</label>
-            <button id="btn-reset-tuning-settings" class="text-[10px] text-slate-400 hover:text-white underline">Reset Default</button>
-          </div>
-          <div id="settings-tuning-controls" class="space-y-3.5">
-          </div>
         </div>
       </div>
 
@@ -647,17 +654,238 @@
         <input type="number" id="leaderboard-level-input" min="1" max="10100" value="1" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-white text-xs font-bold focus:outline-none focus:border-blue-500">
       </div>
 
-      <div id="leaderboard-list" class="space-y-2 overflow-y-auto custom-scroll flex-1 pr-1 min-h-0" style="touch-action: pan-y !important;">
-      </div>
+      <div id="leaderboard-list" class="space-y-2 overflow-y-auto custom-scroll flex-1 pr-1 min-h-0" style="touch-action: pan-y !important;"></div>
     </div>
   </div>
 
   <!-- ==========================================================================
-     [JAVASCRIPT CORE LOGIC & ENGINE]
+     [JAVASCRIPT CORE LOGIC & WEB AUDIO ENGINE]
      ========================================================================== -->
   <script>
     /* --------------------------------------------------------------------------
-       SECTION 1: PROCEDURAL MAZE GENERATION
+       SECTION 0: VERSION CHECK & AUTO-REFRESH CACHE-BUSTING
+       -------------------------------------------------------------------------- */
+    const CURRENT_GAME_VERSION = '1.2.0';
+    function checkGameVersion() {
+      const savedVersion = localStorage.getItem('tm_game_version');
+      if (savedVersion !== CURRENT_GAME_VERSION) {
+        localStorage.setItem('tm_game_version', CURRENT_GAME_VERSION);
+        window.location.reload(true);
+      }
+    }
+    checkGameVersion();
+
+    /* --------------------------------------------------------------------------
+       SECTION 1: WEB AUDIO API SYNTH ENGINE (SFX & Procedural BGM)
+       -------------------------------------------------------------------------- */
+    
+    const AudioEngine = {
+      ctx: null,
+      masterGain: null,
+      sfxGain: null,
+      bgmGain: null,
+      engineOsc: null,
+      engineGain: null,
+      bgmIntervalId: null,
+      isInitialized: false,
+
+      settings: {
+        master: parseFloat(localStorage.getItem('tm_vol_master') || '1.0'),
+        sfx: parseFloat(localStorage.getItem('tm_vol_sfx') || '1.0'),
+        bgm: parseFloat(localStorage.getItem('tm_vol_bgm') || '0.7')
+      },
+
+      init() {
+        if (this.isInitialized) return;
+        const AudioCtx = window.AudioContext || window.webkitAudioContext;
+        if (!AudioCtx) return;
+
+        this.ctx = new AudioCtx();
+        this.masterGain = this.ctx.createGain();
+        this.sfxGain = this.ctx.createGain();
+        this.bgmGain = this.ctx.createGain();
+
+        this.sfxGain.connect(this.masterGain);
+        this.bgmGain.connect(this.masterGain);
+        this.masterGain.connect(this.ctx.destination);
+
+        this.updateVolumes();
+
+        try {
+          this.engineOsc = this.ctx.createOscillator();
+          this.engineOsc.type = 'sawtooth';
+          this.engineOsc.frequency.setValueAtTime(50, this.ctx.currentTime);
+
+          const filter = this.ctx.createBiquadFilter();
+          filter.type = 'lowpass';
+          filter.frequency.setValueAtTime(300, this.ctx.currentTime);
+
+          this.engineGain = this.ctx.createGain();
+          this.engineGain.gain.setValueAtTime(0, this.ctx.currentTime);
+
+          this.engineOsc.connect(filter);
+          filter.connect(this.engineGain);
+          this.engineGain.connect(this.sfxGain);
+          this.engineOsc.start();
+        } catch (e) {
+          console.error("Engine audio init error", e);
+        }
+
+        this.isInitialized = true;
+      },
+
+      unlock() {
+        if (!this.isInitialized) this.init();
+        if (this.ctx && this.ctx.state === 'suspended') {
+          this.ctx.resume();
+        }
+      },
+
+      updateVolumes() {
+        if (!this.masterGain) return;
+        this.masterGain.gain.setValueAtTime(this.settings.master, this.ctx.currentTime);
+        this.sfxGain.gain.setValueAtTime(this.settings.sfx, this.ctx.currentTime);
+        this.bgmGain.gain.setValueAtTime(this.settings.bgm, this.ctx.currentTime);
+
+        localStorage.setItem('tm_vol_master', this.settings.master.toString());
+        localStorage.setItem('tm_vol_sfx', this.settings.sfx.toString());
+        localStorage.setItem('tm_vol_bgm', this.settings.bgm.toString());
+      },
+
+      updateEngineSound(speed, maxSpeed, isAccelerating) {
+        if (!this.engineOsc || !this.engineGain || !this.ctx) return;
+        const speedRatio = Math.min(1.0, Math.abs(speed) / maxSpeed);
+        const targetFreq = 45 + speedRatio * 150 + (isAccelerating ? 35 : 0);
+        this.engineOsc.frequency.setTargetAtTime(targetFreq, this.ctx.currentTime, 0.05);
+        
+        const targetGain = isAccelerating || Math.abs(speed) > 0.5 ? 0.10 + speedRatio * 0.12 : 0.015;
+        this.engineGain.gain.setTargetAtTime(targetGain, this.ctx.currentTime, 0.05);
+      },
+
+      stopEngineSound() {
+        if (this.engineGain && this.ctx) {
+          this.engineGain.gain.setTargetAtTime(0, this.ctx.currentTime, 0.05);
+        }
+      },
+
+      playCrash() {
+        this.unlock();
+        if (!this.ctx) return;
+        try {
+          const bufferSize = this.ctx.sampleRate * 0.15;
+          const buffer = this.ctx.createBuffer(1, bufferSize, this.ctx.sampleRate);
+          const data = buffer.getChannelData(0);
+          for (let i = 0; i < bufferSize; i++) {
+            data[i] = (Math.random() * 2 - 1) * Math.exp(-i / (bufferSize * 0.3));
+          }
+
+          const noise = this.ctx.createBufferSource();
+          noise.buffer = buffer;
+
+          const filter = this.ctx.createBiquadFilter();
+          filter.type = 'lowpass';
+          filter.frequency.setValueAtTime(300, this.ctx.currentTime);
+
+          const gain = this.ctx.createGain();
+          gain.gain.setValueAtTime(0.4, this.ctx.currentTime);
+          gain.gain.exponentialRampToValueAtTime(0.01, this.ctx.currentTime + 0.15);
+
+          noise.connect(filter);
+          filter.connect(gain);
+          gain.connect(this.sfxGain);
+          noise.start();
+        } catch (e) {}
+      },
+
+      playBeep(isGo = false) {
+        this.unlock();
+        if (!this.ctx) return;
+        try {
+          const osc = this.ctx.createOscillator();
+          const gain = this.ctx.createGain();
+          osc.type = isGo ? 'triangle' : 'sine';
+          osc.frequency.setValueAtTime(isGo ? 880 : 440, this.ctx.currentTime);
+
+          gain.gain.setValueAtTime(0.25, this.ctx.currentTime);
+          gain.gain.exponentialRampToValueAtTime(0.01, this.ctx.currentTime + (isGo ? 0.4 : 0.15));
+
+          osc.connect(gain);
+          gain.connect(this.sfxGain);
+          osc.start();
+          osc.stop(this.ctx.currentTime + (isGo ? 0.4 : 0.15));
+        } catch (e) {}
+      },
+
+      playVictoryFanfare() {
+        this.unlock();
+        if (!this.ctx) return;
+        const notes = [523.25, 659.25, 783.99, 1046.50];
+        notes.forEach((freq, idx) => {
+          setTimeout(() => {
+            try {
+              const osc = this.ctx.createOscillator();
+              const gain = this.ctx.createGain();
+              osc.type = 'triangle';
+              osc.frequency.setValueAtTime(freq, this.ctx.currentTime);
+
+              gain.gain.setValueAtTime(0.3, this.ctx.currentTime);
+              gain.gain.exponentialRampToValueAtTime(0.01, this.ctx.currentTime + 0.35);
+
+              osc.connect(gain);
+              gain.connect(this.sfxGain);
+              osc.start();
+              osc.stop(this.ctx.currentTime + 0.35);
+            } catch (e) {}
+          }, idx * 120);
+        });
+      },
+
+      startBGM(isDark = false) {
+        this.stopBGM();
+        this.unlock();
+        if (!this.ctx) return;
+
+        const bassNotes = isDark ? [110, 98, 82, 92] : [130.81, 146.83, 164.81, 196.00];
+        let step = 0;
+
+        this.bgmIntervalId = setInterval(() => {
+          if (!this.ctx || this.ctx.state !== 'running') return;
+          try {
+            const osc = this.ctx.createOscillator();
+            const gain = this.ctx.createGain();
+            osc.type = isDark ? 'sine' : 'sawtooth';
+            
+            const freq = bassNotes[step % bassNotes.length];
+            osc.frequency.setValueAtTime(freq, this.ctx.currentTime);
+
+            const filter = this.ctx.createBiquadFilter();
+            filter.type = 'lowpass';
+            filter.frequency.setValueAtTime(isDark ? 300 : 600, this.ctx.currentTime);
+
+            gain.gain.setValueAtTime(0.08, this.ctx.currentTime);
+            gain.gain.exponentialRampToValueAtTime(0.001, this.ctx.currentTime + 0.35);
+
+            osc.connect(filter);
+            filter.connect(gain);
+            gain.connect(this.bgmGain);
+            osc.start();
+            osc.stop(this.ctx.currentTime + 0.35);
+
+            step++;
+          } catch (e) {}
+        }, 400);
+      },
+
+      stopBGM() {
+        if (this.bgmIntervalId) {
+          clearInterval(this.bgmIntervalId);
+          this.bgmIntervalId = null;
+        }
+      }
+    };
+
+    /* --------------------------------------------------------------------------
+       SECTION 2: PROCEDURAL MAZE GENERATION
        -------------------------------------------------------------------------- */
     
     function LCG(seed) {
@@ -725,7 +953,7 @@
     }
 
     /* --------------------------------------------------------------------------
-       SECTION 2: CAMPAIGN CONFIGURATION & LEVEL MANAGEMENT
+       SECTION 3: CAMPAIGN CONFIGURATION & LEVEL MANAGEMENT
        -------------------------------------------------------------------------- */
     
     let activeGameMode = 'standard';
@@ -871,60 +1099,60 @@
     }
 
     /* --------------------------------------------------------------------------
-       SECTION 3: GARAGE, CAR MODELS, STAT RANGES & CUSTOMIZATION
+       SECTION 4: GARAGE, CAR MODELS (Least Stat Car as Default) & WIDER STAT RANGES
        -------------------------------------------------------------------------- */
     
     const CAR_MODELS = {
+      buggy: {
+        id: 'buggy',
+        name: 'Starter Buggy',
+        desc: 'Lightweight starter vehicle with lower stats for easy maneuvering.',
+        width: 24, height: 42,
+        stats: { maxSpeed: 5.2, accel: 0.040, friction: 0.985, turnSpeed: 0.035 },
+        ranges: {
+          maxSpeed: { min: 4.0, max: 7.0, step: 0.1, dec: 1 },
+          accel: { min: 0.025, max: 0.070, step: 0.001, dec: 3 },
+          friction: { min: 0.950, max: 0.992, step: 0.001, dec: 3 },
+          turnSpeed: { min: 0.025, max: 0.055, step: 0.001, dec: 3 }
+        }
+      },
       coupe: {
         id: 'coupe',
         name: 'Coupe GT',
-        desc: 'Well-rounded balanced street racer with reliable agility.',
+        desc: 'Balanced street racer with moderate speed and handling.',
         width: 28, height: 48,
-        stats: { maxSpeed: 8.0, accel: 0.075, friction: 0.992, turnSpeed: 0.050 },
+        stats: { maxSpeed: 6.8, accel: 0.060, friction: 0.988, turnSpeed: 0.045 },
         ranges: {
-          maxSpeed: { min: 6.0, max: 9.5, step: 0.1, dec: 1 },
-          accel: { min: 0.040, max: 0.100, step: 0.001, dec: 3 },
-          friction: { min: 0.970, max: 0.998, step: 0.001, dec: 3 },
-          turnSpeed: { min: 0.035, max: 0.075, step: 0.001, dec: 3 }
+          maxSpeed: { min: 5.5, max: 8.8, step: 0.1, dec: 1 },
+          accel: { min: 0.040, max: 0.095, step: 0.001, dec: 3 },
+          friction: { min: 0.965, max: 0.995, step: 0.001, dec: 3 },
+          turnSpeed: { min: 0.035, max: 0.070, step: 0.001, dec: 3 }
         }
       },
       supercar: {
         id: 'supercar',
         name: 'Apex Supercar',
-        desc: 'Extreme top speed and cornering speed for pro drivers.',
+        desc: 'Extreme top speed and cornering performance for pro drivers.',
         width: 30, height: 50,
-        stats: { maxSpeed: 9.5, accel: 0.095, friction: 0.995, turnSpeed: 0.065 },
+        stats: { maxSpeed: 9.2, accel: 0.095, friction: 0.995, turnSpeed: 0.075 },
         ranges: {
-          maxSpeed: { min: 7.5, max: 11.0, step: 0.1, dec: 1 },
-          accel: { min: 0.060, max: 0.130, step: 0.001, dec: 3 },
+          maxSpeed: { min: 7.5, max: 12.0, step: 0.1, dec: 1 },
+          accel: { min: 0.065, max: 0.140, step: 0.001, dec: 3 },
           friction: { min: 0.980, max: 0.999, step: 0.001, dec: 3 },
-          turnSpeed: { min: 0.045, max: 0.090, step: 0.001, dec: 3 }
+          turnSpeed: { min: 0.050, max: 0.100, step: 0.001, dec: 3 }
         }
       },
       muscle: {
         id: 'muscle',
         name: 'Viper Muscle',
-        desc: 'Raw horsepower and acceleration with heavy sliding grip.',
+        desc: 'Massive raw acceleration and top speed with heavy drift handling.',
         width: 32, height: 52,
-        stats: { maxSpeed: 9.0, accel: 0.110, friction: 0.982, turnSpeed: 0.042 },
+        stats: { maxSpeed: 9.8, accel: 0.120, friction: 0.970, turnSpeed: 0.038 },
         ranges: {
-          maxSpeed: { min: 7.0, max: 10.5, step: 0.1, dec: 1 },
-          accel: { min: 0.080, max: 0.140, step: 0.001, dec: 3 },
-          friction: { min: 0.950, max: 0.990, step: 0.001, dec: 3 },
-          turnSpeed: { min: 0.030, max: 0.065, step: 0.001, dec: 3 }
-        }
-      },
-      hatchback: {
-        id: 'hatchback',
-        name: 'Nano Hatch',
-        desc: 'Compact agile maze runner with razor-sharp turns.',
-        width: 24, height: 42,
-        stats: { maxSpeed: 7.2, accel: 0.085, friction: 0.994, turnSpeed: 0.075 },
-        ranges: {
-          maxSpeed: { min: 5.5, max: 8.5, step: 0.1, dec: 1 },
-          accel: { min: 0.050, max: 0.110, step: 0.001, dec: 3 },
-          friction: { min: 0.980, max: 0.999, step: 0.001, dec: 3 },
-          turnSpeed: { min: 0.055, max: 0.095, step: 0.001, dec: 3 }
+          maxSpeed: { min: 8.0, max: 13.0, step: 0.1, dec: 1 },
+          accel: { min: 0.090, max: 0.160, step: 0.001, dec: 3 },
+          friction: { min: 0.930, max: 0.985, step: 0.001, dec: 3 },
+          turnSpeed: { min: 0.025, max: 0.060, step: 0.001, dec: 3 }
         }
       }
     };
@@ -958,15 +1186,15 @@
     function loadGarageConfig() {
       const saved = localStorage.getItem('tm_garage_config');
       const defaultCfg = {
-        modelId: 'coupe',
+        modelId: 'buggy', // Default is now the least stat car
         color: '#0284c7',
         decal: 'stripes',
-        stats: { ...CAR_MODELS.coupe.stats }
+        stats: { ...CAR_MODELS.buggy.stats }
       };
       if (!saved) return defaultCfg;
       try {
         const parsed = JSON.parse(saved);
-        const model = CAR_MODELS[parsed.modelId] ? parsed.modelId : 'coupe';
+        const model = CAR_MODELS[parsed.modelId] ? parsed.modelId : 'buggy';
         const modelSpec = CAR_MODELS[model];
         return {
           modelId: model,
@@ -1003,17 +1231,17 @@
       y: 0,
       angle: 0,
       speed: 0,
-      width: 28,
-      height: 48,
-      maxSpeed: 8.0,
-      accel: 0.075,
-      friction: 0.992,
-      turnSpeed: 0.050,
+      width: 24,
+      height: 42,
+      maxSpeed: 5.2,
+      accel: 0.040,
+      friction: 0.985,
+      turnSpeed: 0.035,
       isColliding: false
     };
 
     function applyCarModelStats() {
-      const spec = CAR_MODELS[garageConfig.modelId] || CAR_MODELS.coupe;
+      const spec = CAR_MODELS[garageConfig.modelId] || CAR_MODELS.buggy;
       car.width = spec.width;
       car.height = spec.height;
       car.maxSpeed = garageConfig.stats.maxSpeed;
@@ -1035,7 +1263,7 @@
     };
 
     /* --------------------------------------------------------------------------
-       SECTION 4: GAME ENGINE LOOP & RUNTIME STATE
+       SECTION 5: GAME ENGINE LOOP & RUNTIME STATE
        -------------------------------------------------------------------------- */
     
     let gameActive = false;
@@ -1077,9 +1305,9 @@
       const loadingScreen = document.getElementById('modal-loading-screen');
       const progressBar = document.getElementById('loading-progress-bar');
       const tips = [
-        "Visit the Garage to customize your car's model, paint, decals, and tuning stats!",
+        "Auto-refreshing cache system enabled. Starter buggy set to minimal stats!",
+        "Visit the Garage to upgrade your car's model, paint, decals, and stats!",
         "In Night Drive mode, stay alert within your expanded 2.5-tile spotlight radius!",
-        "Different car models have unique collision widths and custom tuning ranges!",
         "Press Enter on your keyboard at the victory screen or pre-race tuning to jump right in!"
       ];
       
@@ -1106,7 +1334,7 @@
     }
 
     /* --------------------------------------------------------------------------
-       SECTION 5: TOUCH CONTROLS, SCALING & LAYOUT CUSTOMIZER
+       SECTION 6: TOUCH CONTROLS, SCALING & LAYOUT CUSTOMIZER
        -------------------------------------------------------------------------- */
     
     function applyControlScale(scale) {
@@ -1234,6 +1462,7 @@
         const onStart = (e) => {
           if (isEditingControls || isPaused) return;
           e.preventDefault();
+          AudioEngine.unlock();
           active = true;
           const rect = base.getBoundingClientRect();
           center = { x: rect.left + rect.width / 2, y: rect.top + rect.height / 2 };
@@ -1286,7 +1515,7 @@
       const bindPedal = (elem, key) => {
         const start = (e) => { 
           if (isEditingControls || isPaused) return;
-          e.preventDefault(); inputs[key] = true; elem.classList.add('active'); 
+          e.preventDefault(); AudioEngine.unlock(); inputs[key] = true; elem.classList.add('active'); 
         };
         const end = (e) => { 
           if (isEditingControls) return;
@@ -1307,7 +1536,7 @@
       const bindSteerBtn = (elem, dir) => {
         const start = (e) => { 
           if (isEditingControls || isPaused) return;
-          e.preventDefault(); 
+          e.preventDefault(); AudioEngine.unlock();
           if(dir==='left') inputs.steerLeft = true; else inputs.steerRight = true; 
         };
         const end = (e) => { 
@@ -1340,6 +1569,7 @@
       const onWheelStart = (e) => {
         if (isEditingControls || isPaused) return;
         e.preventDefault();
+        AudioEngine.unlock();
         isDraggingWheel = true;
         const rect = wheelContainer.getBoundingClientRect();
         wheelCenter = { x: rect.left + rect.width / 2, y: rect.top + rect.height / 2 };
@@ -1377,6 +1607,7 @@
       window.addEventListener('mouseup', onWheelEnd);
 
       window.addEventListener('keydown', (e) => {
+        AudioEngine.unlock();
         if (e.key === 'Enter') {
           const victoryModal = document.getElementById('modal-victory');
           if (!victoryModal.classList.contains('hidden')) {
@@ -1427,7 +1658,7 @@
     }
 
     /* --------------------------------------------------------------------------
-       SECTION 6: FULL MAP ZOOM & PAN INTERACTIONS
+       SECTION 7: FULL MAP ZOOM & PAN INTERACTIONS
        -------------------------------------------------------------------------- */
     
     function setupFullMapInteractions() {
@@ -1495,7 +1726,7 @@
     }
 
     /* --------------------------------------------------------------------------
-       SECTION 7: RACE LIFECYCLE
+       SECTION 8: RACE LIFECYCLE & AUDIO TRIGGERS
        -------------------------------------------------------------------------- */
     
     function openPreRaceModal(mazeConfig) {
@@ -1510,6 +1741,7 @@
       activeGameMode = currentMaze.mode || 'standard';
 
       applyCarModelStats();
+      AudioEngine.stopBGM();
 
       document.getElementById('btn-full-map').classList.toggle('hidden', activeGameMode === 'dark');
 
@@ -1544,13 +1776,16 @@
 
       let count = 3;
       countdownNum.innerText = count;
+      AudioEngine.playBeep(false);
 
       const countInterval = setInterval(() => {
         count--;
         if (count > 0) {
           countdownNum.innerText = count;
+          AudioEngine.playBeep(false);
         } else if (count === 0) {
           countdownNum.innerText = "GO!";
+          AudioEngine.playBeep(true);
         } else {
           clearInterval(countInterval);
           countdownModal.classList.add('hidden');
@@ -1566,6 +1801,8 @@
       pausedTimeTotal = 0;
       lastFrameTime = performance.now();
 
+      AudioEngine.startBGM(activeGameMode === 'dark');
+
       if (animFrameId) cancelAnimationFrame(animFrameId);
       animFrameId = requestAnimationFrame(gameLoop);
     }
@@ -1577,10 +1814,13 @@
       
       if (isPaused) {
         pauseStartedAt = performance.now();
+        AudioEngine.stopBGM();
+        AudioEngine.stopEngineSound();
         pauseModal.classList.remove('hidden');
       } else {
         pausedTimeTotal += (performance.now() - pauseStartedAt);
         lastFrameTime = performance.now();
+        AudioEngine.startBGM(activeGameMode === 'dark');
         pauseModal.classList.add('hidden');
         if (animFrameId) cancelAnimationFrame(animFrameId);
         animFrameId = requestAnimationFrame(gameLoop);
@@ -1588,7 +1828,7 @@
     }
 
     /* --------------------------------------------------------------------------
-       SECTION 8: PHYSICS, PARTICLES & COLLISION DETECTION
+       SECTION 9: PHYSICS, PARTICLES & AUDIO INTEGRATION
        -------------------------------------------------------------------------- */
     
     function gameLoop(timestamp) {
@@ -1634,14 +1874,16 @@
         if (inputs.brake) forwardInput = -0.5;
       }
 
+      const isAccelerating = Math.abs(forwardInput) > 0.05;
+      AudioEngine.updateEngineSound(car.speed, car.maxSpeed, isAccelerating);
+
       if (Math.abs(car.speed) > 0.1) {
         car.angle += turnInput * car.turnSpeed * timeScale * (car.speed > 0 ? 1 : -1);
       }
 
-      if (Math.abs(forwardInput) > 0.05) {
+      if (isAccelerating) {
         if (forwardInput > 0) {
           car.speed = Math.min(car.speed + (car.accel * forwardInput * timeScale), car.maxSpeed * forwardInput);
-          // Spawn exhaust particles when accelerating
           if (Math.random() < 0.6) {
             const backOffsetX = car.x - Math.sin(car.angle) * (car.height / 2);
             const backOffsetY = car.y + Math.cos(car.angle) * (car.height / 2);
@@ -1684,23 +1926,29 @@
       };
 
       const collisionRadius = car.width * 0.55;
-      let collidedThisFrame = false;
+      let collidedThisFactor = false;
 
       if (!checkCollision(nextX + (vx > 0 ? collisionRadius : -collisionRadius), car.y)) {
         car.x = nextX;
       } else {
+        if (Math.abs(car.speed) > 2.0 && !car.isColliding) {
+          AudioEngine.playCrash();
+        }
         car.speed = Math.abs(car.speed) > 0.5 ? -car.speed * 0.15 : 0;
-        collidedThisFrame = true;
+        collidedThisFactor = true;
       }
 
       if (!checkCollision(car.x, nextY + (vy > 0 ? collisionRadius : -collisionRadius))) {
         car.y = nextY;
       } else {
+        if (Math.abs(car.speed) > 2.0 && !car.isColliding) {
+          AudioEngine.playCrash();
+        }
         car.speed = Math.abs(car.speed) > 0.5 ? -car.speed * 0.15 : 0;
-        collidedThisFrame = true;
+        collidedThisFactor = true;
       }
 
-      car.isColliding = collidedThisFrame && Math.abs(forwardInput) > 0.1;
+      car.isColliding = collidedThisFactor && isAccelerating;
 
       const lastPoint = carTrailPath[carTrailPath.length - 1];
       const distFromLast = Math.hypot(car.x - lastPoint.x, car.y - lastPoint.y);
@@ -1716,7 +1964,7 @@
     }
 
     /* --------------------------------------------------------------------------
-       SECTION 9: CANVAS RENDERING (Procedural Car Models, Decals & Lighting)
+       SECTION 10: CANVAS RENDERING
        -------------------------------------------------------------------------- */
     
     function renderWorld() {
@@ -1775,7 +2023,6 @@
         ctx.stroke();
       }
 
-      // Render Exhaust Particles
       for (const p of exhaustParticles) {
         ctx.fillStyle = `rgba(148, 163, 184, ${p.life * 0.7})`;
         ctx.beginPath();
@@ -1803,7 +2050,6 @@
       ctx.lineWidth = 4;
       ctx.stroke();
 
-      // NIGHT MODE: EXPANDED 2.5-TILE SPOTLIGHT
       if (activeGameMode === 'dark') {
         const lightRadius = TILE_SIZE * 2.5;
 
@@ -1838,7 +2084,6 @@
         ctx.restore();
       }
 
-      // Draw Detailed Car Model & Customizations
       drawCustomCar(ctx, 0, 0, car.width, car.height, garageConfig.modelId, garageConfig.color, garageConfig.decal, car.isColliding);
 
       ctx.restore();
@@ -1852,21 +2097,19 @@
       targetCtx.save();
       targetCtx.translate(cx, cy);
 
-      // Drop shadow
       targetCtx.fillStyle = 'rgba(0,0,0,0.5)';
       targetCtx.beginPath();
       targetCtx.roundRect(-w / 2 + 3, -h / 2 + 3, w, h, modelId === 'supercar' ? 12 : 8);
       targetCtx.fill();
 
-      // Main Body
       targetCtx.fillStyle = isColliding ? '#dc2626' : colorHex;
       targetCtx.beginPath();
       if (modelId === 'supercar') {
         targetCtx.roundRect(-w / 2, -h / 2, w, h, [14, 14, 8, 8]);
       } else if (modelId === 'muscle') {
         targetCtx.roundRect(-w / 2, -h / 2, w, h, 6);
-      } else if (modelId === 'hatchback') {
-        targetCtx.roundRect(-w / 2, -h / 2, w, h, 10);
+      } else if (modelId === 'buggy') {
+        targetCtx.roundRect(-w / 2, -h / 2, w, h, 12);
       } else {
         targetCtx.roundRect(-w / 2, -h / 2, w, h, 8);
       }
@@ -1876,7 +2119,6 @@
       targetCtx.lineWidth = 2.5;
       targetCtx.stroke();
 
-      // Decals / Liveries
       if (decalStyle === 'stripes') {
         targetCtx.fillStyle = 'rgba(255, 255, 255, 0.85)';
         targetCtx.fillRect(-w * 0.2, -h / 2 + 2, 4, h - 4);
@@ -1895,7 +2137,6 @@
         targetCtx.fill();
       }
 
-      // Windshield & Roof Cabin
       targetCtx.fillStyle = '#0f172a';
       targetCtx.beginPath();
       if (modelId === 'supercar') {
@@ -1907,7 +2148,6 @@
       }
       targetCtx.fill();
 
-      // Headlights
       targetCtx.fillStyle = isColliding ? '#ef4444' : '#fef08a';
       targetCtx.fillRect(-w / 2 + 2, -h / 2 + 1, 5, 4);
       targetCtx.fillRect(w / 2 - 7, -h / 2 + 1, 5, 4);
@@ -2060,6 +2300,10 @@
     function triggerVictory() {
       gameActive = false;
       isPaused = false;
+      AudioEngine.stopBGM();
+      AudioEngine.stopEngineSound();
+      AudioEngine.playVictoryFanfare();
+
       const timeMs = elapsedTime;
 
       document.getElementById('victory-level-name').innerText = `${currentMaze.name} (${currentMaze.sizeLabel})`;
@@ -2091,14 +2335,13 @@
     }
 
     /* --------------------------------------------------------------------------
-       SECTION 10: GARAGE UI & TUNING LOGIC
+       SECTION 11: GARAGE & AUDIO SETTINGS UI LOGIC
        -------------------------------------------------------------------------- */
     
     function renderGarageUI() {
       const modelSpec = CAR_MODELS[garageConfig.modelId];
       document.getElementById('garage-car-model-badge').innerText = modelSpec.name;
 
-      // Render Model Cards
       const modelContainer = document.getElementById('garage-model-grid');
       modelContainer.innerHTML = Object.values(CAR_MODELS).map(m => `
         <button class="p-3 rounded-xl border text-left transition ${garageConfig.modelId === m.id ? 'bg-amber-600/20 border-amber-500 shadow-md' : 'bg-slate-800/80 border-slate-700 hover:bg-slate-700'}" onclick="selectGarageModel('${m.id}')">
@@ -2107,13 +2350,11 @@
         </button>
       `).join('');
 
-      // Render Color Palette
       const colorContainer = document.getElementById('garage-color-palette');
       colorContainer.innerHTML = PAINT_COLORS.map(c => `
         <button class="w-8 h-8 rounded-full border-2 transition ${garageConfig.color === c.hex ? 'border-white scale-110 shadow-lg' : 'border-transparent opacity-80 hover:opacity-100'}" style="background-color: ${c.hex};" title="${c.name}" onclick="selectGarageColor('${c.hex}')"></button>
       `).join('');
 
-      // Render Decals
       const decalContainer = document.getElementById('garage-decal-options');
       decalContainer.innerHTML = DECAL_STYLES.map(d => `
         <button class="p-2.5 rounded-xl border text-xs font-bold transition ${garageConfig.decal === d.id ? 'bg-amber-600/20 border-amber-500 text-white' : 'bg-slate-800 border-slate-700 text-slate-400 hover:text-white'}" onclick="selectGarageDecal('${d.id}')">
@@ -2128,7 +2369,6 @@
     window.selectGarageModel = function(modelId) {
       garageConfig.modelId = modelId;
       const spec = CAR_MODELS[modelId];
-      // Reset stats to new model's defaults
       garageConfig.stats = { ...spec.stats };
       saveGarageConfig();
       renderGarageUI();
@@ -2160,7 +2400,6 @@
       const drawPreview = () => {
         pCtx.clearRect(0, 0, pCanvas.width, pCanvas.height);
         
-        // Grid background
         pCtx.fillStyle = '#090d16';
         pCtx.fillRect(0, 0, pCanvas.width, pCanvas.height);
 
@@ -2246,15 +2485,6 @@
       window.onGarageStatRangeChange(key, newVal.toString(), containerId);
     };
 
-    function resetGarageStatsToDefault() {
-      const modelSpec = CAR_MODELS[garageConfig.modelId];
-      garageConfig.stats = { ...modelSpec.stats };
-      saveGarageConfig();
-      renderGarageUI();
-      renderTuningUI('pre-race-tuning-controls');
-      renderTuningUI('settings-tuning-controls');
-    }
-
     function setupUIEventListeners() {
       const bindAction = (id, handler) => {
         const el = document.getElementById(id);
@@ -2279,6 +2509,7 @@
 
       bindAction('menu-btn-settings', () => {
         renderTuningUI('settings-tuning-controls');
+        initAudioSettingsUI();
         document.getElementById('modal-settings').classList.remove('hidden');
       });
 
@@ -2290,6 +2521,8 @@
       bindAction('btn-back-menu', () => {
         gameActive = false;
         isPaused = false;
+        AudioEngine.stopBGM();
+        AudioEngine.stopEngineSound();
         document.getElementById('modal-menu').classList.remove('hidden');
       });
 
@@ -2303,11 +2536,14 @@
         document.getElementById('modal-pause').classList.add('hidden');
         gameActive = false;
         isPaused = false;
+        AudioEngine.stopBGM();
+        AudioEngine.stopEngineSound();
         document.getElementById('modal-menu').classList.remove('hidden');
       });
 
       bindAction('btn-open-settings', () => {
         renderTuningUI('settings-tuning-controls');
+        initAudioSettingsUI();
         document.getElementById('modal-settings').classList.remove('hidden');
       });
 
@@ -2326,6 +2562,27 @@
           applyControlScale(parseFloat(e.target.value));
         };
       }
+
+      const bindVolumeRange = (rangeId, valId, settingKey) => {
+        const range = document.getElementById(rangeId);
+        const valSpan = document.getElementById(valId);
+        if (!range) return;
+        range.value = AudioEngine.settings[settingKey];
+        if (valSpan) valSpan.innerText = `${Math.round(AudioEngine.settings[settingKey] * 100)}%`;
+
+        range.oninput = (e) => {
+          const v = parseFloat(e.target.value);
+          AudioEngine.settings[settingKey] = v;
+          if (valSpan) valSpan.innerText = `${Math.round(v * 100)}%`;
+          AudioEngine.updateVolumes();
+        };
+      };
+
+      const initAudioSettingsUI = () => {
+        bindVolumeRange('vol-master-range', 'vol-master-val', 'master');
+        bindVolumeRange('vol-sfx-range', 'vol-sfx-val', 'sfx');
+        bindVolumeRange('vol-bgm-range', 'vol-bgm-val', 'bgm');
+      };
 
       bindAction('btn-full-map', () => openFullMapModal());
 
@@ -2379,6 +2636,8 @@
         document.getElementById('modal-victory').classList.add('hidden');
         gameActive = false;
         isPaused = false;
+        AudioEngine.stopBGM();
+        AudioEngine.stopEngineSound();
         document.getElementById('modal-menu').classList.remove('hidden');
       });
 
@@ -2406,6 +2665,15 @@
         selectedBlockStart = parseInt(e.target.value, 10);
         renderLevelSelector();
       };
+    }
+
+    function resetGarageStatsToDefault() {
+      const modelSpec = CAR_MODELS[garageConfig.modelId];
+      garageConfig.stats = { ...modelSpec.stats };
+      saveGarageConfig();
+      renderGarageUI();
+      renderTuningUI('pre-race-tuning-controls');
+      renderTuningUI('settings-tuning-controls');
     }
 
     function setMenuGameMode(mode) {
