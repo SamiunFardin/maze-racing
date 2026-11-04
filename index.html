@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>Turbo Maze Racer - Garage Edition</title>
+  <title>Turbo Maze Racer - Garage & Sound Fixed Edition</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <style>
@@ -182,7 +182,7 @@
         <h1 class="text-3xl font-black italic tracking-wider text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 via-blue-400 to-emerald-400 neon-text">
           TURBO MAZE
         </h1>
-        <p class="text-xs text-slate-400 mt-1 uppercase tracking-widest font-bold">Garage & Campaign Edition</p>
+        <p class="text-xs text-slate-400 mt-1 uppercase tracking-widest font-bold">Sound & Controls Fully Fixed</p>
       </div>
 
       <div class="w-full bg-slate-900 border border-slate-800 rounded-full h-2.5 overflow-hidden p-0.5">
@@ -191,10 +191,10 @@
 
       <div class="bg-slate-900/90 border border-slate-800 rounded-xl p-3 text-left space-y-1 shadow-lg">
         <div class="text-[10px] font-bold text-amber-400 uppercase flex items-center gap-1.5">
-          <i class="fa-solid fa-volume-high"></i> Audio & Version Check Ready
+          <i class="fa-solid fa-volume-high"></i> Tap Anywhere to Activate Sound
         </div>
         <p class="text-xs text-slate-300 leading-relaxed" id="loading-tip-text">
-          Auto-refreshing cache system enabled. Starter car set to minimal stats!
+          Audio context auto-resumes instantly on touch or click!
         </p>
       </div>
     </div>
@@ -374,7 +374,7 @@
         <h1 class="text-4xl font-black italic tracking-wider text-transparent bg-clip-text bg-gradient-to-r from-blue-400 via-indigo-300 to-emerald-400 neon-text">
           TURBO MAZE
         </h1>
-        <p class="text-slate-400 text-xs mt-1">Garage & Campaign Edition</p>
+        <p class="text-slate-400 text-xs mt-1">Sound & Multi-Touch Fully Fixed Edition</p>
       </div>
 
       <!-- MODE SELECTION SWITCH -->
@@ -659,13 +659,13 @@
   </div>
 
   <!-- ==========================================================================
-     [JAVASCRIPT CORE LOGIC & WEB AUDIO ENGINE]
+     [JAVASCRIPT CORE LOGIC & ROBUST WEB AUDIO ENGINE]
      ========================================================================== -->
   <script>
     /* --------------------------------------------------------------------------
        SECTION 0: VERSION CHECK & AUTO-REFRESH CACHE-BUSTING
        -------------------------------------------------------------------------- */
-    const CURRENT_GAME_VERSION = '1.2.0';
+    const CURRENT_GAME_VERSION = '1.2.3';
     function checkGameVersion() {
       const savedVersion = localStorage.getItem('tm_game_version');
       if (savedVersion !== CURRENT_GAME_VERSION) {
@@ -676,7 +676,7 @@
     checkGameVersion();
 
     /* --------------------------------------------------------------------------
-       SECTION 1: WEB AUDIO API SYNTH ENGINE (SFX & Procedural BGM)
+       SECTION 1: BULLETPROOF WEB AUDIO API SYNTH ENGINE (SFX & Procedural BGM)
        -------------------------------------------------------------------------- */
     
     const AudioEngine = {
@@ -696,22 +696,22 @@
       },
 
       init() {
-        if (this.isInitialized) return;
+        if (this.isInitialized && this.ctx) return;
         const AudioCtx = window.AudioContext || window.webkitAudioContext;
         if (!AudioCtx) return;
 
-        this.ctx = new AudioCtx();
-        this.masterGain = this.ctx.createGain();
-        this.sfxGain = this.ctx.createGain();
-        this.bgmGain = this.ctx.createGain();
-
-        this.sfxGain.connect(this.masterGain);
-        this.bgmGain.connect(this.masterGain);
-        this.masterGain.connect(this.ctx.destination);
-
-        this.updateVolumes();
-
         try {
+          this.ctx = new AudioCtx();
+          this.masterGain = this.ctx.createGain();
+          this.sfxGain = this.ctx.createGain();
+          this.bgmGain = this.ctx.createGain();
+
+          this.sfxGain.connect(this.masterGain);
+          this.bgmGain.connect(this.masterGain);
+          this.masterGain.connect(this.ctx.destination);
+
+          this.updateVolumes();
+
           this.engineOsc = this.ctx.createOscillator();
           this.engineOsc.type = 'sawtooth';
           this.engineOsc.frequency.setValueAtTime(50, this.ctx.currentTime);
@@ -727,25 +727,31 @@
           filter.connect(this.engineGain);
           this.engineGain.connect(this.sfxGain);
           this.engineOsc.start();
-        } catch (e) {
-          console.error("Engine audio init error", e);
-        }
 
-        this.isInitialized = true;
+          this.isInitialized = true;
+        } catch (e) {
+          console.error("Audio Engine init failed", e);
+        }
       },
 
       unlock() {
-        if (!this.isInitialized) this.init();
+        if (!this.isInitialized || !this.ctx) {
+          this.init();
+        }
         if (this.ctx && this.ctx.state === 'suspended') {
-          this.ctx.resume();
+          this.ctx.resume().then(() => {
+            console.log("AudioContext resumed successfully.");
+          }).catch(err => console.error("Audio resume failed", err));
         }
       },
 
       updateVolumes() {
-        if (!this.masterGain) return;
-        this.masterGain.gain.setValueAtTime(this.settings.master, this.ctx.currentTime);
-        this.sfxGain.gain.setValueAtTime(this.settings.sfx, this.ctx.currentTime);
-        this.bgmGain.gain.setValueAtTime(this.settings.bgm, this.ctx.currentTime);
+        if (!this.masterGain || !this.ctx) return;
+        try {
+          this.masterGain.gain.setValueAtTime(this.settings.master, this.ctx.currentTime);
+          this.sfxGain.gain.setValueAtTime(this.settings.sfx, this.ctx.currentTime);
+          this.bgmGain.gain.setValueAtTime(this.settings.bgm, this.ctx.currentTime);
+        } catch (e) {}
 
         localStorage.setItem('tm_vol_master', this.settings.master.toString());
         localStorage.setItem('tm_vol_sfx', this.settings.sfx.toString());
@@ -753,24 +759,28 @@
       },
 
       updateEngineSound(speed, maxSpeed, isAccelerating) {
-        if (!this.engineOsc || !this.engineGain || !this.ctx) return;
-        const speedRatio = Math.min(1.0, Math.abs(speed) / maxSpeed);
-        const targetFreq = 45 + speedRatio * 150 + (isAccelerating ? 35 : 0);
-        this.engineOsc.frequency.setTargetAtTime(targetFreq, this.ctx.currentTime, 0.05);
-        
-        const targetGain = isAccelerating || Math.abs(speed) > 0.5 ? 0.10 + speedRatio * 0.12 : 0.015;
-        this.engineGain.gain.setTargetAtTime(targetGain, this.ctx.currentTime, 0.05);
+        if (!this.engineOsc || !this.engineGain || !this.ctx || this.ctx.state !== 'running') return;
+        try {
+          const speedRatio = Math.min(1.0, Math.abs(speed) / maxSpeed);
+          const targetFreq = 45 + speedRatio * 150 + (isAccelerating ? 35 : 0);
+          this.engineOsc.frequency.setTargetAtTime(targetFreq, this.ctx.currentTime, 0.05);
+          
+          const targetGain = isAccelerating || Math.abs(speed) > 0.5 ? 0.10 + speedRatio * 0.12 : 0.015;
+          this.engineGain.gain.setTargetAtTime(targetGain, this.ctx.currentTime, 0.05);
+        } catch (e) {}
       },
 
       stopEngineSound() {
-        if (this.engineGain && this.ctx) {
-          this.engineGain.gain.setTargetAtTime(0, this.ctx.currentTime, 0.05);
+        if (this.engineGain && this.ctx && this.ctx.state === 'running') {
+          try {
+            this.engineGain.gain.setTargetAtTime(0, this.ctx.currentTime, 0.05);
+          } catch (e) {}
         }
       },
 
       playCrash() {
         this.unlock();
-        if (!this.ctx) return;
+        if (!this.ctx || this.ctx.state !== 'running') return;
         try {
           const bufferSize = this.ctx.sampleRate * 0.15;
           const buffer = this.ctx.createBuffer(1, bufferSize, this.ctx.sampleRate);
@@ -799,7 +809,7 @@
 
       playBeep(isGo = false) {
         this.unlock();
-        if (!this.ctx) return;
+        if (!this.ctx || this.ctx.state !== 'running') return;
         try {
           const osc = this.ctx.createOscillator();
           const gain = this.ctx.createGain();
@@ -818,10 +828,11 @@
 
       playVictoryFanfare() {
         this.unlock();
-        if (!this.ctx) return;
+        if (!this.ctx || this.ctx.state !== 'running') return;
         const notes = [523.25, 659.25, 783.99, 1046.50];
         notes.forEach((freq, idx) => {
           setTimeout(() => {
+            if (!this.ctx || this.ctx.state !== 'running') return;
             try {
               const osc = this.ctx.createOscillator();
               const gain = this.ctx.createGain();
@@ -843,7 +854,7 @@
       startBGM(isDark = false) {
         this.stopBGM();
         this.unlock();
-        if (!this.ctx) return;
+        if (!this.ctx || this.ctx.state !== 'running') return;
 
         const bassNotes = isDark ? [110, 98, 82, 92] : [130.81, 146.83, 164.81, 196.00];
         let step = 0;
@@ -883,6 +894,13 @@
         }
       }
     };
+
+    // Global listeners to instantly unlock and resume audio on any user gesture
+    ['click', 'touchstart', 'mousedown', 'keydown'].forEach(evt => {
+      window.addEventListener(evt, () => {
+        AudioEngine.unlock();
+      }, { passive: true });
+    });
 
     /* --------------------------------------------------------------------------
        SECTION 2: PROCEDURAL MAZE GENERATION
@@ -1099,7 +1117,7 @@
     }
 
     /* --------------------------------------------------------------------------
-       SECTION 4: GARAGE, CAR MODELS (Least Stat Car as Default) & WIDER STAT RANGES
+       SECTION 4: GARAGE, CAR MODELS & STAT RANGES
        -------------------------------------------------------------------------- */
     
     const CAR_MODELS = {
@@ -1186,7 +1204,7 @@
     function loadGarageConfig() {
       const saved = localStorage.getItem('tm_garage_config');
       const defaultCfg = {
-        modelId: 'buggy', // Default is now the least stat car
+        modelId: 'buggy',
         color: '#0284c7',
         decal: 'stripes',
         stats: { ...CAR_MODELS.buggy.stats }
@@ -1305,7 +1323,7 @@
       const loadingScreen = document.getElementById('modal-loading-screen');
       const progressBar = document.getElementById('loading-progress-bar');
       const tips = [
-        "Auto-refreshing cache system enabled. Starter buggy set to minimal stats!",
+        "Sound system active! Audio unlocks instantly upon your first touch.",
         "Visit the Garage to upgrade your car's model, paint, decals, and stats!",
         "In Night Drive mode, stay alert within your expanded 2.5-tile spotlight radius!",
         "Press Enter on your keyboard at the victory screen or pre-race tuning to jump right in!"
@@ -1334,7 +1352,7 @@
     }
 
     /* --------------------------------------------------------------------------
-       SECTION 6: TOUCH CONTROLS, SCALING & LAYOUT CUSTOMIZER
+       SECTION 6: ISOLATED MULTI-TOUCH CONTROLS & LAYOUT CUSTOMIZER
        -------------------------------------------------------------------------- */
     
     function applyControlScale(scale) {
@@ -1455,23 +1473,26 @@
       const bindAnalogStick = (baseId, thumbId, axisKey) => {
         const base = document.getElementById(baseId);
         const thumb = document.getElementById(thumbId);
-        let active = false;
+        let activeTouchId = null;
         let center = { x: 0, y: 0 };
         const maxDist = 42;
 
         const onStart = (e) => {
-          if (isEditingControls || isPaused) return;
+          if (isEditingControls || isPaused || activeTouchId !== null) return;
           e.preventDefault();
           AudioEngine.unlock();
-          active = true;
+          const touch = e.changedTouches[0];
+          activeTouchId = touch.identifier;
           const rect = base.getBoundingClientRect();
           center = { x: rect.left + rect.width / 2, y: rect.top + rect.height / 2 };
         };
 
         const onMove = (e) => {
-          if (!active || isEditingControls || isPaused) return;
+          if (activeTouchId === null || isEditingControls || isPaused) return;
           e.preventDefault();
-          const touch = e.touches ? e.touches[0] : e;
+          const touch = Array.from(e.touches).find(t => t.identifier === activeTouchId);
+          if (!touch) return;
+
           let dx = touch.clientX - center.x;
           let dy = touch.clientY - center.y;
 
@@ -1489,19 +1510,52 @@
         };
 
         const onEnd = (e) => {
-          if (!active) return;
-          active = false;
+          if (activeTouchId === null) return;
+          const touch = Array.from(e.changedTouches).find(t => t.identifier === activeTouchId);
+          if (!touch) return;
+          activeTouchId = null;
           thumb.style.transform = `translate(0px, 0px)`;
           if (axisKey === 'throttle') inputs.throttleVal = 0;
           else inputs.steerVal = 0;
         };
 
         base.addEventListener('touchstart', onStart, { passive: false });
-        window.addEventListener('touchmove', onMove, { passive: false });
-        window.addEventListener('touchend', onEnd);
-        base.addEventListener('mousedown', onStart);
-        window.addEventListener('mousemove', onMove);
-        window.addEventListener('mouseup', onEnd);
+        base.addEventListener('touchmove', onMove, { passive: false });
+        base.addEventListener('touchend', onEnd);
+        base.addEventListener('touchcancel', onEnd);
+        
+        let mouseActive = false;
+        base.addEventListener('mousedown', (e) => {
+          if (isEditingControls || isPaused) return;
+          e.preventDefault();
+          AudioEngine.unlock();
+          mouseActive = true;
+          const rect = base.getBoundingClientRect();
+          center = { x: rect.left + rect.width / 2, y: rect.top + rect.height / 2 };
+        });
+        window.addEventListener('mousemove', (e) => {
+          if (!mouseActive || isEditingControls || isPaused) return;
+          let dx = e.clientX - center.x;
+          let dy = e.clientY - center.y;
+          if (axisKey === 'throttle') {
+            dx = 0;
+            dy = Math.max(-maxDist, Math.min(maxDist, dy));
+            thumb.style.transform = `translate(0px, ${dy}px)`;
+            inputs.throttleVal = -dy / maxDist;
+          } else {
+            dy = 0;
+            dx = Math.max(-maxDist, Math.min(maxDist, dx));
+            thumb.style.transform = `translate(${dx}px, 0px)`;
+            inputs.steerVal = dx / maxDist;
+          }
+        });
+        window.addEventListener('mouseup', () => {
+          if (!mouseActive) return;
+          mouseActive = false;
+          thumb.style.transform = `translate(0px, 0px)`;
+          if (axisKey === 'throttle') inputs.throttleVal = 0;
+          else inputs.steerVal = 0;
+        });
       };
 
       bindAnalogStick('joystick-throttle-base', 'joystick-throttle-thumb', 'throttle');
@@ -1513,18 +1567,38 @@
       const btnBrake = document.getElementById('btn-pedal-brake');
 
       const bindPedal = (elem, key) => {
+        let touchId = null;
         const start = (e) => { 
-          if (isEditingControls || isPaused) return;
-          e.preventDefault(); AudioEngine.unlock(); inputs[key] = true; elem.classList.add('active'); 
+          if (isEditingControls || isPaused || touchId !== null) return;
+          e.preventDefault(); 
+          AudioEngine.unlock(); 
+          touchId = e.changedTouches[0].identifier;
+          inputs[key] = true; 
+          elem.classList.add('active'); 
         };
         const end = (e) => { 
-          if (isEditingControls) return;
-          e.preventDefault(); inputs[key] = false; elem.classList.remove('active'); 
+          if (touchId === null) return;
+          const t = Array.from(e.changedTouches).find(item => item.identifier === touchId);
+          if (!t) return;
+          touchId = null; 
+          inputs[key] = false; 
+          elem.classList.remove('active'); 
         };
-        elem.addEventListener('touchstart', start);
+        elem.addEventListener('touchstart', start, { passive: false });
         elem.addEventListener('touchend', end);
-        elem.addEventListener('mousedown', start);
-        elem.addEventListener('mouseup', end);
+        elem.addEventListener('touchcancel', end);
+
+        elem.addEventListener('mousedown', (e) => {
+          if (isEditingControls || isPaused) return;
+          e.preventDefault();
+          AudioEngine.unlock();
+          inputs[key] = true;
+          elem.classList.add('active');
+        });
+        elem.addEventListener('mouseup', () => {
+          inputs[key] = false;
+          elem.classList.remove('active');
+        });
       };
 
       bindPedal(btnGas, 'gas');
@@ -1534,20 +1608,38 @@
       const btnRight = document.getElementById('btn-steer-right');
 
       const bindSteerBtn = (elem, dir) => {
+        let touchId = null;
         const start = (e) => { 
-          if (isEditingControls || isPaused) return;
-          e.preventDefault(); AudioEngine.unlock();
+          if (isEditingControls || isPaused || touchId !== null) return;
+          e.preventDefault(); 
+          AudioEngine.unlock();
+          touchId = e.changedTouches[0].identifier;
           if(dir==='left') inputs.steerLeft = true; else inputs.steerRight = true; 
+          elem.classList.add('active');
         };
         const end = (e) => { 
-          if (isEditingControls) return;
-          e.preventDefault(); 
+          if (touchId === null) return;
+          const t = Array.from(e.changedTouches).find(item => item.identifier === touchId);
+          if (!t) return;
+          touchId = null;
           if(dir==='left') inputs.steerLeft = false; else inputs.steerRight = false; 
+          elem.classList.remove('active');
         };
-        elem.addEventListener('touchstart', start);
+        elem.addEventListener('touchstart', start, { passive: false });
         elem.addEventListener('touchend', end);
-        elem.addEventListener('mousedown', start);
-        elem.addEventListener('mouseup', end);
+        elem.addEventListener('touchcancel', end);
+
+        elem.addEventListener('mousedown', (e) => {
+          if (isEditingControls || isPaused) return;
+          e.preventDefault();
+          AudioEngine.unlock();
+          if(dir==='left') inputs.steerLeft = true; else inputs.steerRight = true;
+          elem.classList.add('active');
+        });
+        window.addEventListener('mouseup', () => {
+          if(dir==='left') inputs.steerLeft = false; else inputs.steerRight = false;
+          elem.classList.remove('active');
+        });
       };
 
       bindSteerBtn(btnLeft, 'left');
@@ -1555,9 +1647,9 @@
 
       const wheelContainer = document.getElementById('steering-wheel-container');
       const wheelElem = document.getElementById('steering-wheel');
-      let isDraggingWheel = false;
+      let wheelTouchId = null;
       let wheelCenter = { x: 0, y: 0 };
-      let initialAngle = 0;
+      let lastTouchAngle = 0;
       let currentRotation = 0;
 
       const getAngle = (clientX, clientY) => {
@@ -1567,33 +1659,41 @@
       };
 
       const onWheelStart = (e) => {
-        if (isEditingControls || isPaused) return;
+        if (isEditingControls || isPaused || wheelTouchId !== null) return;
         e.preventDefault();
         AudioEngine.unlock();
-        isDraggingWheel = true;
+        const touch = e.changedTouches[0];
+        wheelTouchId = touch.identifier;
         const rect = wheelContainer.getBoundingClientRect();
         wheelCenter = { x: rect.left + rect.width / 2, y: rect.top + rect.height / 2 };
-        const touch = e.touches ? e.touches[0] : e;
-        initialAngle = getAngle(touch.clientX, touch.clientY) - currentRotation;
+        lastTouchAngle = getAngle(touch.clientX, touch.clientY);
       };
 
       const onWheelMove = (e) => {
-        if (!isDraggingWheel || isEditingControls || isPaused) return;
+        if (wheelTouchId === null || isEditingControls || isPaused) return;
         e.preventDefault();
-        const touch = e.touches ? e.touches[0] : e;
-        let angle = getAngle(touch.clientX, touch.clientY) - initialAngle;
-        
-        angle = Math.max(-120, Math.min(120, angle));
-        currentRotation = angle;
-        wheelElem.style.transform = `rotate(${angle}deg)`;
-        
-        let normalized = angle / 120;
+        const touch = Array.from(e.touches).find(t => t.identifier === wheelTouchId);
+        if (!touch) return;
+
+        const currentAngle = getAngle(touch.clientX, touch.clientY);
+        let delta = currentAngle - lastTouchAngle;
+
+        if (delta > 180) delta -= 360;
+        if (delta < -180) delta += 360;
+
+        currentRotation = Math.max(-120, Math.min(120, currentRotation + delta));
+        wheelElem.style.transform = `rotate(${currentRotation}deg)`;
+
+        let normalized = currentRotation / 120;
         inputs.steerAngle = Math.sign(normalized) * Math.pow(Math.abs(normalized), 1.15);
+        lastTouchAngle = currentAngle;
       };
 
       const onWheelEnd = (e) => {
-        if (!isDraggingWheel) return;
-        isDraggingWheel = false;
+        if (wheelTouchId === null) return;
+        const touch = Array.from(e.changedTouches).find(item => item.identifier === wheelTouchId);
+        if (!touch) return;
+        wheelTouchId = null;
         currentRotation = 0;
         wheelElem.style.transform = `rotate(0deg)`;
         inputs.steerAngle = 0;
@@ -1602,9 +1702,37 @@
       wheelContainer.addEventListener('touchstart', onWheelStart, { passive: false });
       window.addEventListener('touchmove', onWheelMove, { passive: false });
       window.addEventListener('touchend', onWheelEnd);
-      wheelContainer.addEventListener('mousedown', onWheelStart);
-      window.addEventListener('mousemove', onWheelMove);
-      window.addEventListener('mouseup', onWheelEnd);
+      window.addEventListener('touchcancel', onWheelEnd);
+
+      let mouseWheelActive = false;
+      wheelContainer.addEventListener('mousedown', (e) => {
+        if (isEditingControls || isPaused) return;
+        e.preventDefault();
+        AudioEngine.unlock();
+        mouseWheelActive = true;
+        const rect = wheelContainer.getBoundingClientRect();
+        wheelCenter = { x: rect.left + rect.width / 2, y: rect.top + rect.height / 2 };
+        lastTouchAngle = getAngle(e.clientX, e.clientY);
+      });
+      window.addEventListener('mousemove', (e) => {
+        if (!mouseWheelActive || isEditingControls || isPaused) return;
+        const currentAngle = getAngle(e.clientX, e.clientY);
+        let delta = currentAngle - lastTouchAngle;
+        if (delta > 180) delta -= 360;
+        if (delta < -180) delta += 360;
+        currentRotation = Math.max(-120, Math.min(120, currentRotation + delta));
+        wheelElem.style.transform = `rotate(${currentRotation}deg)`;
+        let normalized = currentRotation / 120;
+        inputs.steerAngle = Math.sign(normalized) * Math.pow(Math.abs(normalized), 1.15);
+        lastTouchAngle = currentAngle;
+      });
+      window.addEventListener('mouseup', () => {
+        if (!mouseWheelActive) return;
+        mouseWheelActive = false;
+        currentRotation = 0;
+        wheelElem.style.transform = `rotate(0deg)`;
+        inputs.steerAngle = 0;
+      });
 
       window.addEventListener('keydown', (e) => {
         AudioEngine.unlock();
