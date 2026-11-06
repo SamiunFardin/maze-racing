@@ -3,9 +3,19 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>Turbo Maze Racer - Garage & Sound Fixed Edition</title>
+  <title>Turbo Maze Racer - PWA Installable & Sound Fixed</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  
+  <!-- ==========================================================================
+     PWA WEB APP MANIFEST & THEME METAS (Enables App Installation)
+     ========================================================================== -->
+  <meta name="theme-color" content="#0b0f19">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="Turbo Maze">
+  <link rel="manifest" id="dynamic-manifest">
+
   <style>
     /* ==========================================================================
        1. GLOBAL RESET & BASE STYLES
@@ -182,7 +192,7 @@
         <h1 class="text-3xl font-black italic tracking-wider text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 via-blue-400 to-emerald-400 neon-text">
           TURBO MAZE
         </h1>
-        <p class="text-xs text-slate-400 mt-1 uppercase tracking-widest font-bold">Sound & Controls Fully Fixed</p>
+        <p class="text-xs text-slate-400 mt-1 uppercase tracking-widest font-bold">PWA Installable & Sound Fixed</p>
       </div>
 
       <div class="w-full bg-slate-900 border border-slate-800 rounded-full h-2.5 overflow-hidden p-0.5">
@@ -191,10 +201,10 @@
 
       <div class="bg-slate-900/90 border border-slate-800 rounded-xl p-3 text-left space-y-1 shadow-lg">
         <div class="text-[10px] font-bold text-amber-400 uppercase flex items-center gap-1.5">
-          <i class="fa-solid fa-volume-high"></i> Tap Anywhere to Activate Sound
+          <i class="fa-solid fa-cloud-arrow-down"></i> Ready to Install as App
         </div>
         <p class="text-xs text-slate-300 leading-relaxed" id="loading-tip-text">
-          Audio context auto-resumes instantly on touch or click!
+          Tap browser menu and select "Install app" to add to your home screen!
         </p>
       </div>
     </div>
@@ -374,7 +384,7 @@
         <h1 class="text-4xl font-black italic tracking-wider text-transparent bg-clip-text bg-gradient-to-r from-blue-400 via-indigo-300 to-emerald-400 neon-text">
           TURBO MAZE
         </h1>
-        <p class="text-slate-400 text-xs mt-1">Sound & Multi-Touch Fully Fixed Edition</p>
+        <p class="text-slate-400 text-xs mt-1">PWA Installable & Sound Fixed Edition</p>
       </div>
 
       <!-- MODE SELECTION SWITCH -->
@@ -659,13 +669,13 @@
   </div>
 
   <!-- ==========================================================================
-     [JAVASCRIPT CORE LOGIC & ROBUST WEB AUDIO ENGINE]
+     [JAVASCRIPT CORE LOGIC & PWA / AUDIO ENGINE]
      ========================================================================== -->
   <script>
     /* --------------------------------------------------------------------------
-       SECTION 0: VERSION CHECK & AUTO-REFRESH CACHE-BUSTING
+       SECTION 0: PWA DYNAMIC MANIFEST & SERVICE WORKER SETUP
        -------------------------------------------------------------------------- */
-    const CURRENT_GAME_VERSION = '1.2.3';
+    const CURRENT_GAME_VERSION = '1.2.4';
     function checkGameVersion() {
       const savedVersion = localStorage.getItem('tm_game_version');
       if (savedVersion !== CURRENT_GAME_VERSION) {
@@ -674,6 +684,42 @@
       }
     }
     checkGameVersion();
+
+    // Dynamically generate PWA Web App Manifest data URI so Chrome recognizes it as installable
+    function setupPWAManifest() {
+      const manifestData = {
+        name: "Turbo Maze Racer",
+        short_name: "TurboMaze",
+        start_url: "./",
+        display: "standalone",
+        background_color: "#0b0f19",
+        theme_color: "#0b0f19",
+        icons: [
+          {
+            src: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%2338bdf8'%3E%3Cpath d='M3 3v18h18V3H3zm12 12l6 6m0-6l-6 6'/%3E%3C/svg%3E",
+            sizes: "192x192 512x512",
+            type: "image/svg+xml"
+          }
+        ]
+      };
+      const stringified = JSON.stringify(manifestData);
+      const blob = new Blob([stringified], { type: 'application/manifest+json' });
+      const manifestURL = URL.createObjectURL(blob);
+      document.getElementById('dynamic-manifest').setAttribute('href', manifestURL);
+
+      // Register a lightweight service worker to satisfy PWA installation criteria
+      if ('serviceWorker' in navigator) {
+        const swCode = `
+          self.addEventListener('install', (e) => { self.skipWaiting(); });
+          self.addEventListener('activate', (e) => { e.waitUntil(clients.claim()); });
+          self.addEventListener('fetch', (e) => { e.respondWith(fetch(e.request).catch(() => caches.match(e.request))); });
+        `;
+        const swBlob = new Blob([swCode], { type: 'text/javascript' });
+        const swURL = URL.createObjectURL(swBlob);
+        navigator.serviceWorker.register(swURL).catch(err => console.log('SW registration note:', err));
+      }
+    }
+    setupPWAManifest();
 
     /* --------------------------------------------------------------------------
        SECTION 1: BULLETPROOF WEB AUDIO API SYNTH ENGINE (SFX & Procedural BGM)
@@ -895,7 +941,6 @@
       }
     };
 
-    // Global listeners to instantly unlock and resume audio on any user gesture
     ['click', 'touchstart', 'mousedown', 'keydown'].forEach(evt => {
       window.addEventListener(evt, () => {
         AudioEngine.unlock();
@@ -1323,7 +1368,7 @@
       const loadingScreen = document.getElementById('modal-loading-screen');
       const progressBar = document.getElementById('loading-progress-bar');
       const tips = [
-        "Sound system active! Audio unlocks instantly upon your first touch.",
+        "PWA installable! You can now install this game to your device home screen.",
         "Visit the Garage to upgrade your car's model, paint, decals, and stats!",
         "In Night Drive mode, stay alert within your expanded 2.5-tile spotlight radius!",
         "Press Enter on your keyboard at the victory screen or pre-race tuning to jump right in!"
