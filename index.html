@@ -44,6 +44,21 @@
       text-shadow: 0 0 10px rgba(59, 130, 246, 0.7);
     }
 
+    /* Loading Logo Animations */
+    @keyframes carFloat {
+      0%, 100% { transform: translateY(0) scale(1); }
+      50% { transform: translateY(-6px) scale(1.02); }
+    }
+    .animate-car-float {
+      animation: carFloat 3s ease-in-out infinite;
+    }
+    @keyframes shimmer {
+      100% { transform: translateX(100%); }
+    }
+    .animate-shimmer {
+      animation: shimmer 2s infinite;
+    }
+
     /* ==========================================================================
        2. FLOATING & DRAGGABLE TOUCH CONTROLS OVERLAYS
        ========================================================================== */
@@ -176,16 +191,20 @@
 <body class="bg-slate-950 text-white flex flex-col h-screen w-screen overflow-hidden">
 
   <!-- ==========================================================================
-     [UI OVERLAY] INITIAL LOADING SCREEN
+     [UI OVERLAY] INITIAL LOADING SCREEN (Option 4 Sports Car Silhouette Logo)
      ========================================================================== -->
   <div id="modal-loading-screen" class="fixed inset-0 z-[100] bg-slate-950 flex flex-col items-center justify-center p-6 space-y-6 transition-opacity duration-700">
     <div class="max-w-xs w-full text-center space-y-4">
-      <div class="w-32 h-32 mx-auto rounded-3xl border-2 border-cyan-400/80 shadow-[0_0_35px_rgba(6,182,212,0.6)] bg-gradient-to-tr from-slate-950 via-blue-950 to-indigo-900 flex items-center justify-center relative overflow-hidden">
-        <svg class="w-20 h-20 text-cyan-400 drop-shadow-[0_0_15px_rgba(56,189,248,0.9)]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-          <path d="M3 3v18h18V3H3zm12 12l6 6m0-6l-6 6" class="animate-pulse"></path>
-          <path d="M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0z" fill="currentColor" fill-opacity="0.2"></path>
+      <div class="w-32 h-32 mx-auto rounded-3xl border-2 border-cyan-400/80 shadow-[0_0_35px_rgba(6,182,212,0.6)] bg-gradient-to-tr from-slate-950 via-blue-950 to-indigo-900 flex items-center justify-center relative overflow-hidden animate-car-float">
+        <!-- Option 4 Vector Sports Car Silhouette with Checkered Spoiler Accent -->
+        <svg class="w-24 h-24 text-cyan-400 drop-shadow-[0_0_15px_rgba(56,189,248,0.9)]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M2 13l2-3h3l2 3h8l2-3h3l1 3v2H2v-2z" fill="currentColor" fill-opacity="0.3"></path>
+          <path d="M2 13h20v2a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2v-2z"></path>
+          <circle cx="6.5" cy="16.5" r="2.5" fill="#0b0f19" stroke="currentColor" stroke-width="1.5"></circle>
+          <circle cx="17.5" cy="16.5" r="2.5" fill="#0b0f19" stroke="currentColor" stroke-width="1.5"></circle>
+          <path d="M14 8l4-4m0 0l-3 1m3-1v3" stroke-linecap="round" stroke-linejoin="round"></path>
         </svg>
-        <div class="absolute inset-0 bg-gradient-to-b from-cyan-500/10 to-transparent pointer-events-none"></div>
+        <div class="absolute inset-0 bg-gradient-to-r from-transparent via-cyan-400/20 to-transparent -translate-x-full animate-shimmer pointer-events-none"></div>
       </div>
 
       <div>
@@ -224,7 +243,7 @@
         <i class="fa-solid fa-house text-sm"></i>
       </button>
       <div>
-        <div id="hud-level-title" class="text-[11px] uppercase tracking-wider text-slate-400 font-bold">Level 1 (10x10)</div>
+        <div id="hud-level-title" class="text-[11px] uppercase tracking-wider text-slate-400 font-bold">Level 1</div>
         <div id="hud-timer" class="text-lg font-mono font-bold text-amber-400">00:00.000</div>
       </div>
     </div>
@@ -400,7 +419,7 @@
       <div class="space-y-2.5">
         <button id="menu-btn-play" class="w-full py-3.5 bg-blue-600 hover:bg-blue-500 text-white font-bold rounded-xl shadow-lg shadow-blue-500/30 flex items-center justify-center space-x-2 text-base transition transform active:scale-95">
           <i class="fa-solid fa-flag-checkered"></i>
-          <span id="menu-play-btn-label">Standard Campaign (1-10,100)</span>
+          <span id="menu-play-btn-label">Standard Campaign</span>
         </button>
 
         <button id="menu-btn-garage" class="w-full py-3 bg-gradient-to-r from-amber-600 to-orange-600 hover:from-amber-500 hover:to-orange-500 text-white font-bold rounded-xl shadow-lg shadow-amber-600/30 flex items-center justify-center space-x-2 transition">
@@ -624,7 +643,7 @@
 
       <div>
         <h2 class="text-2xl font-black text-white">LEVEL COMPLETED!</h2>
-        <p class="text-xs text-slate-400 uppercase tracking-widest mt-1" id="victory-level-name">Level 1 (10x10)</p>
+        <p class="text-xs text-slate-400 uppercase tracking-widest mt-1" id="victory-level-name">Level 1</p>
       </div>
 
       <div class="bg-slate-800/80 rounded-xl p-3.5 border border-slate-700">
@@ -675,7 +694,7 @@
     /* --------------------------------------------------------------------------
        SECTION 0: PWA DYNAMIC MANIFEST & SERVICE WORKER SETUP
        -------------------------------------------------------------------------- */
-    const CURRENT_GAME_VERSION = '1.2.4';
+    const CURRENT_GAME_VERSION = '1.2.5';
     function checkGameVersion() {
       const savedVersion = localStorage.getItem('tm_game_version');
       if (savedVersion !== CURRENT_GAME_VERSION) {
@@ -1072,29 +1091,29 @@
     function getTierCategoriesForMode(mode = activeGameMode) {
       if (mode === 'dark') {
         return [
-          { key: 't1', label: 'Tier 1 (1-100)', min: 1, max: 100 },
-          { key: 't2', label: 'Tier 2 (101-200)', min: 101, max: 200 },
-          { key: 't3', label: 'Tier 3 (201-300)', min: 201, max: 300 },
-          { key: 't4', label: 'Tier 4 (301-400)', min: 301, max: 400 },
-          { key: 't5', label: 'Tier 5 (401-500)', min: 401, max: 500 },
-          { key: 't6', label: 'Tier 6 (501-600)', min: 501, max: 600 },
-          { key: 't7', label: 'Tier 7 (601-700)', min: 601, max: 700 },
-          { key: 't8', label: 'Tier 8 (701-800)', min: 701, max: 800 },
-          { key: 't9', label: 'Tier 9 (801-900)', min: 801, max: 900 },
-          { key: 't10', label: 'Tier 10 (901-1.01k)', min: 901, max: 1010 }
+          { key: 't1', label: 'Tier 1', min: 1, max: 100 },
+          { key: 't2', label: 'Tier 2', min: 101, max: 200 },
+          { key: 't3', label: 'Tier 3', min: 201, max: 300 },
+          { key: 't4', label: 'Tier 4', min: 301, max: 400 },
+          { key: 't5', label: 'Tier 5', min: 401, max: 500 },
+          { key: 't6', label: 'Tier 6', min: 501, max: 600 },
+          { key: 't7', label: 'Tier 7', min: 601, max: 700 },
+          { key: 't8', label: 'Tier 8', min: 701, max: 800 },
+          { key: 't9', label: 'Tier 9', min: 801, max: 900 },
+          { key: 't10', label: 'Tier 10', min: 901, max: 1010 }
         ];
       }
       return [
-        { key: 't1', label: 'Tier 1 (1-1k)', min: 1, max: 1000 },
-        { key: 't2', label: 'Tier 2 (1k-2k)', min: 1001, max: 2000 },
-        { key: 't3', label: 'Tier 3 (2k-3k)', min: 2001, max: 3000 },
-        { key: 't4', label: 'Tier 4 (3k-4k)', min: 3001, max: 4000 },
-        { key: 't5', label: 'Tier 5 (4k-5k)', min: 4001, max: 5000 },
-        { key: 't6', label: 'Tier 6 (5k-6k)', min: 5001, max: 6000 },
-        { key: 't7', label: 'Tier 7 (6k-7k)', min: 6001, max: 7000 },
-        { key: 't8', label: 'Tier 8 (7k-8k)', min: 7001, max: 8000 },
-        { key: 't9', label: 'Tier 9 (8k-9k)', min: 8001, max: 9000 },
-        { key: 't10', label: 'Tier 10 (9k-10.1k)', min: 9001, max: 10100 }
+        { key: 't1', label: 'Tier 1', min: 1, max: 1000 },
+        { key: 't2', label: 'Tier 2', min: 1001, max: 2000 },
+        { key: 't3', label: 'Tier 3', min: 2001, max: 3000 },
+        { key: 't4', label: 'Tier 4', min: 3001, max: 4000 },
+        { key: 't5', label: 'Tier 5', min: 4001, max: 5000 },
+        { key: 't6', label: 'Tier 6', min: 5001, max: 6000 },
+        { key: 't7', label: 'Tier 7', min: 6001, max: 7000 },
+        { key: 't8', label: 'Tier 8', min: 7001, max: 8000 },
+        { key: 't9', label: 'Tier 9', min: 8001, max: 9000 },
+        { key: 't10', label: 'Tier 10', min: 9001, max: 10100 }
       ];
     }
 
@@ -1922,7 +1941,7 @@
         cacheMinimapBackground();
       }
 
-      document.getElementById('hud-level-title').innerText = `${currentMaze.name} (${currentMaze.sizeLabel})`;
+      document.getElementById('hud-level-title').innerText = `${currentMaze.name}`;
 
       carTrailPath = [];
       exhaustParticles = [];
@@ -2390,7 +2409,7 @@
       mapZoomScale = 1.0;
       mapPanX = 0;
       mapPanY = 0;
-      document.getElementById('full-map-title').innerText = `${currentMaze.name} (${currentMaze.sizeLabel}) - Pinch / Buttons to Zoom, Drag to Hover`;
+      document.getElementById('full-map-title').innerText = `${currentMaze.name} - Pinch / Buttons to Zoom, Drag to Hover`;
       document.getElementById('modal-full-map').classList.remove('hidden');
       renderFullMazeMap();
     }
@@ -2479,7 +2498,7 @@
 
       const timeMs = elapsedTime;
 
-      document.getElementById('victory-level-name').innerText = `${currentMaze.name} (${currentMaze.sizeLabel})`;
+      document.getElementById('victory-level-name').innerText = `${currentMaze.name}`;
       document.getElementById('victory-final-time').innerText = formatTime(timeMs);
 
       unlockNextLevel(currentMaze.levelNum, activeGameMode);
@@ -2859,7 +2878,7 @@
       btnStd.className = !isDark ? "w-1/2 py-2 rounded-lg text-xs font-bold transition bg-blue-600 text-white shadow" : "w-1/2 py-2 rounded-lg text-xs font-bold transition text-slate-400 hover:text-white";
       btnDark.className = isDark ? "w-1/2 py-2 rounded-lg text-xs font-bold transition bg-indigo-600 text-white shadow" : "w-1/2 py-2 rounded-lg text-xs font-bold transition text-slate-400 hover:text-white";
 
-      document.getElementById('menu-play-btn-label').innerText = isDark ? "Night Drive Campaign (1-1,010)" : "Standard Campaign (1-10,100)";
+      document.getElementById('menu-play-btn-label').innerText = isDark ? "Night Drive Campaign" : "Standard Campaign";
       
       selectedTierKey = 't1';
       selectedBlockStart = 1;
@@ -2907,13 +2926,25 @@
     function renderTierTabs() {
       const container = document.getElementById('tier-tabs');
       const tiers = getTierCategoriesForMode(activeGameMode);
+      const maxUnlocked = getMaxUnlockedLevel(activeGameMode);
 
       document.getElementById('level-modal-header').innerHTML = activeGameMode === 'dark' 
-        ? `<i class="fa-solid fa-moon text-indigo-400"></i> Night Drive Campaign (1 - 1,010)`
-        : `<i class="fa-solid fa-layer-group text-blue-400"></i> Standard Campaign (1 - 10,100)`;
+        ? `<i class="fa-solid fa-moon text-indigo-400"></i> Night Drive Campaign`
+        : `<i class="fa-solid fa-layer-group text-blue-400"></i> Campaign Levels`;
 
-      container.innerHTML = tiers.map(tier => `
-        <button class="px-3 py-2 rounded-xl text-xs font-bold whitespace-nowrap transition ${selectedTierKey === tier.key ? 'bg-blue-600 text-white shadow-md' : 'bg-slate-800 text-slate-400 hover:text-white'}" onclick="filterTier('${tier.key}')">
+      // Only show unlocked tiers (previous tier must be reached)
+      const unlockedTiers = tiers.filter((tier, idx) => {
+        if (idx === 0) return true;
+        return maxUnlocked >= tiers[idx - 1].min;
+      });
+
+      if (!unlockedTiers.some(t => t.key === selectedTierKey)) {
+        selectedTierKey = unlockedTiers[0].key;
+        selectedBlockStart = unlockedTiers[0].min;
+      }
+
+      container.innerHTML = unlockedTiers.map(tier => `
+        <button class="px-4 py-2 rounded-xl text-xs font-bold whitespace-nowrap transition ${selectedTierKey === tier.key ? 'bg-blue-600 text-white shadow-md' : 'bg-slate-800 text-slate-400 hover:text-white'}" onclick="filterTier('${tier.key}')">
           ${tier.label}
         </button>
       `).join('');
