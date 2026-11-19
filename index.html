@@ -11,9 +11,12 @@
      PWA WEB APP MANIFEST & THEME METAS (Enables App Installation)
      ========================================================================== -->
   <meta name="theme-color" content="#0b0f19">
+  <meta name="mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="apple-mobile-web-app-title" content="Turbo Maze">
+  <link rel="apple-touch-icon" id="dynamic-apple-icon">
+  <link rel="icon" type="image/png" id="dynamic-favicon">
   <link rel="manifest" id="dynamic-manifest">
 
   <style>
@@ -436,6 +439,11 @@
           <i class="fa-solid fa-sliders text-slate-400"></i>
           <span>Control Options & Tuning</span>
         </button>
+
+        <button id="menu-btn-install" class="hidden w-full py-3 bg-gradient-to-r from-cyan-600 to-emerald-600 hover:from-cyan-500 hover:to-emerald-500 text-white font-bold rounded-xl shadow-lg shadow-cyan-600/30 flex items-center justify-center space-x-2 transition">
+          <i class="fa-solid fa-download"></i>
+          <span>Install App on Device</span>
+        </button>
       </div>
     </div>
   </div>
@@ -704,41 +712,176 @@
     }
     checkGameVersion();
 
-    // Dynamically generate PWA Web App Manifest data URI so Chrome recognizes it as installable
+    // Generate real PNG icons via offscreen Canvas + Data-URI Manifest so Android Chrome & iOS Safari allow installation
+    let deferredInstallPrompt = null;
+
+    function createAppIconDataURL(size) {
+      const iconCanvas = document.createElement('canvas');
+      iconCanvas.width = size;
+      iconCanvas.height = size;
+      const ictx = iconCanvas.getContext('2d');
+
+      // Background rounded gradient
+      const bgGrad = ictx.createLinearGradient(0, 0, size, size);
+      bgGrad.addColorStop(0, '#0b0f19');
+      bgGrad.addColorStop(0.5, '#0f172a');
+      bgGrad.addColorStop(1, '#1e3a8a');
+      ictx.fillStyle = bgGrad;
+      ictx.fillRect(0, 0, size, size);
+
+      // Neon border frame
+      const pad = size * 0.08;
+      ictx.strokeStyle = '#38bdf8';
+      ictx.lineWidth = Math.max(4, size * 0.03);
+      ictx.beginPath();
+      ictx.roundRect(pad, pad, size - pad * 2, size - pad * 2, size * 0.18);
+      ictx.stroke();
+
+      // Stylized sports car silhouette
+      ictx.save();
+      ictx.translate(size * 0.5, size * 0.54);
+      const s = size / 24;
+      ictx.scale(s * 0.72, s * 0.72);
+      ictx.translate(-12, -13);
+
+      ictx.fillStyle = 'rgba(56, 189, 248, 0.35)';
+      ictx.strokeStyle = '#38bdf8';
+      ictx.lineWidth = 1.8;
+      ictx.lineCap = 'round';
+      ictx.lineJoin = 'round';
+
+      ictx.beginPath();
+      ictx.moveTo(2, 13);
+      ictx.lineTo(4, 10);
+      ictx.lineTo(7, 10);
+      ictx.lineTo(9, 13);
+      ictx.lineTo(17, 13);
+      ictx.lineTo(19, 10);
+      ictx.lineTo(22, 10);
+      ictx.lineTo(23, 13);
+      ictx.lineTo(23, 15);
+      ictx.lineTo(2, 15);
+      ictx.closePath();
+      ictx.fill();
+      ictx.stroke();
+
+      // Wheels
+      [6.5, 17.5].forEach(wx => {
+        ictx.beginPath();
+        ictx.arc(wx, 16.5, 2.5, 0, Math.PI * 2);
+        ictx.fillStyle = '#0b0f19';
+        ictx.fill();
+        ictx.stroke();
+      });
+
+      // Speed accent
+      ictx.beginPath();
+      ictx.moveTo(14, 8);
+      ictx.lineTo(18, 4);
+      ictx.moveTo(18, 4);
+      ictx.lineTo(15, 5);
+      ictx.moveTo(18, 4);
+      ictx.lineTo(17, 7);
+      ictx.stroke();
+
+      ictx.restore();
+      return iconCanvas.toDataURL('image/png');
+    }
+
     function setupPWAManifest() {
+      const icon192 = createAppIconDataURL(192);
+      const icon512 = createAppIconDataURL(512);
+
+      const appleIconEl = document.getElementById('dynamic-apple-icon');
+      const favIconEl = document.getElementById('dynamic-favicon');
+      if (appleIconEl) appleIconEl.setAttribute('href', icon192);
+      if (favIconEl) favIconEl.setAttribute('href', icon192);
+
+      const currentPageUrl = window.location.href.split('#')[0];
       const manifestData = {
+        id: currentPageUrl,
         name: "Turbo Maze Racer",
         short_name: "TurboMaze",
-        start_url: "./",
+        description: "Procedural maze car racing game with Standard and Night Drive campaigns.",
+        start_url: currentPageUrl,
+        scope: "./",
         display: "standalone",
+        orientation: "any",
         background_color: "#0b0f19",
         theme_color: "#0b0f19",
         icons: [
           {
-            src: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%2338bdf8'%3E%3Cpath d='M3 3v18h18V3H3zm12 12l6 6m0-6l-6 6'/%3E%3C/svg%3E",
-            sizes: "192x192 512x512",
-            type: "image/svg+xml"
+            src: icon192,
+            sizes: "192x192",
+            type: "image/png",
+            purpose: "any"
+          },
+          {
+            src: icon512,
+            sizes: "512x512",
+            type: "image/png",
+            purpose: "any maskable"
           }
         ]
       };
-      const stringified = JSON.stringify(manifestData);
-      const blob = new Blob([stringified], { type: 'application/manifest+json' });
-      const manifestURL = URL.createObjectURL(blob);
-      document.getElementById('dynamic-manifest').setAttribute('href', manifestURL);
 
-      // Register a lightweight service worker to satisfy PWA installation criteria
-      if ('serviceWorker' in navigator) {
+      // Use a data: URI so the manifest remains valid even if the page is later reopened offline
+      const manifestDataURI = 'data:application/manifest+json;charset=utf-8,' + encodeURIComponent(JSON.stringify(manifestData));
+      document.getElementById('dynamic-manifest').setAttribute('href', manifestDataURI);
+
+      // Register Service Worker using a Data URI (Blob URLs are rejected by browsers for Service Workers)
+      if ('serviceWorker' in navigator && (window.location.protocol === 'https:' || window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1')) {
         const swCode = `
-          self.addEventListener('install', (e) => { self.skipWaiting(); });
-          self.addEventListener('activate', (e) => { e.waitUntil(clients.claim()); });
-          self.addEventListener('fetch', (e) => { e.respondWith(fetch(e.request).catch(() => caches.match(e.request))); });
+          const CACHE_NAME = 'turbo-maze-v${CURRENT_GAME_VERSION}';
+          self.addEventListener('install', (e) => {
+            self.skipWaiting();
+          });
+          self.addEventListener('activate', (e) => {
+            e.waitUntil(
+              caches.keys().then((keys) =>
+                Promise.all(keys.filter((k) => k !== CACHE_NAME).map((k) => caches.delete(k)))
+              ).then(() => self.clients.claim())
+            );
+          });
+          self.addEventListener('fetch', (e) => {
+            if (e.request.method !== 'GET') return;
+            e.respondWith(
+              fetch(e.request)
+                .then((res) => {
+                  const copy = res.clone();
+                  caches.open(CACHE_NAME).then((cache) => cache.put(e.request, copy)).catch(() => {});
+                  return res;
+                })
+                .catch(() => caches.match(e.request))
+            );
+          });
         `;
-        const swBlob = new Blob([swCode], { type: 'text/javascript' });
-        const swURL = URL.createObjectURL(swBlob);
-        navigator.serviceWorker.register(swURL).catch(err => console.log('SW registration note:', err));
+        const swDataURI = 'data:application/javascript;charset=utf-8,' + encodeURIComponent(swCode);
+        navigator.serviceWorker.register(swDataURI).catch(err => console.log('SW registration note:', err));
       }
     }
     setupPWAManifest();
+
+    window.addEventListener('beforeinstallprompt', (e) => {
+      e.preventDefault();
+      deferredInstallPrompt = e;
+      const installBtn = document.getElementById('menu-btn-install');
+      if (installBtn) {
+        installBtn.classList.remove('hidden');
+      }
+      const tipText = document.getElementById('loading-tip-text');
+      if (tipText) {
+        tipText.innerText = 'App install ready! Tap "Install App on Device" on the main menu or browser menu.';
+      }
+    });
+
+    window.addEventListener('appinstalled', () => {
+      deferredInstallPrompt = null;
+      const installBtn = document.getElementById('menu-btn-install');
+      if (installBtn) {
+        installBtn.classList.add('hidden');
+      }
+    });
 
     /* --------------------------------------------------------------------------
        SECTION 1: BULLETPROOF WEB AUDIO API SYNTH ENGINE (SFX & Procedural BGM)
@@ -2703,6 +2846,16 @@
         renderTuningUI('settings-tuning-controls');
         initAudioSettingsUI();
         document.getElementById('modal-settings').classList.remove('hidden');
+      });
+
+      bindAction('menu-btn-install', async () => {
+        if (!deferredInstallPrompt) return;
+        deferredInstallPrompt.prompt();
+        const { outcome } = await deferredInstallPrompt.userChoice;
+        if (outcome === 'accepted') {
+          deferredInstallPrompt = null;
+          document.getElementById('menu-btn-install').classList.add('hidden');
+        }
       });
 
       bindAction('menu-btn-leaderboard', () => {
