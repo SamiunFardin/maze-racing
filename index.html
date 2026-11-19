@@ -10,7 +10,7 @@
   <!-- ==========================================================================
      PWA WEB APP MANIFEST & THEME METAS (Enables App Installation)
      ========================================================================== -->
-  <meta name="theme-color" content="#0b0f19">
+  <meta name="theme-color" content="#090c12">
   <meta name="mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -21,8 +21,22 @@
 
   <style>
     /* ==========================================================================
-       1. GLOBAL RESET & BASE STYLES
+       1. GLOBAL RESET & MOTORSPORT PIT-WALL THEME TOKENS
        ========================================================================== */
+    :root {
+      --bg-void: #080b10;
+      --bg-panel: #10151f;
+      --bg-elevated: #171e2c;
+      --border-subtle: rgba(148, 163, 184, 0.16);
+      --border-strong: rgba(245, 158, 11, 0.45);
+      --accent-amber: #f59e0b;
+      --accent-signal: #f97316;
+      --accent-cyan: #38bdf8;
+      --accent-emerald: #10b981;
+      --text-primary: #f1f5f9;
+      --text-muted: #94a3b8;
+    }
+
     * {
       user-select: none;
       -webkit-user-select: none;
@@ -40,11 +54,46 @@
       width: 100vw;
       height: 100vh;
       overflow: hidden;
-      background-color: #0b0f19;
+      background-color: var(--bg-void);
+      color: var(--text-primary);
       font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
     }
+    .font-mono, #hud-timer, #hud-best-val, #victory-final-time {
+      font-variant-numeric: tabular-nums;
+    }
     .neon-text {
-      text-shadow: 0 0 10px rgba(59, 130, 246, 0.7);
+      text-shadow: 0 2px 18px rgba(245, 158, 11, 0.28), 0 0 28px rgba(56, 189, 248, 0.18);
+    }
+
+    /* Cohesive Pit-Wall Panel & Button Surfaces */
+    .pit-panel {
+      background: linear-gradient(165deg, rgba(20, 27, 40, 0.96) 0%, rgba(11, 15, 23, 0.98) 100%);
+      border: 1px solid var(--border-subtle);
+      box-shadow: 0 24px 60px rgba(0, 0, 0, 0.75), inset 0 1px 0 rgba(255, 255, 255, 0.06);
+    }
+    .pit-card {
+      background: rgba(15, 21, 32, 0.88);
+      border: 1px solid rgba(148, 163, 184, 0.14);
+      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.04);
+    }
+    .pit-btn-primary {
+      background: linear-gradient(180deg, #f59e0b 0%, #d97706 100%);
+      color: #090c12;
+      border: 1px solid rgba(254, 243, 199, 0.35);
+      box-shadow: 0 6px 18px rgba(217, 119, 6, 0.28), inset 0 1px 0 rgba(255, 255, 255, 0.35);
+    }
+    .pit-btn-primary:hover {
+      background: linear-gradient(180deg, #fbbf24 0%, #f59e0b 100%);
+    }
+    .pit-btn-secondary {
+      background: linear-gradient(180deg, #1b2434 0%, #121824 100%);
+      color: #e2e8f0;
+      border: 1px solid rgba(148, 163, 184, 0.2);
+      box-shadow: 0 3px 10px rgba(0, 0, 0, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.06);
+    }
+    .pit-btn-secondary:hover {
+      background: linear-gradient(180deg, #243045 0%, #182030 100%);
+      border-color: rgba(245, 158, 11, 0.4);
     }
 
     /* Loading Logo Animations */
@@ -59,7 +108,7 @@
       100% { transform: translateX(100%); }
     }
     .animate-shimmer {
-      animation: shimmer 2s infinite;
+      animation: shimmer 2.2s infinite;
     }
 
     /* ==========================================================================
@@ -86,9 +135,9 @@
       width: 120px;
       height: 120px;
       border-radius: 50%;
-      background: radial-gradient(circle, rgba(30, 41, 59, 0.85) 0%, rgba(15, 23, 42, 0.95) 100%);
-      border: 3px solid rgba(56, 189, 248, 0.6);
-      box-shadow: 0 0 15px rgba(0, 0, 0, 0.6), inset 0 0 10px rgba(56, 189, 248, 0.2);
+      background: radial-gradient(circle at 35% 30%, rgba(30, 41, 59, 0.92) 0%, rgba(11, 15, 24, 0.96) 100%);
+      border: 2px solid rgba(245, 158, 11, 0.45);
+      box-shadow: 0 10px 24px rgba(0, 0, 0, 0.72), inset 0 2px 8px rgba(255, 255, 255, 0.06), inset 0 0 14px rgba(0, 0, 0, 0.8);
       position: relative;
       display: flex;
       align-items: center;
@@ -98,20 +147,21 @@
       width: 50px;
       height: 50px;
       border-radius: 50%;
-      background: radial-gradient(circle, #38bdf8 0%, #0284c7 100%);
-      border: 2px solid #e0f2fe;
-      box-shadow: 0 0 12px rgba(56, 189, 248, 0.8);
+      background: radial-gradient(circle at 35% 30%, #fbbf24 0%, #d97706 75%, #92400e 100%);
+      border: 2px solid rgba(254, 243, 199, 0.7);
+      box-shadow: 0 4px 14px rgba(0, 0, 0, 0.65), inset 0 1px 2px rgba(255, 255, 255, 0.5);
       position: absolute;
       transition: transform 0.04s ease-out;
       display: flex;
       align-items: center;
       justify-content: center;
-      color: white;
-      font-size: 18px;
+      color: #090c12;
+      font-size: 17px;
+      font-weight: bold;
     }
 
     /* ==========================================================================
-       4. TOUCH STEERING WHEEL STYLING
+       4. TOUCH STEERING WHEEL & PEDAL STYLING
        ========================================================================== */
     #steering-wheel-container {
       width: 140px;
@@ -122,9 +172,9 @@
       width: 100%;
       height: 100%;
       border-radius: 50%;
-      background: radial-gradient(circle, #334155 35%, #1e293b 75%, #0f172a 100%);
-      border: 7px solid #3b82f6;
-      box-shadow: inset 0 0 15px rgba(0,0,0,0.9), 0 0 18px rgba(59, 130, 246, 0.5);
+      background: radial-gradient(circle, #1e293b 38%, #0f172a 76%, #090d14 100%);
+      border: 7px solid #334155;
+      box-shadow: inset 0 0 16px rgba(0,0,0,0.95), 0 8px 22px rgba(0, 0, 0, 0.75), 0 0 0 2px rgba(245, 158, 11, 0.45);
       display: flex;
       align-items: center;
       justify-content: center;
@@ -134,34 +184,38 @@
       content: '';
       position: absolute;
       width: 100%;
-      height: 12px;
-      background: #3b82f6;
+      height: 11px;
+      background: #334155;
+      box-shadow: inset 0 1px 0 rgba(255,255,255,0.12);
     }
     #steering-wheel::after {
       content: '';
       position: absolute;
       height: 100%;
-      width: 12px;
-      background: #3b82f6;
+      width: 11px;
+      background: #334155;
+      box-shadow: inset 1px 0 0 rgba(255,255,255,0.12);
     }
     .wheel-center {
       width: 44px;
       height: 44px;
       border-radius: 50%;
-      background: #0284c7;
-      border: 3px solid #38bdf8;
+      background: linear-gradient(180deg, #f59e0b 0%, #b45309 100%);
+      border: 2px solid #fef3c7;
       z-index: 10;
       display: flex;
       align-items: center;
       justify-content: center;
-      box-shadow: 0 0 10px rgba(56, 189, 248, 0.8);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.65);
     }
     .pedal {
-      transition: transform 0.08s ease-out, filter 0.08s;
+      transition: transform 0.08s ease-out, filter 0.08s, box-shadow 0.08s;
+      box-shadow: 0 6px 14px rgba(0, 0, 0, 0.55), inset 0 1px 0 rgba(255, 255, 255, 0.22);
     }
     .pedal:active, .pedal.active {
-      transform: scale(0.92);
-      filter: brightness(1.25);
+      transform: translateY(2px) scale(0.95);
+      filter: brightness(1.18);
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.6), inset 0 2px 6px rgba(0, 0, 0, 0.35);
     }
 
     /* ==========================================================================
@@ -169,59 +223,60 @@
        ========================================================================== */
     .custom-scroll::-webkit-scrollbar {
       width: 5px;
+      height: 5px;
     }
     .custom-scroll::-webkit-scrollbar-track {
-      background: rgba(15, 23, 42, 0.8);
+      background: rgba(11, 15, 23, 0.85);
       border-radius: 4px;
     }
     .custom-scroll::-webkit-scrollbar-thumb {
-      background: #3b82f6;
+      background: rgba(245, 158, 11, 0.55);
       border-radius: 4px;
     }
     .custom-scroll {
       scrollbar-width: thin;
-      scrollbar-color: #3b82f6 rgba(15, 23, 42, 0.8);
+      scrollbar-color: rgba(245, 158, 11, 0.55) rgba(11, 15, 23, 0.85);
       touch-action: pan-y !important;
       -webkit-overflow-scrolling: touch !important;
       overflow-y: auto !important;
     }
 
     input[type=range] {
-      accent-color: #3b82f6;
+      accent-color: #f59e0b;
     }
   </style>
 </head>
-<body class="bg-slate-950 text-white flex flex-col h-screen w-screen overflow-hidden">
+<body class="bg-[#080b10] text-slate-100 flex flex-col h-screen w-screen overflow-hidden">
 
   <!-- ==========================================================================
      [UI OVERLAY] INITIAL LOADING SCREEN (Option 4 Sports Car Silhouette Logo)
      ========================================================================== -->
-  <div id="modal-loading-screen" class="fixed inset-0 z-[100] bg-slate-950 flex flex-col items-center justify-center p-6 space-y-6 transition-opacity duration-700">
+  <div id="modal-loading-screen" class="fixed inset-0 z-[100] bg-[#080b10] flex flex-col items-center justify-center p-6 space-y-6 transition-opacity duration-700">
     <div class="max-w-xs w-full text-center space-y-4">
-      <div class="w-32 h-32 mx-auto rounded-3xl border-2 border-cyan-400/80 shadow-[0_0_35px_rgba(6,182,212,0.6)] bg-gradient-to-tr from-slate-950 via-blue-950 to-indigo-900 flex items-center justify-center relative overflow-hidden animate-car-float">
+      <div class="w-32 h-32 mx-auto rounded-3xl border border-amber-400/50 shadow-[0_16px_40px_rgba(0,0,0,0.8),0_0_25px_rgba(245,158,11,0.18)] bg-gradient-to-tr from-[#0b0f18] via-[#151e2e] to-[#1e293b] flex items-center justify-center relative overflow-hidden animate-car-float">
         <!-- Option 4 Vector Sports Car Silhouette with Checkered Spoiler Accent -->
-        <svg class="w-24 h-24 text-cyan-400 drop-shadow-[0_0_15px_rgba(56,189,248,0.9)]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-          <path d="M2 13l2-3h3l2 3h8l2-3h3l1 3v2H2v-2z" fill="currentColor" fill-opacity="0.3"></path>
+        <svg class="w-24 h-24 text-amber-400 drop-shadow-[0_0_12px_rgba(245,158,11,0.45)]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M2 13l2-3h3l2 3h8l2-3h3l1 3v2H2v-2z" fill="currentColor" fill-opacity="0.22"></path>
           <path d="M2 13h20v2a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2v-2z"></path>
-          <circle cx="6.5" cy="16.5" r="2.5" fill="#0b0f19" stroke="currentColor" stroke-width="1.5"></circle>
-          <circle cx="17.5" cy="16.5" r="2.5" fill="#0b0f19" stroke="currentColor" stroke-width="1.5"></circle>
+          <circle cx="6.5" cy="16.5" r="2.5" fill="#090c12" stroke="currentColor" stroke-width="1.5"></circle>
+          <circle cx="17.5" cy="16.5" r="2.5" fill="#090c12" stroke="currentColor" stroke-width="1.5"></circle>
           <path d="M14 8l4-4m0 0l-3 1m3-1v3" stroke-linecap="round" stroke-linejoin="round"></path>
         </svg>
-        <div class="absolute inset-0 bg-gradient-to-r from-transparent via-cyan-400/20 to-transparent -translate-x-full animate-shimmer pointer-events-none"></div>
+        <div class="absolute inset-0 bg-gradient-to-r from-transparent via-amber-300/15 to-transparent -translate-x-full animate-shimmer pointer-events-none"></div>
       </div>
 
       <div>
-        <h1 class="text-3xl font-black italic tracking-wider text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 via-blue-400 to-emerald-400 neon-text">
+        <h1 class="text-3xl font-black italic tracking-wider text-transparent bg-clip-text bg-gradient-to-r from-amber-300 via-amber-400 to-orange-400 neon-text">
           TURBO MAZE
         </h1>
-        <p class="text-xs text-slate-400 mt-1 uppercase tracking-widest font-bold">PWA Installable & Sound Fixed</p>
+        <p class="text-[11px] text-slate-400 mt-1 uppercase tracking-widest font-bold">Circuit Telemetry & Offline Ready</p>
       </div>
 
-      <div class="w-full bg-slate-900 border border-slate-800 rounded-full h-2.5 overflow-hidden p-0.5">
-        <div id="loading-progress-bar" class="bg-gradient-to-r from-cyan-400 to-emerald-400 h-full rounded-full transition-all duration-300" style="width: 0%;"></div>
+      <div class="w-full bg-slate-900/95 border border-slate-800 rounded-full h-2.5 overflow-hidden p-0.5">
+        <div id="loading-progress-bar" class="bg-gradient-to-r from-amber-400 to-orange-500 h-full rounded-full transition-all duration-300" style="width: 0%;"></div>
       </div>
 
-      <div class="bg-slate-900/90 border border-slate-800 rounded-xl p-3 text-left space-y-1 shadow-lg">
+      <div class="pit-card rounded-xl p-3 text-left space-y-1 shadow-lg">
         <div class="text-[10px] font-bold text-amber-400 uppercase flex items-center gap-1.5">
           <i class="fa-solid fa-cloud-arrow-down"></i> Ready to Install as App
         </div>
@@ -233,17 +288,17 @@
   </div>
 
   <!-- [UI OVERLAY] RACE START COUNTDOWN -->
-  <div id="modal-countdown" class="fixed inset-0 z-[90] bg-slate-950/85 backdrop-blur-md hidden flex items-center justify-center">
-    <div id="countdown-number" class="text-9xl font-black italic text-transparent bg-clip-text bg-gradient-to-r from-amber-400 via-orange-400 to-emerald-400 drop-shadow-[0_0_30px_rgba(245,158,11,0.6)] animate-pulse">
+  <div id="modal-countdown" class="fixed inset-0 z-[90] bg-[#080b10]/85 backdrop-blur-md hidden flex items-center justify-center">
+    <div id="countdown-number" class="text-9xl font-black italic text-transparent bg-clip-text bg-gradient-to-r from-amber-300 via-amber-400 to-emerald-400 drop-shadow-[0_0_30px_rgba(245,158,11,0.45)] animate-pulse">
       3
     </div>
   </div>
 
   <!-- [UI OVERLAY] TOP GAME HUD HEADER -->
-  <div id="game-hud" class="absolute top-0 left-0 right-0 z-40 flex justify-between items-center px-4 py-2 bg-slate-900/85 backdrop-blur-md border-b border-slate-800 pointer-events-auto">
+  <div id="game-hud" class="absolute top-0 left-0 right-0 z-40 flex justify-between items-center px-4 py-2 bg-[#0c1018]/90 backdrop-blur-md border-b border-slate-800/90 shadow-lg pointer-events-auto">
     <div class="flex items-center space-x-3">
-      <button id="btn-back-menu" class="bg-slate-800 hover:bg-slate-700 text-slate-200 px-3 py-1.5 rounded-lg border border-slate-700 flex items-center justify-center">
-        <i class="fa-solid fa-house text-sm"></i>
+      <button id="btn-back-menu" class="pit-btn-secondary px-3 py-1.5 rounded-lg flex items-center justify-center">
+        <i class="fa-solid fa-house text-sm text-amber-400"></i>
       </button>
       <div>
         <div id="hud-level-title" class="text-[11px] uppercase tracking-wider text-slate-400 font-bold">Level 1</div>
@@ -256,19 +311,19 @@
         <div class="text-[9px] uppercase text-slate-400 font-bold">Track Record</div>
         <div id="hud-best-val" class="text-xs font-mono text-emerald-400">--:--.---</div>
       </div>
-      <button id="btn-pause-game" class="bg-amber-600 hover:bg-amber-500 text-white text-xs px-3 py-1.5 rounded-lg font-bold shadow-md flex items-center space-x-1">
+      <button id="btn-pause-game" class="pit-btn-secondary text-amber-300 text-xs px-3 py-1.5 rounded-lg font-bold flex items-center space-x-1">
         <i class="fa-solid fa-pause"></i>
         <span>Pause</span>
       </button>
-      <button id="btn-edit-controls-hud" class="bg-amber-600 hover:bg-amber-500 text-white text-xs px-2.5 py-1.5 rounded-lg font-bold shadow-md flex items-center space-x-1">
-        <i class="fa-solid fa-up-down-left-right"></i>
+      <button id="btn-edit-controls-hud" class="pit-btn-secondary text-slate-200 text-xs px-2.5 py-1.5 rounded-lg font-bold flex items-center space-x-1">
+        <i class="fa-solid fa-up-down-left-right text-amber-400"></i>
         <span class="hidden sm:inline">Controls</span>
       </button>
-      <button id="btn-full-map" class="bg-blue-600 hover:bg-blue-500 text-white text-xs px-3 py-1.5 rounded-lg font-bold shadow-md flex items-center space-x-1">
+      <button id="btn-full-map" class="pit-btn-secondary text-sky-300 text-xs px-3 py-1.5 rounded-lg font-bold flex items-center space-x-1">
         <i class="fa-solid fa-map"></i>
         <span>Full Map</span>
       </button>
-      <button id="btn-open-settings" class="bg-slate-800 hover:bg-slate-700 text-slate-200 p-1.5 rounded-lg border border-slate-700">
+      <button id="btn-open-settings" class="pit-btn-secondary text-slate-200 p-1.5 rounded-lg">
         <i class="fa-solid fa-gear text-sm"></i>
       </button>
     </div>
@@ -309,7 +364,7 @@
       <div id="steering-wheel-container">
         <div id="steering-wheel">
           <div class="wheel-center">
-            <i class="fa-solid fa-car-side text-sm text-white"></i>
+            <i class="fa-solid fa-car-side text-sm text-slate-950"></i>
           </div>
         </div>
       </div>
@@ -317,10 +372,10 @@
 
     <!-- CLASSIC LEFT / RIGHT BUTTONS -->
     <div id="ctrl-buttons-wrapper" class="floating-control hidden flex space-x-3" style="bottom: 24px; left: 24px;">
-      <button id="btn-steer-left" class="pedal w-16 h-16 bg-slate-900/90 border-2 border-blue-500 rounded-2xl flex items-center justify-center text-blue-400 text-2xl shadow-lg active:bg-blue-600 active:text-white">
+      <button id="btn-steer-left" class="pedal w-16 h-16 bg-gradient-to-b from-slate-800 to-slate-950 border border-amber-400/50 rounded-2xl flex items-center justify-center text-amber-400 text-2xl active:bg-amber-500 active:text-slate-950">
         <i class="fa-solid fa-caret-left"></i>
       </button>
-      <button id="btn-steer-right" class="pedal w-16 h-16 bg-slate-900/90 border-2 border-blue-500 rounded-2xl flex items-center justify-center text-blue-400 text-2xl shadow-lg active:bg-blue-600 active:text-white">
+      <button id="btn-steer-right" class="pedal w-16 h-16 bg-gradient-to-b from-slate-800 to-slate-950 border border-amber-400/50 rounded-2xl flex items-center justify-center text-amber-400 text-2xl active:bg-amber-500 active:text-slate-950">
         <i class="fa-solid fa-caret-right"></i>
       </button>
     </div>
@@ -328,7 +383,7 @@
     <!-- BRAKE PEDAL -->
     <div id="ctrl-brake-wrapper" class="floating-control hidden flex flex-col items-center" style="bottom: 20px; right: 100px;">
       <span class="text-[9px] font-bold text-rose-400 uppercase tracking-widest mb-1">Brake</span>
-      <button id="btn-pedal-brake" class="pedal w-14 h-24 bg-gradient-to-b from-rose-600 to-rose-800 border-2 border-rose-400 rounded-2xl flex items-center justify-center text-white text-xl shadow-lg active:bg-rose-500">
+      <button id="btn-pedal-brake" class="pedal w-14 h-24 bg-gradient-to-b from-rose-600/90 to-rose-950 border border-rose-400/60 rounded-2xl flex items-center justify-center text-white text-xl">
         <i class="fa-solid fa-angles-down"></i>
       </button>
     </div>
@@ -336,7 +391,7 @@
     <!-- GAS PEDAL -->
     <div id="ctrl-gas-wrapper" class="floating-control hidden flex flex-col items-center" style="bottom: 20px; right: 24px;">
       <span class="text-[9px] font-bold text-emerald-400 uppercase tracking-widest mb-1">Gas</span>
-      <button id="btn-pedal-gas" class="pedal w-14 h-28 bg-gradient-to-b from-emerald-500 to-emerald-700 border-2 border-emerald-300 rounded-2xl flex items-center justify-center text-white text-xl shadow-lg active:bg-emerald-400">
+      <button id="btn-pedal-gas" class="pedal w-14 h-28 bg-gradient-to-b from-emerald-500/90 to-emerald-900 border border-emerald-300/60 rounded-2xl flex items-center justify-center text-slate-950 font-black text-xl">
         <i class="fa-solid fa-angles-up"></i>
       </button>
     </div>
@@ -347,23 +402,23 @@
      ========================================================================== -->
 
   <!-- PAUSE MODAL -->
-  <div id="modal-pause" class="fixed inset-0 z-50 bg-slate-950/85 backdrop-blur-md hidden flex items-center justify-center p-4">
-    <div class="max-w-sm w-full bg-slate-900 border border-slate-700 rounded-2xl shadow-2xl p-6 text-center space-y-4">
-      <div class="w-12 h-12 bg-amber-500/20 border-2 border-amber-400 rounded-full flex items-center justify-center mx-auto text-amber-400 text-xl">
+  <div id="modal-pause" class="fixed inset-0 z-50 bg-[#080b10]/85 backdrop-blur-md hidden flex items-center justify-center p-4">
+    <div class="max-w-sm w-full pit-panel rounded-2xl p-6 text-center space-y-4">
+      <div class="w-12 h-12 bg-amber-500/15 border border-amber-400/60 rounded-full flex items-center justify-center mx-auto text-amber-400 text-xl">
         <i class="fa-solid fa-pause"></i>
       </div>
       <div>
-        <h2 class="text-2xl font-black text-white">GAME PAUSED</h2>
-        <p class="text-xs text-slate-400 mt-1">Take a breather, driver.</p>
+        <h2 class="text-2xl font-black tracking-wide text-white">RACE PAUSED</h2>
+        <p class="text-xs text-slate-400 mt-1">Pit stop active — take a breather, driver.</p>
       </div>
       <div class="space-y-2 pt-2">
-        <button id="pause-btn-resume" class="w-full py-3 bg-blue-600 hover:bg-blue-500 text-white font-bold rounded-xl shadow-lg text-sm">
-          Resume Game
+        <button id="pause-btn-resume" class="w-full py-3 pit-btn-primary font-bold rounded-xl text-sm">
+          Resume Race
         </button>
-        <button id="pause-btn-restart" class="w-full py-2.5 bg-slate-800 hover:bg-slate-700 text-slate-200 font-bold rounded-xl border border-slate-700 text-sm">
+        <button id="pause-btn-restart" class="w-full py-2.5 pit-btn-secondary font-bold rounded-xl text-sm">
           Restart Level
         </button>
-        <button id="pause-btn-menu" class="w-full py-2.5 bg-slate-800 hover:bg-slate-700 text-slate-200 font-bold rounded-xl border border-slate-700 text-sm">
+        <button id="pause-btn-menu" class="w-full py-2.5 pit-btn-secondary font-bold rounded-xl text-sm">
           Main Menu
         </button>
       </div>
@@ -371,47 +426,47 @@
   </div>
 
   <!-- FULL MAZE MAP OVERLAY MODAL -->
-  <div id="modal-full-map" class="fixed inset-0 z-40 bg-slate-950/95 backdrop-blur-md hidden flex flex-col items-center justify-center p-4">
-    <div class="w-full max-w-3xl bg-slate-900 border border-slate-700 rounded-2xl p-4 flex flex-col h-[88vh]">
+  <div id="modal-full-map" class="fixed inset-0 z-40 bg-[#080b10]/95 backdrop-blur-md hidden flex flex-col items-center justify-center p-4">
+    <div class="w-full max-w-3xl pit-panel rounded-2xl p-4 flex flex-col h-[88vh]">
       <div class="flex justify-between items-center border-b border-slate-800 pb-2 mb-2">
         <div class="flex items-center space-x-2">
-          <i class="fa-solid fa-map-location-dot text-blue-400"></i>
+          <i class="fa-solid fa-map-location-dot text-amber-400"></i>
           <span id="full-map-title" class="font-bold text-white text-sm">Full Maze View (Pinch to Zoom, Drag to Pan)</span>
         </div>
         <div class="flex items-center space-x-2">
-          <button id="btn-zoom-in-map" class="bg-slate-800 hover:bg-slate-700 text-blue-400 w-7 h-7 rounded-lg text-xs font-bold border border-slate-700 flex items-center justify-center">
+          <button id="btn-zoom-in-map" class="pit-btn-secondary text-amber-400 w-7 h-7 rounded-lg text-xs font-bold flex items-center justify-center">
             <i class="fa-solid fa-plus"></i>
           </button>
-          <button id="btn-zoom-out-map" class="bg-slate-800 hover:bg-slate-700 text-blue-400 w-7 h-7 rounded-lg text-xs font-bold border border-slate-700 flex items-center justify-center">
+          <button id="btn-zoom-out-map" class="pit-btn-secondary text-amber-400 w-7 h-7 rounded-lg text-xs font-bold flex items-center justify-center">
             <i class="fa-solid fa-minus"></i>
           </button>
-          <button id="btn-reset-zoom-map" class="bg-slate-800 hover:bg-slate-700 text-slate-300 px-2 py-1 rounded-lg text-xs font-bold border border-slate-700">
+          <button id="btn-reset-zoom-map" class="pit-btn-secondary text-slate-300 px-2 py-1 rounded-lg text-xs font-bold">
             Reset
           </button>
-          <button id="btn-close-full-map" class="bg-slate-800 hover:bg-slate-700 text-slate-300 px-3 py-1 rounded-lg text-xs font-bold border border-slate-700">
+          <button id="btn-close-full-map" class="pit-btn-secondary text-slate-300 px-3 py-1 rounded-lg text-xs font-bold">
             Close
           </button>
         </div>
       </div>
-      <div id="full-map-canvas-wrapper" class="flex-1 w-full h-full flex items-center justify-center bg-slate-950 rounded-xl overflow-hidden p-2 relative touch-none">
+      <div id="full-map-canvas-wrapper" class="flex-1 w-full h-full flex items-center justify-center bg-[#070a0f] border border-slate-800/80 rounded-xl overflow-hidden p-2 relative touch-none">
         <canvas id="fullMapCanvas" class="cursor-grab active:cursor-grabbing"></canvas>
       </div>
     </div>
   </div>
 
   <!-- MAIN MENU OVERLAY -->
-  <div id="modal-menu" class="fixed inset-0 z-50 bg-slate-950/90 backdrop-blur-lg flex items-center justify-center p-4">
-    <div class="max-w-md w-full bg-slate-900 border border-slate-700 rounded-2xl shadow-2xl p-6 text-center space-y-4">
+  <div id="modal-menu" class="fixed inset-0 z-50 bg-[#080b10]/90 backdrop-blur-lg flex items-center justify-center p-4">
+    <div class="max-w-md w-full pit-panel rounded-2xl p-6 text-center space-y-4">
       <div>
-        <h1 class="text-4xl font-black italic tracking-wider text-transparent bg-clip-text bg-gradient-to-r from-blue-400 via-indigo-300 to-emerald-400 neon-text">
+        <h1 class="text-4xl font-black italic tracking-wider text-transparent bg-clip-text bg-gradient-to-r from-amber-300 via-amber-400 to-orange-400 neon-text">
           TURBO MAZE
         </h1>
-        <p class="text-slate-400 text-xs mt-1">PWA Installable & Sound Fixed Edition</p>
+        <p class="text-slate-400 text-xs mt-1 tracking-wide">Circuit Maze & Night Telemetry Edition</p>
       </div>
 
       <!-- MODE SELECTION SWITCH -->
-      <div class="bg-slate-950 p-1.5 rounded-xl border border-slate-800 flex">
-        <button id="menu-tab-standard" class="w-1/2 py-2 rounded-lg text-xs font-bold transition bg-blue-600 text-white shadow">
+      <div class="bg-[#090d14] p-1.5 rounded-xl border border-slate-800 flex">
+        <button id="menu-tab-standard" class="w-1/2 py-2 rounded-lg text-xs font-bold transition bg-amber-500 text-slate-950 shadow">
           ☀️ Standard
         </button>
         <button id="menu-tab-dark" class="w-1/2 py-2 rounded-lg text-xs font-bold transition text-slate-400 hover:text-white">
@@ -420,23 +475,23 @@
       </div>
 
       <div class="space-y-2.5">
-        <button id="menu-btn-play" class="w-full py-3.5 bg-blue-600 hover:bg-blue-500 text-white font-bold rounded-xl shadow-lg shadow-blue-500/30 flex items-center justify-center space-x-2 text-base transition transform active:scale-95">
+        <button id="menu-btn-play" class="w-full py-3.5 pit-btn-primary font-bold rounded-xl flex items-center justify-center space-x-2 text-base transition transform active:scale-95">
           <i class="fa-solid fa-flag-checkered"></i>
           <span id="menu-play-btn-label">Standard Campaign</span>
         </button>
 
-        <button id="menu-btn-garage" class="w-full py-3 bg-gradient-to-r from-amber-600 to-orange-600 hover:from-amber-500 hover:to-orange-500 text-white font-bold rounded-xl shadow-lg shadow-amber-600/30 flex items-center justify-center space-x-2 transition">
-          <i class="fa-solid fa-warehouse"></i>
+        <button id="menu-btn-garage" class="w-full py-3 pit-btn-secondary font-bold rounded-xl flex items-center justify-center space-x-2 transition">
+          <i class="fa-solid fa-warehouse text-amber-400"></i>
           <span>Car Garage & Showroom</span>
         </button>
 
-        <button id="menu-btn-leaderboard" class="w-full py-3 bg-slate-800 hover:bg-slate-700 text-slate-200 font-bold rounded-xl border border-slate-700 flex items-center justify-center space-x-2 transition">
+        <button id="menu-btn-leaderboard" class="w-full py-3 pit-btn-secondary font-bold rounded-xl flex items-center justify-center space-x-2 transition">
           <i class="fa-solid fa-trophy text-amber-400"></i>
           <span>Track Leaderboards</span>
         </button>
 
-        <button id="menu-btn-settings" class="w-full py-3 bg-slate-800 hover:bg-slate-700 text-slate-200 font-bold rounded-xl border border-slate-700 flex items-center justify-center space-x-2 transition">
-          <i class="fa-solid fa-sliders text-slate-400"></i>
+        <button id="menu-btn-settings" class="w-full py-3 pit-btn-secondary font-bold rounded-xl flex items-center justify-center space-x-2 transition">
+          <i class="fa-solid fa-sliders text-slate-300"></i>
           <span>Control Options & Tuning</span>
         </button>
       </div>
@@ -444,8 +499,8 @@
   </div>
 
   <!-- GARAGE & SHOWROOM MODAL -->
-  <div id="modal-garage" class="fixed inset-0 z-50 bg-slate-950/92 backdrop-blur-lg hidden flex items-center justify-center p-3 sm:p-4">
-    <div class="max-w-2xl w-full bg-slate-900 border border-amber-500/50 rounded-2xl shadow-2xl p-4 sm:p-5 space-y-4 max-h-[92vh] h-[92vh] flex flex-col">
+  <div id="modal-garage" class="fixed inset-0 z-50 bg-[#080b10]/92 backdrop-blur-lg hidden flex items-center justify-center p-3 sm:p-4">
+    <div class="max-w-2xl w-full pit-panel border-amber-500/35 rounded-2xl p-4 sm:p-5 space-y-4 max-h-[92vh] h-[92vh] flex flex-col">
       <div class="flex justify-between items-center border-b border-slate-800 pb-3 shrink-0">
         <h2 class="text-lg font-bold text-white flex items-center gap-2">
           <i class="fa-solid fa-warehouse text-amber-400"></i> Car Garage & Customization Showroom
@@ -457,10 +512,10 @@
 
       <div class="grid grid-cols-1 md:grid-cols-2 gap-4 flex-1 overflow-y-auto custom-scroll pr-1 min-h-0">
         <div class="space-y-4 flex flex-col">
-          <div class="bg-slate-950 border border-slate-800 rounded-2xl p-4 flex flex-col items-center justify-center relative overflow-hidden h-52 shrink-0 shadow-inner">
+          <div class="bg-[#090d14] border border-slate-800 rounded-2xl p-4 flex flex-col items-center justify-center relative overflow-hidden h-52 shrink-0 shadow-inner">
             <div class="absolute top-2 left-3 text-[10px] font-bold text-slate-400 uppercase tracking-widest">Live 2D Preview</div>
             <canvas id="garagePreviewCanvas" class="w-48 h-48 cursor-grab active:cursor-grabbing"></canvas>
-            <div id="garage-car-model-badge" class="absolute bottom-2 text-xs font-mono font-bold text-amber-400 bg-slate-900/90 px-3 py-1 rounded-full border border-slate-700">Starter Buggy</div>
+            <div id="garage-car-model-badge" class="absolute bottom-2 text-xs font-mono font-bold text-amber-400 bg-slate-900/95 px-3 py-1 rounded-full border border-slate-700">Starter Buggy</div>
           </div>
 
           <div>
@@ -491,7 +546,7 @@
       </div>
 
       <div class="pt-2 border-t border-slate-800 shrink-0">
-        <button class="btn-close-modal w-full py-3 bg-amber-600 hover:bg-amber-500 text-white font-bold rounded-xl shadow-lg text-sm flex items-center justify-center gap-2">
+        <button class="btn-close-modal w-full py-3 pit-btn-primary font-bold rounded-xl text-sm flex items-center justify-center gap-2">
           <i class="fa-solid fa-check"></i> Save & Exit Garage
         </button>
       </div>
@@ -499,11 +554,11 @@
   </div>
 
   <!-- LEVEL SELECT MODAL -->
-  <div id="modal-levels" class="fixed inset-0 z-50 bg-slate-950/90 backdrop-blur-lg hidden flex items-center justify-center p-3 sm:p-4" style="touch-action: auto;">
-    <div class="max-w-2xl w-full bg-slate-900 border border-slate-700 rounded-2xl shadow-2xl p-4 sm:p-5 space-y-3 max-h-[92vh] h-[92vh] flex flex-col" style="touch-action: auto;">
+  <div id="modal-levels" class="fixed inset-0 z-50 bg-[#080b10]/90 backdrop-blur-lg hidden flex items-center justify-center p-3 sm:p-4" style="touch-action: auto;">
+    <div class="max-w-2xl w-full pit-panel rounded-2xl p-4 sm:p-5 space-y-3 max-h-[92vh] h-[92vh] flex flex-col" style="touch-action: auto;">
       <div class="flex justify-between items-center border-b border-slate-800 pb-3 shrink-0">
         <h2 class="text-base sm:text-lg font-bold text-white flex items-center gap-2" id="level-modal-header">
-          <i class="fa-solid fa-layer-group text-blue-400"></i> Campaign Levels
+          <i class="fa-solid fa-layer-group text-amber-400"></i> Campaign Levels
         </h2>
         <button class="btn-close-modal text-slate-400 hover:text-white p-1">
           <i class="fa-solid fa-xmark text-lg"></i>
@@ -512,9 +567,9 @@
 
       <div class="flex gap-2 overflow-x-auto pb-2 border-b border-slate-800 shrink-0 custom-scroll" id="tier-tabs" style="touch-action: pan-x !important;"></div>
 
-      <div class="flex items-center justify-between bg-slate-950/80 px-3 py-2 rounded-xl border border-slate-800 shrink-0">
+      <div class="flex items-center justify-between bg-[#090d14]/90 px-3 py-2 rounded-xl border border-slate-800 shrink-0">
         <span class="text-xs text-slate-400 font-bold" id="block-range-label">Select Range:</span>
-        <select id="level-block-select" class="bg-slate-800 border border-slate-700 rounded-lg px-2 py-1 text-white text-xs font-bold focus:outline-none focus:border-blue-500"></select>
+        <select id="level-block-select" class="bg-slate-800 border border-slate-700 rounded-lg px-2 py-1 text-white text-xs font-bold focus:outline-none focus:border-amber-500"></select>
       </div>
 
       <div id="levels-container" class="space-y-2.5 overflow-y-auto custom-scroll pr-1 flex-1 min-h-0" style="touch-action: pan-y !important;"></div>
@@ -522,8 +577,8 @@
   </div>
 
   <!-- PRE-RACE CAR TUNING MODAL -->
-  <div id="modal-pre-race-tuning" class="fixed inset-0 z-50 bg-slate-950/90 backdrop-blur-lg hidden flex items-center justify-center p-4">
-    <div class="max-w-md w-full bg-slate-900 border border-blue-500/50 rounded-2xl shadow-2xl p-5 space-y-4 max-h-[90vh] overflow-y-auto custom-scroll min-h-0">
+  <div id="modal-pre-race-tuning" class="fixed inset-0 z-50 bg-[#080b10]/90 backdrop-blur-lg hidden flex items-center justify-center p-4">
+    <div class="max-w-md w-full pit-panel border-amber-500/35 rounded-2xl p-5 space-y-4 max-h-[90vh] overflow-y-auto custom-scroll min-h-0">
       <div class="flex justify-between items-center border-b border-slate-800 pb-2">
         <h2 class="text-lg font-bold text-white flex items-center gap-2">
           <i class="fa-solid fa-gauge-high text-amber-400"></i> Pre-Race Car Setup
@@ -538,10 +593,10 @@
       <div id="pre-race-tuning-controls" class="space-y-3.5"></div>
 
       <div class="pt-2 flex gap-2">
-        <button id="btn-reset-tuning-pr" class="w-1/3 py-3 bg-slate-800 hover:bg-slate-700 text-slate-300 font-bold rounded-xl border border-slate-700 text-xs">
+        <button id="btn-reset-tuning-pr" class="w-1/3 py-3 pit-btn-secondary font-bold rounded-xl text-xs">
           Reset Stats
         </button>
-        <button id="btn-start-race-now" class="w-2/3 py-3 bg-emerald-600 hover:bg-emerald-500 text-white font-bold rounded-xl shadow-lg shadow-emerald-600/30 text-sm flex items-center justify-center gap-2">
+        <button id="btn-start-race-now" class="w-2/3 py-3 bg-gradient-to-b from-emerald-500 to-emerald-700 hover:from-emerald-400 hover:to-emerald-600 text-slate-950 font-black rounded-xl shadow-lg text-sm flex items-center justify-center gap-2">
           <i class="fa-solid fa-flag-checkered"></i> Start Race
         </button>
       </div>
@@ -549,11 +604,11 @@
   </div>
 
   <!-- CONTROL SETTINGS & AUDIO PREFERENCES MODAL -->
-  <div id="modal-settings" class="fixed inset-0 z-50 bg-slate-950/90 backdrop-blur-lg hidden flex items-center justify-center p-4">
-    <div class="max-w-md w-full bg-slate-900 border border-slate-700 rounded-2xl shadow-2xl p-5 space-y-4 max-h-[90vh] overflow-y-auto custom-scroll min-h-0">
+  <div id="modal-settings" class="fixed inset-0 z-50 bg-[#080b10]/90 backdrop-blur-lg hidden flex items-center justify-center p-4">
+    <div class="max-w-md w-full pit-panel rounded-2xl p-5 space-y-4 max-h-[90vh] overflow-y-auto custom-scroll min-h-0">
       <div class="flex justify-between items-center border-b border-slate-800 pb-3">
         <h2 class="text-lg font-bold text-white flex items-center gap-2">
-          <i class="fa-solid fa-sliders text-blue-400"></i> Preferences & Audio
+          <i class="fa-solid fa-sliders text-amber-400"></i> Preferences & Audio
         </h2>
         <button class="btn-close-modal text-slate-400 hover:text-white p-1">
           <i class="fa-solid fa-xmark text-lg"></i>
@@ -562,7 +617,7 @@
 
       <div class="space-y-4">
         <!-- AUDIO VOLUME CONTROLS -->
-        <div class="bg-slate-800/80 p-3 rounded-xl border border-slate-700 space-y-3">
+        <div class="pit-card p-3 rounded-xl space-y-3">
           <div class="text-xs uppercase tracking-wider text-amber-400 font-bold flex items-center gap-1.5">
             <i class="fa-solid fa-volume-high"></i> Sound & Music Volume
           </div>
@@ -570,7 +625,7 @@
           <div>
             <div class="flex justify-between items-center text-xs mb-1">
               <span class="text-slate-300 font-medium">Master Volume</span>
-              <span class="font-mono text-cyan-400 font-bold" id="vol-master-val">100%</span>
+              <span class="font-mono text-amber-400 font-bold" id="vol-master-val">100%</span>
             </div>
             <input type="range" id="vol-master-range" min="0" max="1" step="0.05" value="1.0" class="w-full h-2 bg-slate-900 rounded-lg appearance-none cursor-pointer">
           </div>
@@ -578,7 +633,7 @@
           <div>
             <div class="flex justify-between items-center text-xs mb-1">
               <span class="text-slate-300 font-medium">Sound Effects (SFX)</span>
-              <span class="font-mono text-cyan-400 font-bold" id="vol-sfx-val">100%</span>
+              <span class="font-mono text-amber-400 font-bold" id="vol-sfx-val">100%</span>
             </div>
             <input type="range" id="vol-sfx-range" min="0" max="1" step="0.05" value="1.0" class="w-full h-2 bg-slate-900 rounded-lg appearance-none cursor-pointer">
           </div>
@@ -586,7 +641,7 @@
           <div>
             <div class="flex justify-between items-center text-xs mb-1">
               <span class="text-slate-300 font-medium">Background Music (BGM)</span>
-              <span class="font-mono text-cyan-400 font-bold" id="vol-bgm-val">70%</span>
+              <span class="font-mono text-amber-400 font-bold" id="vol-bgm-val">70%</span>
             </div>
             <input type="range" id="vol-bgm-range" min="0" max="1" step="0.05" value="0.7" class="w-full h-2 bg-slate-900 rounded-lg appearance-none cursor-pointer">
           </div>
@@ -595,31 +650,31 @@
         <div>
           <label class="block text-xs uppercase tracking-wider text-slate-400 font-bold mb-2">Steering Interface</label>
           <div class="grid grid-cols-3 gap-2">
-            <button id="opt-steer-joysticks" class="p-2.5 bg-blue-600/20 border-2 border-blue-500 rounded-xl text-center flex flex-col items-center space-y-1">
-              <i class="fa-solid fa-gamepad text-xl text-blue-400"></i>
+            <button id="opt-steer-joysticks" class="p-2.5 bg-amber-500/15 border-2 border-amber-400 rounded-xl text-center flex flex-col items-center space-y-1">
+              <i class="fa-solid fa-gamepad text-xl text-amber-400"></i>
               <span class="text-[10px] font-bold text-white">Dual Joysticks</span>
             </button>
-            <button id="opt-steer-buttons" class="p-2.5 bg-slate-800 border-2 border-transparent rounded-xl text-center flex flex-col items-center space-y-1">
+            <button id="opt-steer-buttons" class="p-2.5 pit-card border-2 border-transparent rounded-xl text-center flex flex-col items-center space-y-1">
               <i class="fa-solid fa-arrows-left-right text-xl text-slate-400"></i>
               <span class="text-[10px] font-bold text-white">L/R Buttons</span>
             </button>
-            <button id="opt-steer-wheel" class="p-2.5 bg-slate-800 border-2 border-transparent rounded-xl text-center flex flex-col items-center space-y-1">
+            <button id="opt-steer-wheel" class="p-2.5 pit-card border-2 border-transparent rounded-xl text-center flex flex-col items-center space-y-1">
               <i class="fa-solid fa-steering-wheel text-xl text-slate-400"></i>
               <span class="text-[10px] font-bold text-white">Touch Wheel</span>
             </button>
           </div>
         </div>
 
-        <div class="bg-slate-800/80 p-3 rounded-xl border border-slate-700">
+        <div class="pit-card p-3 rounded-xl">
           <div class="flex justify-between items-center text-xs mb-1.5">
             <span class="font-bold text-slate-300">Control Size Scale</span>
-            <span class="font-mono text-cyan-400 font-bold" id="control-scale-val">100%</span>
+            <span class="font-mono text-amber-400 font-bold" id="control-scale-val">100%</span>
           </div>
           <input type="range" id="control-scale-range" min="0.7" max="1.5" step="0.05" value="1.0" class="w-full h-2 bg-slate-900 rounded-lg appearance-none cursor-pointer">
         </div>
 
         <div>
-          <button id="btn-start-adjust-controls" class="w-full py-2.5 bg-amber-600/20 hover:bg-amber-600/30 border border-amber-500 text-amber-300 font-bold rounded-xl text-xs flex items-center justify-center space-x-2">
+          <button id="btn-start-adjust-controls" class="w-full py-2.5 pit-btn-secondary border-amber-500/40 text-amber-300 font-bold rounded-xl text-xs flex items-center justify-center space-x-2">
             <i class="fa-solid fa-up-down-left-right"></i>
             <span>Drag & Customize Button Positions</span>
           </button>
@@ -627,20 +682,20 @@
 
         <div>
           <label class="block text-xs uppercase tracking-wider text-slate-400 font-bold mb-1">Driver Name</label>
-          <input type="text" id="input-player-name" maxlength="14" placeholder="SpeedRacer" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-4 py-2 text-white text-sm focus:outline-none focus:border-blue-500">
+          <input type="text" id="input-player-name" maxlength="14" placeholder="SpeedRacer" class="w-full bg-[#090d14] border border-slate-700 rounded-xl px-4 py-2 text-white text-sm focus:outline-none focus:border-amber-500">
         </div>
       </div>
 
-      <button class="btn-close-modal w-full py-2.5 bg-blue-600 hover:bg-blue-500 text-white font-bold rounded-xl shadow-lg text-sm">
+      <button class="btn-close-modal w-full py-2.5 pit-btn-primary font-bold rounded-xl text-sm">
         Save & Close
       </button>
     </div>
   </div>
 
   <!-- VICTORY MODAL -->
-  <div id="modal-victory" class="fixed inset-0 z-50 bg-slate-950/90 backdrop-blur-lg hidden flex items-center justify-center p-4">
-    <div class="max-w-md w-full bg-slate-900 border border-emerald-500/50 rounded-2xl shadow-2xl p-5 text-center space-y-4">
-      <div class="w-14 h-14 bg-emerald-500/20 border-2 border-emerald-400 rounded-full flex items-center justify-center mx-auto text-emerald-400 text-2xl">
+  <div id="modal-victory" class="fixed inset-0 z-50 bg-[#080b10]/90 backdrop-blur-lg hidden flex items-center justify-center p-4">
+    <div class="max-w-md w-full pit-panel border-emerald-500/40 rounded-2xl p-5 text-center space-y-4">
+      <div class="w-14 h-14 bg-emerald-500/15 border border-emerald-400/60 rounded-full flex items-center justify-center mx-auto text-emerald-400 text-2xl">
         <i class="fa-solid fa-trophy"></i>
       </div>
 
@@ -649,20 +704,20 @@
         <p class="text-xs text-slate-400 uppercase tracking-widest mt-1" id="victory-level-name">Level 1</p>
       </div>
 
-      <div class="bg-slate-800/80 rounded-xl p-3.5 border border-slate-700">
+      <div class="pit-card rounded-xl p-3.5">
         <div class="text-[10px] text-slate-400 font-bold uppercase">Time Recorded</div>
         <div id="victory-final-time" class="text-2xl font-mono font-bold text-amber-400 my-0.5">00:45.420</div>
         <div id="victory-record-status" class="text-xs font-bold text-emerald-400 hidden">🎉 NEW PERSONAL BEST RECORD!</div>
       </div>
 
       <div class="grid grid-cols-3 gap-2">
-        <button id="victory-btn-home" class="py-2.5 bg-slate-800 hover:bg-slate-700 text-slate-200 font-bold rounded-xl border border-slate-700 text-xs sm:text-sm flex items-center justify-center">
+        <button id="victory-btn-home" class="py-2.5 pit-btn-secondary font-bold rounded-xl text-xs sm:text-sm flex items-center justify-center">
           <i class="fa-solid fa-house mr-1"></i> Home
         </button>
-        <button id="victory-btn-restart" class="py-2.5 bg-slate-800 hover:bg-slate-700 text-slate-200 font-bold rounded-xl border border-slate-700 text-xs sm:text-sm flex items-center justify-center">
+        <button id="victory-btn-restart" class="py-2.5 pit-btn-secondary font-bold rounded-xl text-xs sm:text-sm flex items-center justify-center">
           <i class="fa-solid fa-rotate-right mr-1"></i> Retry
         </button>
-        <button id="victory-btn-next" class="py-2.5 bg-blue-600 hover:bg-blue-500 text-white font-bold rounded-xl shadow-lg text-xs sm:text-sm flex items-center justify-center">
+        <button id="victory-btn-next" class="py-2.5 pit-btn-primary font-bold rounded-xl text-xs sm:text-sm flex items-center justify-center">
           Next <i class="fa-solid fa-arrow-right ml-1"></i>
         </button>
       </div>
@@ -670,8 +725,8 @@
   </div>
 
   <!-- LEADERBOARD MODAL -->
-  <div id="modal-leaderboard" class="fixed inset-0 z-50 bg-slate-950/90 backdrop-blur-lg hidden flex items-center justify-center p-4">
-    <div class="max-w-md w-full bg-slate-900 border border-slate-700 rounded-2xl shadow-2xl p-5 space-y-4 max-h-[85vh] flex flex-col">
+  <div id="modal-leaderboard" class="fixed inset-0 z-50 bg-[#080b10]/90 backdrop-blur-lg hidden flex items-center justify-center p-4">
+    <div class="max-w-md w-full pit-panel rounded-2xl p-5 space-y-4 max-h-[85vh] flex flex-col">
       <div class="flex justify-between items-center border-b border-slate-800 pb-2">
         <h2 class="text-lg font-bold text-white flex items-center gap-2">
           <i class="fa-solid fa-trophy text-amber-400"></i> Track Records
@@ -683,7 +738,7 @@
 
       <div>
         <label class="block text-[10px] uppercase text-slate-400 font-bold mb-1">Select Level</label>
-        <input type="number" id="leaderboard-level-input" min="1" max="10100" value="1" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-white text-xs font-bold focus:outline-none focus:border-blue-500">
+        <input type="number" id="leaderboard-level-input" min="1" max="10100" value="1" class="w-full bg-[#090d14] border border-slate-700 rounded-xl px-3 py-2 text-white text-xs font-bold focus:outline-none focus:border-amber-500">
       </div>
 
       <div id="leaderboard-list" class="space-y-2 overflow-y-auto custom-scroll flex-1 pr-1 min-h-0" style="touch-action: pan-y !important;"></div>
@@ -1125,13 +1180,13 @@
       minimapCacheCanvas.width = mapSize;
       minimapCacheCanvas.height = mapSize;
 
-      minimapCacheCtx.fillStyle = 'rgba(15, 23, 42, 0.9)';
+      minimapCacheCtx.fillStyle = 'rgba(11, 15, 23, 0.94)';
       minimapCacheCtx.fillRect(0, 0, mapSize, mapSize);
 
       const scaleX = mapSize / (currentMaze.cols * TILE_SIZE);
       const scaleY = mapSize / (currentMaze.rows * TILE_SIZE);
 
-      minimapCacheCtx.fillStyle = '#475569';
+      minimapCacheCtx.fillStyle = '#526075';
       for (let r = 0; r < currentMaze.rows; r++) {
         for (let c = 0; c < currentMaze.cols; c++) {
           if (currentMaze.grid[r][c] === 1) {
@@ -1349,7 +1404,61 @@
 
     const TILE_SIZE = 70;
 
+    /* Procedural Asphalt & Track Surface Patterns */
+    let asphaltPattern = null;
+    let wallCapPattern = null;
+
+    function createAsphaltPattern() {
+      const pCanvas = document.createElement('canvas');
+      pCanvas.width = 64;
+      pCanvas.height = 64;
+      const pCtx = pCanvas.getContext('2d');
+
+      pCtx.fillStyle = '#141920';
+      pCtx.fillRect(0, 0, 64, 64);
+
+      // Subtle asphalt mineral grain
+      for (let i = 0; i < 180; i++) {
+        const gx = (i * 29 + 7) % 64;
+        const gy = (i * 47 + 13) % 64;
+        const bright = i % 3 === 0;
+        pCtx.fillStyle = bright ? 'rgba(226, 232, 240, 0.045)' : 'rgba(2, 6, 12, 0.28)';
+        pCtx.fillRect(gx, gy, 1.5, 1.5);
+      }
+
+      // Faint subtle pit-grid seam lines
+      pCtx.strokeStyle = 'rgba(148, 163, 184, 0.04)';
+      pCtx.lineWidth = 1;
+      pCtx.strokeRect(0.5, 0.5, 63, 63);
+
+      return ctx.createPattern(pCanvas, 'repeat');
+    }
+
+    function createWallCapPattern() {
+      const wCanvas = document.createElement('canvas');
+      wCanvas.width = 24;
+      wCanvas.height = 24;
+      const wCtx = wCanvas.getContext('2d');
+
+      wCtx.fillStyle = '#252f3f';
+      wCtx.fillRect(0, 0, 24, 24);
+
+      // Subtle diagonal machined rib texture
+      wCtx.strokeStyle = 'rgba(255, 255, 255, 0.04)';
+      wCtx.lineWidth = 1;
+      wCtx.beginPath();
+      wCtx.moveTo(-6, 24);
+      wCtx.lineTo(24, -6);
+      wCtx.moveTo(0, 30);
+      wCtx.lineTo(30, 0);
+      wCtx.stroke();
+
+      return ctx.createPattern(wCanvas, 'repeat');
+    }
+
     window.addEventListener('load', () => {
+      asphaltPattern = createAsphaltPattern();
+      wallCapPattern = createWallCapPattern();
       applyCarModelStats();
       resizeCanvas();
       window.addEventListener('resize', resizeCanvas);
@@ -1370,7 +1479,7 @@
       const tips = [
         "PWA installable! You can now install this game to your device home screen.",
         "Visit the Garage to upgrade your car's model, paint, decals, and stats!",
-        "In Night Drive mode, stay alert within your expanded 2.5-tile spotlight radius!",
+        "In Night Drive mode, use your twin headlights and spotlight to read corners early!",
         "Press Enter on your keyboard at the victory screen or pre-race tuning to jump right in!"
       ];
       
@@ -2137,8 +2246,38 @@
     }
 
     /* --------------------------------------------------------------------------
-       SECTION 10: CANVAS RENDERING
+       SECTION 10: CANVAS RENDERING (MOTORSPORT ENVIRONMENT & COLOR GRADING)
        -------------------------------------------------------------------------- */
+
+    function drawCheckeredZone(x, y, size, accentColor) {
+      ctx.save();
+      ctx.beginPath();
+      ctx.roundRect(x + 2, y + 2, size - 4, size - 4, 6);
+      ctx.clip();
+
+      const cells = 6;
+      const cellSize = (size - 4) / cells;
+      for (let r = 0; r < cells; r++) {
+        for (let c = 0; c < cells; c++) {
+          const isLight = (r + c) % 2 === 0;
+          ctx.fillStyle = isLight ? accentColor : 'rgba(10, 14, 22, 0.85)';
+          ctx.fillRect(x + 2 + c * cellSize, y + 2 + r * cellSize, cellSize + 0.5, cellSize + 0.5);
+        }
+      }
+
+      const grad = ctx.createRadialGradient(x + size / 2, y + size / 2, 4, x + size / 2, y + size / 2, size * 0.65);
+      grad.addColorStop(0, 'rgba(255, 255, 255, 0.14)');
+      grad.addColorStop(1, 'rgba(9, 13, 20, 0.45)');
+      ctx.fillStyle = grad;
+      ctx.fillRect(x, y, size, size);
+
+      ctx.restore();
+      ctx.strokeStyle = accentColor;
+      ctx.lineWidth = 3;
+      ctx.beginPath();
+      ctx.roundRect(x + 2, y + 2, size - 4, size - 4, 6);
+      ctx.stroke();
+    }
     
     function renderWorld() {
       ctx.clearRect(0, 0, canvas.width, canvas.height);
@@ -2159,33 +2298,82 @@
       const minRow = Math.max(0, Math.floor((car.y - halfH) / TILE_SIZE));
       const maxRow = Math.min(currentMaze.rows - 1, Math.ceil((car.y + halfH) / TILE_SIZE));
 
+      // Pass 1: Roadway / Asphalt & Wall Drop Shadows
       for (let r = minRow; r <= maxRow; r++) {
         for (let c = minCol; c <= maxCol; c++) {
           const x = c * TILE_SIZE;
           const y = r * TILE_SIZE;
           const isWall = currentMaze.grid[r][c] === 1;
 
-          if (isWall) {
-            ctx.fillStyle = '#1e293b';
-            ctx.beginPath();
-            ctx.roundRect(x + 1, y + 1, TILE_SIZE - 2, TILE_SIZE - 2, 5);
-            ctx.fill();
-            ctx.strokeStyle = '#3b82f6';
-            ctx.lineWidth = 2;
-            ctx.stroke();
-          } else {
-            ctx.fillStyle = '#0f172a';
+          if (!isWall) {
+            ctx.fillStyle = asphaltPattern || '#141920';
             ctx.fillRect(x, y, TILE_SIZE, TILE_SIZE);
-            ctx.strokeStyle = '#1e293b';
-            ctx.lineWidth = 1;
-            ctx.strokeRect(x, y, TILE_SIZE, TILE_SIZE);
+
+            // Subtle corner curb ticks where a road tile meets a wall
+            ctx.strokeStyle = 'rgba(245, 158, 11, 0.14)';
+            ctx.lineWidth = 2;
+            if (r > 0 && currentMaze.grid[r - 1][c] === 1) {
+              ctx.beginPath();
+              ctx.moveTo(x + 6, y + 2);
+              ctx.lineTo(x + TILE_SIZE - 6, y + 2);
+              ctx.stroke();
+            }
+            if (r < currentMaze.rows - 1 && currentMaze.grid[r + 1][c] === 1) {
+              ctx.beginPath();
+              ctx.moveTo(x + 6, y + TILE_SIZE - 2);
+              ctx.lineTo(x + TILE_SIZE - 6, y + TILE_SIZE - 2);
+              ctx.stroke();
+            }
+          } else {
+            ctx.fillStyle = asphaltPattern || '#141920';
+            ctx.fillRect(x, y, TILE_SIZE, TILE_SIZE);
+
+            // Grounded shadow cast onto adjacent road
+            ctx.fillStyle = 'rgba(3, 6, 12, 0.55)';
+            ctx.beginPath();
+            ctx.roundRect(x + 5, y + 7, TILE_SIZE - 2, TILE_SIZE - 2, 6);
+            ctx.fill();
           }
         }
       }
 
+      // Pass 2: Layered Beveled Maze Walls
+      for (let r = minRow; r <= maxRow; r++) {
+        for (let c = minCol; c <= maxCol; c++) {
+          if (currentMaze.grid[r][c] !== 1) continue;
+          const x = c * TILE_SIZE;
+          const y = r * TILE_SIZE;
+
+          // Lower structural wall body
+          ctx.fillStyle = '#151c27';
+          ctx.beginPath();
+          ctx.roundRect(x + 1, y + 3, TILE_SIZE - 2, TILE_SIZE - 4, 6);
+          ctx.fill();
+
+          // Upper textured barrier cap
+          ctx.fillStyle = wallCapPattern || '#252f3f';
+          ctx.beginPath();
+          ctx.roundRect(x + 2, y + 1, TILE_SIZE - 4, TILE_SIZE - 7, 5);
+          ctx.fill();
+
+          // Crisp top rim highlight & outer barrier border
+          ctx.strokeStyle = 'rgba(226, 232, 240, 0.14)';
+          ctx.lineWidth = 1.5;
+          ctx.stroke();
+
+          ctx.strokeStyle = 'rgba(100, 116, 139, 0.42)';
+          ctx.lineWidth = 1.5;
+          ctx.beginPath();
+          ctx.roundRect(x + 1, y + 1, TILE_SIZE - 2, TILE_SIZE - 2, 6);
+          ctx.stroke();
+        }
+      }
+
+      // Tire / Track Trail Path
       if (carTrailPath.length > 1) {
-        ctx.strokeStyle = '#38bdf8';
-        ctx.lineWidth = 6;
+        ctx.save();
+        ctx.strokeStyle = 'rgba(245, 158, 11, 0.18)';
+        ctx.lineWidth = 11;
         ctx.lineCap = 'round';
         ctx.lineJoin = 'round';
         ctx.beginPath();
@@ -2194,60 +2382,82 @@
           ctx.lineTo(carTrailPath[i].x, carTrailPath[i].y);
         }
         ctx.stroke();
+
+        ctx.strokeStyle = '#38bdf8';
+        ctx.lineWidth = 4.5;
+        ctx.stroke();
+        ctx.restore();
       }
 
+      // Exhaust Smoke Particles
       for (const p of exhaustParticles) {
-        ctx.fillStyle = `rgba(148, 163, 184, ${p.life * 0.7})`;
+        ctx.fillStyle = `rgba(148, 163, 184, ${p.life * 0.65})`;
         ctx.beginPath();
         ctx.arc(p.x, p.y, p.size * p.life, 0, Math.PI * 2);
         ctx.fill();
       }
 
+      // Start & Finish Zones
       const startX = currentMaze.start.x * TILE_SIZE;
       const startY = currentMaze.start.y * TILE_SIZE;
-      ctx.fillStyle = 'rgba(16, 185, 129, 0.4)';
-      ctx.beginPath();
-      ctx.roundRect(startX + 2, startY + 2, TILE_SIZE - 4, TILE_SIZE - 4, 6);
-      ctx.fill();
-      ctx.strokeStyle = '#10b981';
-      ctx.lineWidth = 4;
-      ctx.stroke();
+      drawCheckeredZone(startX, startY, TILE_SIZE, '#10b981');
 
       const finishX = currentMaze.finish.x * TILE_SIZE;
       const finishY = currentMaze.finish.y * TILE_SIZE;
-      ctx.fillStyle = 'rgba(245, 158, 11, 0.4)';
-      ctx.beginPath();
-      ctx.roundRect(finishX + 2, finishY + 2, TILE_SIZE - 4, TILE_SIZE - 4, 6);
-      ctx.fill();
-      ctx.strokeStyle = '#f59e0b';
-      ctx.lineWidth = 4;
-      ctx.stroke();
+      drawCheckeredZone(finishX, finishY, TILE_SIZE, '#f59e0b');
 
+      // Night Drive: Directional Headlight Cones + Radial Spotlight
       if (activeGameMode === 'dark') {
         const lightRadius = TILE_SIZE * 2.5;
+
+        ctx.save();
+        ctx.translate(car.x, car.y);
+        ctx.rotate(car.angle);
+
+        const beamLen = TILE_SIZE * 3.1;
+        const beamSpread = TILE_SIZE * 1.45;
+        const beamGrad = ctx.createLinearGradient(0, -car.height * 0.3, 0, -beamLen);
+        beamGrad.addColorStop(0, 'rgba(254, 249, 195, 0.24)');
+        beamGrad.addColorStop(0.55, 'rgba(253, 224, 71, 0.09)');
+        beamGrad.addColorStop(1, 'rgba(253, 224, 71, 0.0)');
+
+        ctx.fillStyle = beamGrad;
+        ctx.beginPath();
+        ctx.moveTo(-car.width * 0.35, -car.height * 0.45);
+        ctx.lineTo(-beamSpread, -beamLen);
+        ctx.lineTo(beamSpread, -beamLen);
+        ctx.lineTo(car.width * 0.35, -car.height * 0.45);
+        ctx.closePath();
+        ctx.fill();
+        ctx.restore();
 
         ctx.save();
         ctx.globalCompositeOperation = 'source-over';
         
         const spotlightGrad = ctx.createRadialGradient(car.x, car.y, 0, car.x, car.y, lightRadius);
-        spotlightGrad.addColorStop(0, 'rgba(2, 4, 8, 0.0)');
-        spotlightGrad.addColorStop(0.65, 'rgba(2, 4, 8, 0.85)');
-        spotlightGrad.addColorStop(1, 'rgba(2, 4, 8, 0.998)');
+        spotlightGrad.addColorStop(0, 'rgba(4, 7, 14, 0.0)');
+        spotlightGrad.addColorStop(0.65, 'rgba(4, 7, 14, 0.85)');
+        spotlightGrad.addColorStop(1, 'rgba(4, 7, 14, 0.998)');
 
         ctx.fillStyle = spotlightGrad;
         ctx.fillRect(car.x - halfW, car.y - halfH, halfW * 2, halfH * 2);
         
         ctx.restore();
+      } else {
+        // Standard Mode: Subtle Warm-Daylight / Pit Grading Tint
+        ctx.fillStyle = 'rgba(251, 191, 36, 0.025)';
+        ctx.fillRect(car.x - halfW, car.y - halfH, halfW * 2, halfH * 2);
       }
 
       ctx.restore();
 
+      // Player Car at Screen Center
       ctx.save();
       ctx.translate(screenCenterX, screenCenterY);
 
       if (car.isColliding) {
         ctx.save();
-        ctx.fillStyle = 'rgba(239, 68, 68, 0.35)';
+        ctx.fillStyle = 'rgba(239, 68, 68, 0.32)';
         ctx.strokeStyle = '#ef4444';
         ctx.lineWidth = 3;
         ctx.beginPath();
@@ -2261,6 +2471,17 @@
 
       ctx.restore();
 
+      // Subtle Screen Edge Vignette for Cohesive Color Grading
+      const vigRadius = Math.max(canvas.width, canvas.height) * 0.72;
+      const vignette = ctx.createRadialGradient(
+        screenCenterX, screenCenterY, vigRadius * 0.45,
+        screenCenterX, screenCenterY, vigRadius
+      );
+      vignette.addColorStop(0, 'rgba(8, 11, 16, 0)');
+      vignette.addColorStop(1, activeGameMode === 'dark' ? 'rgba(4, 6, 11, 0.55)' : 'rgba(8, 11, 16, 0.32)');
+      ctx.fillStyle = vignette;
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+
       if (gameActive && !isPaused && activeGameMode !== 'dark') {
         renderMiniMap();
       }
@@ -2270,7 +2491,7 @@
       targetCtx.save();
       targetCtx.translate(cx, cy);
 
-      targetCtx.fillStyle = 'rgba(0,0,0,0.5)';
+      targetCtx.fillStyle = 'rgba(0,0,0,0.55)';
       targetCtx.beginPath();
       targetCtx.roundRect(-w / 2 + 3, -h / 2 + 3, w, h, modelId === 'supercar' ? 12 : 8);
       targetCtx.fill();
@@ -2288,8 +2509,8 @@
       }
       targetCtx.fill();
 
-      targetCtx.strokeStyle = isColliding ? '#f87171' : '#38bdf8';
-      targetCtx.lineWidth = 2.5;
+      targetCtx.strokeStyle = isColliding ? '#f87171' : 'rgba(248, 250, 252, 0.72)';
+      targetCtx.lineWidth = 2;
       targetCtx.stroke();
 
       if (decalStyle === 'stripes') {
@@ -2310,7 +2531,7 @@
         targetCtx.fill();
       }
 
-      targetCtx.fillStyle = '#0f172a';
+      targetCtx.fillStyle = '#090d14';
       targetCtx.beginPath();
       if (modelId === 'supercar') {
         targetCtx.roundRect(-w / 2 + 4, -h / 2 + 14, w - 8, h * 0.38, 6);
@@ -2343,7 +2564,7 @@
       const y = (hudElem ? hudElem.offsetHeight : 55) + 10;
 
       ctx.drawImage(minimapCacheCanvas, x, y);
-      ctx.strokeStyle = '#38bdf8';
+      ctx.strokeStyle = 'rgba(245, 158, 11, 0.65)';
       ctx.lineWidth = 2;
       ctx.strokeRect(x, y, mapSize, mapSize);
 
@@ -2351,7 +2572,7 @@
       const scaleY = mapSize / (currentMaze.rows * TILE_SIZE);
 
       if (carTrailPath.length > 1) {
-        ctx.strokeStyle = '#ec4899';
+        ctx.strokeStyle = '#38bdf8';
         ctx.lineWidth = 2;
         ctx.beginPath();
         ctx.moveTo(x + carTrailPath[0].x * scaleX, y + carTrailPath[0].y * scaleY);
@@ -2420,16 +2641,16 @@
           const py = offsetY + r * tileSize;
 
           if (currentMaze.grid[r][c] === 1) {
-            fullMapCtx.fillStyle = '#3b82f6';
+            fullMapCtx.fillStyle = '#334155';
           } else {
-            fullMapCtx.fillStyle = '#0f172a';
+            fullMapCtx.fillStyle = '#111620';
           }
           fullMapCtx.fillRect(px, py, tileSize, tileSize);
         }
       }
 
       if (carTrailPath.length > 1) {
-        fullMapCtx.strokeStyle = '#ec4899';
+        fullMapCtx.strokeStyle = '#38bdf8';
         fullMapCtx.lineWidth = Math.max(2, tileSize * 0.6);
         fullMapCtx.lineCap = 'round';
         fullMapCtx.lineJoin = 'round';
@@ -2517,7 +2738,7 @@
 
       const modelContainer = document.getElementById('garage-model-grid');
       modelContainer.innerHTML = Object.values(CAR_MODELS).map(m => `
-        <button class="p-3 rounded-xl border text-left transition ${garageConfig.modelId === m.id ? 'bg-amber-600/20 border-amber-500 shadow-md' : 'bg-slate-800/80 border-slate-700 hover:bg-slate-700'}" onclick="selectGarageModel('${m.id}')">
+        <button class="p-3 rounded-xl border text-left transition ${garageConfig.modelId === m.id ? 'bg-amber-500/15 border-amber-400 shadow-md' : 'pit-card hover:border-slate-600'}" onclick="selectGarageModel('${m.id}')">
           <div class="font-bold text-white text-xs">${m.name}</div>
           <div class="text-[10px] text-slate-400 mt-0.5 leading-tight">${m.desc}</div>
         </button>
@@ -2525,12 +2746,12 @@
 
       const colorContainer = document.getElementById('garage-color-palette');
       colorContainer.innerHTML = PAINT_COLORS.map(c => `
-        <button class="w-8 h-8 rounded-full border-2 transition ${garageConfig.color === c.hex ? 'border-white scale-110 shadow-lg' : 'border-transparent opacity-80 hover:opacity-100'}" style="background-color: ${c.hex};" title="${c.name}" onclick="selectGarageColor('${c.hex}')"></button>
+        <button class="w-8 h-8 rounded-full border-2 transition ${garageConfig.color === c.hex ? 'border-amber-300 scale-110 shadow-lg' : 'border-transparent opacity-80 hover:opacity-100'}" style="background-color: ${c.hex};" title="${c.name}" onclick="selectGarageColor('${c.hex}')"></button>
       `).join('');
 
       const decalContainer = document.getElementById('garage-decal-options');
       decalContainer.innerHTML = DECAL_STYLES.map(d => `
-        <button class="p-2.5 rounded-xl border text-xs font-bold transition ${garageConfig.decal === d.id ? 'bg-amber-600/20 border-amber-500 text-white' : 'bg-slate-800 border-slate-700 text-slate-400 hover:text-white'}" onclick="selectGarageDecal('${d.id}')">
+        <button class="p-2.5 rounded-xl border text-xs font-bold transition ${garageConfig.decal === d.id ? 'bg-amber-500/15 border-amber-400 text-white' : 'pit-card text-slate-400 hover:text-white'}" onclick="selectGarageDecal('${d.id}')">
           ${d.name}
         </button>
       `).join('');
@@ -2573,8 +2794,15 @@
       const drawPreview = () => {
         pCtx.clearRect(0, 0, pCanvas.width, pCanvas.height);
         
-        pCtx.fillStyle = '#090d16';
+        pCtx.fillStyle = '#090d14';
         pCtx.fillRect(0, 0, pCanvas.width, pCanvas.height);
+
+        // Subtle turntable ring
+        pCtx.strokeStyle = 'rgba(245, 158, 11, 0.16)';
+        pCtx.lineWidth = 1.5;
+        pCtx.beginPath();
+        pCtx.arc(pCanvas.width / 2, pCanvas.height / 2, 56, 0, Math.PI * 2);
+        pCtx.stroke();
 
         pCtx.save();
         pCtx.translate(pCanvas.width / 2, pCanvas.height / 2);
@@ -2602,13 +2830,13 @@
         const val = garageConfig.stats[cfg.key];
         const range = modelSpec.ranges[cfg.key];
         return `
-          <div class="bg-slate-800/80 p-2.5 rounded-xl border border-slate-700/80">
+          <div class="pit-card p-2.5 rounded-xl">
             <div class="flex justify-between items-center text-xs mb-1.5">
               <span class="font-bold text-slate-300">${cfg.label} <span class="text-[9px] text-slate-400 font-normal">(${range.min} - ${range.max})</span></span>
               <span class="font-mono text-amber-400 font-bold" id="${targetContainerId}-val-${cfg.key}">${val.toFixed(cfg.dec)}</span>
             </div>
             <div class="flex items-center space-x-2">
-              <button class="w-8 h-8 bg-slate-700 hover:bg-slate-600 active:bg-blue-600 rounded-lg font-bold text-white flex items-center justify-center text-sm shadow border border-slate-600" onclick="adjustGarageStatStep('${cfg.key}', -${range.step}, '${targetContainerId}')">
+              <button class="w-8 h-8 pit-btn-secondary rounded-lg font-bold text-white flex items-center justify-center text-sm" onclick="adjustGarageStatStep('${cfg.key}', -${range.step}, '${targetContainerId}')">
                 -
               </button>
               <input type="range" 
@@ -2620,7 +2848,7 @@
                 class="w-full h-2 bg-slate-900 rounded-lg appearance-none cursor-pointer"
                 oninput="onGarageStatRangeChange('${cfg.key}', this.value, '${targetContainerId}')"
               >
-              <button class="w-8 h-8 bg-slate-700 hover:bg-slate-600 active:bg-blue-600 rounded-lg font-bold text-white flex items-center justify-center text-sm shadow border border-slate-600" onclick="adjustGarageStatStep('${cfg.key}', ${range.step}, '${targetContainerId}')">
+              <button class="w-8 h-8 pit-btn-secondary rounded-lg font-bold text-white flex items-center justify-center text-sm" onclick="adjustGarageStatStep('${cfg.key}', ${range.step}, '${targetContainerId}')">
                 +
               </button>
             </div>
@@ -2856,8 +3084,8 @@
       const btnStd = document.getElementById('menu-tab-standard');
       const btnDark = document.getElementById('menu-tab-dark');
 
-      btnStd.className = !isDark ? "w-1/2 py-2 rounded-lg text-xs font-bold transition bg-blue-600 text-white shadow" : "w-1/2 py-2 rounded-lg text-xs font-bold transition text-slate-400 hover:text-white";
-      btnDark.className = isDark ? "w-1/2 py-2 rounded-lg text-xs font-bold transition bg-indigo-600 text-white shadow" : "w-1/2 py-2 rounded-lg text-xs font-bold transition text-slate-400 hover:text-white";
+      btnStd.className = !isDark ? "w-1/2 py-2 rounded-lg text-xs font-bold transition bg-amber-500 text-slate-950 shadow" : "w-1/2 py-2 rounded-lg text-xs font-bold transition text-slate-400 hover:text-white";
+      btnDark.className = isDark ? "w-1/2 py-2 rounded-lg text-xs font-bold transition bg-amber-500 text-slate-950 shadow" : "w-1/2 py-2 rounded-lg text-xs font-bold transition text-slate-400 hover:text-white";
 
       document.getElementById('menu-play-btn-label').innerText = isDark ? "Night Drive Campaign" : "Standard Campaign";
       
@@ -2891,9 +3119,9 @@
       const btnButtons = document.getElementById('opt-steer-buttons');
       const btnWheel = document.getElementById('opt-steer-wheel');
 
-      btnJoysticks.className = isJoysticks ? "p-2.5 bg-blue-600/20 border-2 border-blue-500 rounded-xl text-center flex flex-col items-center space-y-1" : "p-2.5 bg-slate-800 border-2 border-transparent rounded-xl text-center flex flex-col items-center space-y-1";
-      btnButtons.className = isButtons ? "p-2.5 bg-blue-600/20 border-2 border-blue-500 rounded-xl text-center flex flex-col items-center space-y-1" : "p-2.5 bg-slate-800 border-2 border-transparent rounded-xl text-center flex flex-col items-center space-y-1";
-      btnWheel.className = isWheel ? "p-2.5 bg-blue-600/20 border-2 border-blue-500 rounded-xl text-center flex flex-col items-center space-y-1" : "p-2.5 bg-slate-800 border-2 border-transparent rounded-xl text-center flex flex-col items-center space-y-1";
+      btnJoysticks.className = isJoysticks ? "p-2.5 bg-amber-500/15 border-2 border-amber-400 rounded-xl text-center flex flex-col items-center space-y-1" : "p-2.5 pit-card border-2 border-transparent rounded-xl text-center flex flex-col items-center space-y-1";
+      btnButtons.className = isButtons ? "p-2.5 bg-amber-500/15 border-2 border-amber-400 rounded-xl text-center flex flex-col items-center space-y-1" : "p-2.5 pit-card border-2 border-transparent rounded-xl text-center flex flex-col items-center space-y-1";
+      btnWheel.className = isWheel ? "p-2.5 bg-amber-500/15 border-2 border-amber-400 rounded-xl text-center flex flex-col items-center space-y-1" : "p-2.5 pit-card border-2 border-transparent rounded-xl text-center flex flex-col items-center space-y-1";
     }
 
     function saveSettings() {
@@ -2910,8 +3138,8 @@
       const maxUnlocked = getMaxUnlockedLevel(activeGameMode);
 
       document.getElementById('level-modal-header').innerHTML = activeGameMode === 'dark' 
-        ? `<i class="fa-solid fa-moon text-indigo-400"></i> Night Drive Campaign`
-        : `<i class="fa-solid fa-layer-group text-blue-400"></i> Campaign Levels`;
+        ? `<i class="fa-solid fa-moon text-amber-400"></i> Night Drive Campaign`
+        : `<i class="fa-solid fa-layer-group text-amber-400"></i> Campaign Levels`;
 
       // Only show unlocked tiers (previous tier must be reached)
       const unlockedTiers = tiers.filter((tier, idx) => {
@@ -2925,7 +3153,7 @@
       }
 
       container.innerHTML = unlockedTiers.map(tier => `
-        <button class="px-4 py-2 rounded-xl text-xs font-bold whitespace-nowrap transition ${selectedTierKey === tier.key ? 'bg-blue-600 text-white shadow-md' : 'bg-slate-800 text-slate-400 hover:text-white'}" onclick="filterTier('${tier.key}')">
+        <button class="px-4 py-2 rounded-xl text-xs font-bold whitespace-nowrap transition ${selectedTierKey === tier.key ? 'bg-amber-500 text-slate-950 shadow-md' : 'pit-btn-secondary text-slate-400 hover:text-white'}" onclick="filterTier('${tier.key}')">
           ${tier.label}
         </button>
       `).join('');
@@ -2977,17 +3205,17 @@
         const pb = localStorage.getItem(`tm_pb_${cfg.id}`);
         const card = document.createElement('div');
         
-        card.className = `p-3 rounded-xl border flex justify-between items-center transition ${isUnlocked ? 'bg-slate-800/80 hover:bg-slate-700/80 border-slate-700 cursor-pointer active:scale-98' : 'bg-slate-900/50 border-slate-800 opacity-60 cursor-not-allowed'}`;
+        card.className = `p-3 rounded-xl border flex justify-between items-center transition ${isUnlocked ? 'pit-card hover:border-amber-400/45 cursor-pointer active:scale-98' : 'bg-[#090d14]/70 border-slate-800/70 opacity-60 cursor-not-allowed'}`;
         
         card.innerHTML = `
           <div>
             <div class="font-bold text-white text-xs sm:text-sm flex items-center space-x-2">
               <span>${cfg.name}</span>
-              <span class="text-[9px] bg-blue-900/80 text-blue-300 px-2 py-0.5 rounded border border-blue-600 font-mono">${cfg.size}x${cfg.size}</span>
+              <span class="text-[9px] bg-amber-500/15 text-amber-300 px-2 py-0.5 rounded border border-amber-500/35 font-mono">${cfg.size}x${cfg.size}</span>
             </div>
             <div class="text-[10px] text-slate-400 mt-0.5">${isUnlocked ? (pb ? `Best Record: ${formatTime(parseFloat(pb))}` : 'Unlocked • No time recorded') : '🔒 Locked (Complete prior level)'}</div>
           </div>
-          <button class="${isUnlocked ? 'bg-blue-600 hover:bg-blue-500 text-white shadow-md' : 'bg-slate-800 text-slate-600'} p-2 rounded-lg text-xs">
+          <button class="${isUnlocked ? 'pit-btn-primary' : 'bg-slate-800 text-slate-600'} p-2 rounded-lg text-xs">
             <i class="fa-solid ${isUnlocked ? 'fa-play' : 'fa-lock'}"></i>
           </button>
         `;
@@ -3018,7 +3246,7 @@
       }
 
       list.innerHTML = records.map((item, idx) => `
-        <div class="p-2.5 bg-slate-800 border border-slate-700/60 rounded-xl flex justify-between items-center">
+        <div class="p-2.5 pit-card rounded-xl flex justify-between items-center">
           <div class="flex items-center space-x-3">
             <span class="font-bold ${idx===0?'text-amber-400':idx===1?'text-slate-300':'text-amber-700'} text-xs">#${idx+1}</span>
             <div>
