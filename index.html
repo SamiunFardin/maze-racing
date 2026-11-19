@@ -11,10 +11,13 @@
      PWA WEB APP MANIFEST & THEME METAS (Enables App Installation)
      ========================================================================== -->
   <meta name="theme-color" content="#0b0f19">
+  <meta name="mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="apple-mobile-web-app-title" content="Turbo Maze">
-  <link rel="manifest" id="dynamic-manifest">
+  <link rel="icon" type="image/png" href="./icon.png">
+  <link rel="apple-touch-icon" href="./icon.png">
+  <link rel="manifest" href="./manifest.json">
 
   <style>
     /* ==========================================================================
@@ -692,53 +695,31 @@
      ========================================================================== -->
   <script>
     /* --------------------------------------------------------------------------
-       SECTION 0: PWA DYNAMIC MANIFEST & SERVICE WORKER SETUP
+       SECTION 0: PWA SERVICE WORKER REGISTRATION & VERSION CHECK
        -------------------------------------------------------------------------- */
     const CURRENT_GAME_VERSION = '1.2.5';
     function checkGameVersion() {
       const savedVersion = localStorage.getItem('tm_game_version');
       if (savedVersion !== CURRENT_GAME_VERSION) {
         localStorage.setItem('tm_game_version', CURRENT_GAME_VERSION);
-        window.location.reload(true);
+        if ('caches' in window) {
+          caches.keys().then(names => names.forEach(name => caches.delete(name)));
+        }
+        window.location.reload();
       }
     }
     checkGameVersion();
 
-    // Dynamically generate PWA Web App Manifest data URI so Chrome recognizes it as installable
-    function setupPWAManifest() {
-      const manifestData = {
-        name: "Turbo Maze Racer",
-        short_name: "TurboMaze",
-        start_url: "./",
-        display: "standalone",
-        background_color: "#0b0f19",
-        theme_color: "#0b0f19",
-        icons: [
-          {
-            src: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%2338bdf8'%3E%3Cpath d='M3 3v18h18V3H3zm12 12l6 6m0-6l-6 6'/%3E%3C/svg%3E",
-            sizes: "192x192 512x512",
-            type: "image/svg+xml"
-          }
-        ]
-      };
-      const stringified = JSON.stringify(manifestData);
-      const blob = new Blob([stringified], { type: 'application/manifest+json' });
-      const manifestURL = URL.createObjectURL(blob);
-      document.getElementById('dynamic-manifest').setAttribute('href', manifestURL);
-
-      // Register a lightweight service worker to satisfy PWA installation criteria
+    function registerPWAServiceWorker() {
       if ('serviceWorker' in navigator) {
-        const swCode = `
-          self.addEventListener('install', (e) => { self.skipWaiting(); });
-          self.addEventListener('activate', (e) => { e.waitUntil(clients.claim()); });
-          self.addEventListener('fetch', (e) => { e.respondWith(fetch(e.request).catch(() => caches.match(e.request))); });
-        `;
-        const swBlob = new Blob([swCode], { type: 'text/javascript' });
-        const swURL = URL.createObjectURL(swBlob);
-        navigator.serviceWorker.register(swURL).catch(err => console.log('SW registration note:', err));
+        window.addEventListener('load', () => {
+          navigator.serviceWorker.register('./sw.js', { scope: './' })
+            .then(reg => console.log('Service Worker registered:', reg.scope))
+            .catch(err => console.log('SW registration note:', err));
+        });
       }
     }
-    setupPWAManifest();
+    registerPWAServiceWorker();
 
     /* --------------------------------------------------------------------------
        SECTION 1: BULLETPROOF WEB AUDIO API SYNTH ENGINE (SFX & Procedural BGM)
