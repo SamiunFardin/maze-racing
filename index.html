@@ -3,14 +3,14 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>Turbo Maze Racer - PWA Installable & Sound Fixed</title>
+  <title>Turbo Maze Racer</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   
   <!-- ==========================================================================
      PWA WEB APP MANIFEST & THEME METAS (Enables App Installation)
      ========================================================================== -->
-  <meta name="theme-color" content="#0b0f14">
+  <meta name="theme-color" content="#0d131c">
   <meta name="mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -21,19 +21,19 @@
 
   <style>
     /* ==========================================================================
-       1. GLOBAL RESET & SOFT EYE-FRIENDLY CIRCUIT THEME TOKENS
+       1. GLOBAL RESET & MUTED BLUE & YELLOW CIRCUIT THEME TOKENS
        ========================================================================== */
     :root {
-      --bg-void: #0b0f14;
-      --bg-panel: #121720;
-      --bg-elevated: #18202c;
-      --border-subtle: rgba(148, 163, 184, 0.14);
-      --border-strong: rgba(125, 211, 192, 0.35);
-      --accent-mint: #68c2ae;
-      --accent-mint-soft: #8cdbc9;
-      --accent-sand: #d4a373;
-      --accent-sky: #7cb9e8;
-      --text-primary: #e2e8f0;
+      --bg-void: #0d131c;
+      --bg-panel: #141c28;
+      --bg-elevated: #1b2636;
+      --border-subtle: rgba(148, 163, 184, 0.16);
+      --border-strong: rgba(74, 127, 181, 0.42);
+      --accent-blue: #4a7fb5;
+      --accent-blue-soft: #689cd2;
+      --accent-yellow: #d4a23a;
+      --accent-yellow-soft: #e3b754;
+      --text-primary: #e5eaf0;
       --text-muted: #94a3b8;
     }
 
@@ -61,45 +61,45 @@
     .font-mono, #hud-timer, #hud-best-val, #victory-final-time {
       font-variant-numeric: tabular-nums;
     }
-    .neon-text {
-      text-shadow: 0 2px 16px rgba(104, 194, 174, 0.2), 0 0 24px rgba(124, 185, 232, 0.14);
+    .title-shadow {
+      text-shadow: 0 3px 14px rgba(13, 19, 28, 0.85);
     }
 
-    /* Cohesive Soft Slate Panel & Button Surfaces */
+    /* Cohesive Matte Slate-Blue & Ochre-Gold Surfaces */
     .pit-panel {
-      background: linear-gradient(165deg, rgba(22, 29, 41, 0.96) 0%, rgba(13, 18, 26, 0.98) 100%);
-      border: 1px solid var(--border-subtle);
-      box-shadow: 0 24px 60px rgba(0, 0, 0, 0.72), inset 0 1px 0 rgba(255, 255, 255, 0.05);
+      background: linear-gradient(165deg, rgba(24, 33, 47, 0.97) 0%, rgba(14, 20, 30, 0.99) 100%);
+      border: 1px solid rgba(104, 156, 210, 0.22);
+      box-shadow: 0 24px 60px rgba(0, 0, 0, 0.76), inset 0 1px 0 rgba(255, 255, 255, 0.05);
     }
     .pit-card {
-      background: rgba(17, 23, 34, 0.88);
-      border: 1px solid rgba(148, 163, 184, 0.13);
+      background: rgba(19, 27, 39, 0.9);
+      border: 1px solid rgba(148, 163, 184, 0.14);
       box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.035);
     }
     .pit-btn-primary {
-      background: linear-gradient(180deg, #68c2ae 0%, #4da390 100%);
-      color: #081210;
-      border: 1px solid rgba(204, 251, 241, 0.3);
-      box-shadow: 0 6px 18px rgba(77, 163, 144, 0.22), inset 0 1px 0 rgba(255, 255, 255, 0.28);
+      background: linear-gradient(180deg, #dfb04a 0%, #c4912c 100%);
+      color: #11161f;
+      border: 1px solid rgba(245, 215, 142, 0.45);
+      box-shadow: 0 6px 16px rgba(0, 0, 0, 0.42), inset 0 1px 0 rgba(255, 255, 255, 0.32);
     }
     .pit-btn-primary:hover {
-      background: linear-gradient(180deg, #7dd3c0 0%, #5bb5a1 100%);
+      background: linear-gradient(180deg, #e7bc5d 0%, #cf9b34 100%);
     }
     .pit-btn-secondary {
-      background: linear-gradient(180deg, #1d2636 0%, #141b27 100%);
-      color: #cbd5e1;
-      border: 1px solid rgba(148, 163, 184, 0.18);
-      box-shadow: 0 3px 10px rgba(0, 0, 0, 0.38), inset 0 1px 0 rgba(255, 255, 255, 0.05);
+      background: linear-gradient(180deg, #212e42 0%, #172130 100%);
+      color: #d6dfe9;
+      border: 1px solid rgba(104, 156, 210, 0.22);
+      box-shadow: 0 3px 10px rgba(0, 0, 0, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.05);
     }
     .pit-btn-secondary:hover {
-      background: linear-gradient(180deg, #253145 0%, #1a2232 100%);
-      border-color: rgba(125, 211, 192, 0.35);
+      background: linear-gradient(180deg, #293952 0%, #1d293c 100%);
+      border-color: rgba(212, 162, 58, 0.45);
     }
 
     /* Loading Logo Animations */
     @keyframes carFloat {
       0%, 100% { transform: translateY(0) scale(1); }
-      50% { transform: translateY(-6px) scale(1.02); }
+      50% { transform: translateY(-5px) scale(1.015); }
     }
     .animate-car-float {
       animation: carFloat 3s ease-in-out infinite;
@@ -123,7 +123,7 @@
     }
 
     .edit-mode-active .floating-control {
-      outline: 2px dashed #7dd3c0;
+      outline: 2px dashed #d4a23a;
       outline-offset: 4px;
       cursor: move;
     }
@@ -135,8 +135,8 @@
       width: 120px;
       height: 120px;
       border-radius: 50%;
-      background: radial-gradient(circle at 35% 30%, rgba(28, 37, 52, 0.9) 0%, rgba(12, 16, 24, 0.95) 100%);
-      border: 2px solid rgba(125, 211, 192, 0.38);
+      background: radial-gradient(circle at 35% 30%, rgba(30, 42, 60, 0.92) 0%, rgba(14, 20, 30, 0.96) 100%);
+      border: 2px solid rgba(104, 156, 210, 0.42);
       box-shadow: 0 10px 24px rgba(0, 0, 0, 0.68), inset 0 2px 8px rgba(255, 255, 255, 0.05), inset 0 0 14px rgba(0, 0, 0, 0.78);
       position: relative;
       display: flex;
@@ -147,15 +147,15 @@
       width: 50px;
       height: 50px;
       border-radius: 50%;
-      background: radial-gradient(circle at 35% 30%, #8cdbc9 0%, #58b09c 75%, #37786a 100%);
-      border: 2px solid rgba(226, 244, 238, 0.6);
+      background: radial-gradient(circle at 35% 30%, #e3b754 0%, #c4912c 75%, #8f671b 100%);
+      border: 2px solid rgba(250, 232, 185, 0.65);
       box-shadow: 0 4px 14px rgba(0, 0, 0, 0.6), inset 0 1px 2px rgba(255, 255, 255, 0.4);
       position: absolute;
       transition: transform 0.04s ease-out;
       display: flex;
       align-items: center;
       justify-content: center;
-      color: #081210;
+      color: #11161f;
       font-size: 17px;
       font-weight: bold;
     }
@@ -172,9 +172,9 @@
       width: 100%;
       height: 100%;
       border-radius: 50%;
-      background: radial-gradient(circle, #1e293b 38%, #111827 76%, #0b0f17 100%);
-      border: 7px solid #334155;
-      box-shadow: inset 0 0 16px rgba(0,0,0,0.92), 0 8px 22px rgba(0, 0, 0, 0.72), 0 0 0 2px rgba(125, 211, 192, 0.36);
+      background: radial-gradient(circle, #212e42 38%, #131b27 76%, #0c1119 100%);
+      border: 7px solid #36475e;
+      box-shadow: inset 0 0 16px rgba(0,0,0,0.92), 0 8px 22px rgba(0, 0, 0, 0.72), 0 0 0 2px rgba(104, 156, 210, 0.38);
       display: flex;
       align-items: center;
       justify-content: center;
@@ -185,7 +185,7 @@
       position: absolute;
       width: 100%;
       height: 11px;
-      background: #334155;
+      background: #36475e;
       box-shadow: inset 0 1px 0 rgba(255,255,255,0.1);
     }
     #steering-wheel::after {
@@ -193,15 +193,15 @@
       position: absolute;
       height: 100%;
       width: 11px;
-      background: #334155;
+      background: #36475e;
       box-shadow: inset 1px 0 0 rgba(255,255,255,0.1);
     }
     .wheel-center {
       width: 44px;
       height: 44px;
       border-radius: 50%;
-      background: linear-gradient(180deg, #68c2ae 0%, #448f7e 100%);
-      border: 2px solid #ccfbf1;
+      background: linear-gradient(180deg, #dfb04a 0%, #b58324 100%);
+      border: 2px solid #f7e4b2;
       z-index: 10;
       display: flex;
       align-items: center;
@@ -214,7 +214,7 @@
     }
     .pedal:active, .pedal.active {
       transform: translateY(2px) scale(0.95);
-      filter: brightness(1.14);
+      filter: brightness(1.12);
       box-shadow: 0 2px 6px rgba(0, 0, 0, 0.55), inset 0 2px 6px rgba(0, 0, 0, 0.35);
     }
 
@@ -226,56 +226,56 @@
       height: 5px;
     }
     .custom-scroll::-webkit-scrollbar-track {
-      background: rgba(13, 18, 26, 0.85);
+      background: rgba(14, 20, 30, 0.85);
       border-radius: 4px;
     }
     .custom-scroll::-webkit-scrollbar-thumb {
-      background: rgba(125, 211, 192, 0.42);
+      background: rgba(104, 156, 210, 0.45);
       border-radius: 4px;
     }
     .custom-scroll {
       scrollbar-width: thin;
-      scrollbar-color: rgba(125, 211, 192, 0.42) rgba(13, 18, 26, 0.85);
+      scrollbar-color: rgba(104, 156, 210, 0.45) rgba(14, 20, 30, 0.85);
       touch-action: pan-y !important;
       -webkit-overflow-scrolling: touch !important;
       overflow-y: auto !important;
     }
 
     input[type=range] {
-      accent-color: #68c2ae;
+      accent-color: #d4a23a;
     }
   </style>
 </head>
-<body class="bg-[#0b0f14] text-slate-200 flex flex-col h-screen w-screen overflow-hidden">
+<body class="bg-[#0d131c] text-slate-200 flex flex-col h-screen w-screen overflow-hidden">
 
   <!-- [UI OVERLAY] INITIAL LOADING SCREEN -->
-  <div id="modal-loading-screen" class="fixed inset-0 z-[100] bg-[#0b0f14] flex flex-col items-center justify-center p-6 space-y-6 transition-opacity duration-700">
+  <div id="modal-loading-screen" class="fixed inset-0 z-[100] bg-[#0d131c] flex flex-col items-center justify-center p-6 space-y-6 transition-opacity duration-700">
     <div class="max-w-xs w-full text-center space-y-4">
-      <div class="w-32 h-32 mx-auto rounded-3xl border border-teal-300/35 shadow-[0_16px_40px_rgba(0,0,0,0.75),0_0_25px_rgba(104,194,174,0.14)] bg-gradient-to-tr from-[#0d121b] via-[#161f2f] to-[#1e293b] flex items-center justify-center relative overflow-hidden animate-car-float">
-        <svg class="w-24 h-24 text-[#7dd3c0] drop-shadow-[0_0_10px_rgba(125,211,192,0.3)]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+      <div class="w-32 h-32 mx-auto rounded-3xl border border-[#689cd2]/35 shadow-[0_16px_40px_rgba(0,0,0,0.75)] bg-gradient-to-tr from-[#0f1622] via-[#192436] to-[#223149] flex items-center justify-center relative overflow-hidden animate-car-float">
+        <svg class="w-24 h-24 text-[#e3b754]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
           <path d="M2 13l2-3h3l2 3h8l2-3h3l1 3v2H2v-2z" fill="currentColor" fill-opacity="0.2"></path>
           <path d="M2 13h20v2a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2v-2z"></path>
-          <circle cx="6.5" cy="16.5" r="2.5" fill="#0b0f14" stroke="currentColor" stroke-width="1.5"></circle>
-          <circle cx="17.5" cy="16.5" r="2.5" fill="#0b0f14" stroke="currentColor" stroke-width="1.5"></circle>
-          <path d="M14 8l4-4m0 0l-3 1m3-1v3" stroke-linecap="round" stroke-linejoin="round"></path>
+          <circle cx="6.5" cy="16.5" r="2.5" fill="#0d131c" stroke="#689cd2" stroke-width="1.7"></circle>
+          <circle cx="17.5" cy="16.5" r="2.5" fill="#0d131c" stroke="#689cd2" stroke-width="1.7"></circle>
+          <path d="M14 8l4-4m0 0l-3 1m3-1v3" stroke="#689cd2" stroke-linecap="round" stroke-linejoin="round"></path>
         </svg>
-        <div class="absolute inset-0 bg-gradient-to-r from-transparent via-teal-200/10 to-transparent -translate-x-full animate-shimmer pointer-events-none"></div>
+        <div class="absolute inset-0 bg-gradient-to-r from-transparent via-amber-200/10 to-transparent -translate-x-full animate-shimmer pointer-events-none"></div>
       </div>
 
       <div>
-        <h1 class="text-3xl font-black italic tracking-wider text-transparent bg-clip-text bg-gradient-to-r from-[#8cdbc9] via-[#7cb9e8] to-[#d4a373] neon-text">
+        <h1 class="text-3xl font-black italic tracking-wider text-transparent bg-clip-text bg-gradient-to-r from-[#e3b754] via-[#d8e2ee] to-[#689cd2] title-shadow">
           TURBO MAZE
         </h1>
-        <p class="text-[11px] text-slate-400 mt-1 uppercase tracking-widest font-bold">Circuit Telemetry & Offline Ready</p>
+        <p class="text-xs text-[#9fb3c8] mt-1.5 tracking-wide font-medium">Precision Driving Through Every Turn.</p>
       </div>
 
       <div class="w-full bg-slate-900/95 border border-slate-800 rounded-full h-2.5 overflow-hidden p-0.5">
-        <div id="loading-progress-bar" class="bg-gradient-to-r from-[#68c2ae] to-[#7cb9e8] h-full rounded-full transition-all duration-300" style="width: 0%;"></div>
+        <div id="loading-progress-bar" class="bg-gradient-to-r from-[#4a7fb5] to-[#d4a23a] h-full rounded-full transition-all duration-300" style="width: 0%;"></div>
       </div>
 
       <div class="pit-card rounded-xl p-3 text-left space-y-1 shadow-lg">
-        <div class="text-[10px] font-bold text-[#7dd3c0] uppercase flex items-center gap-1.5">
-          <i class="fa-solid fa-cloud-arrow-down"></i> Ready to Install as App
+        <div class="text-[10px] font-bold text-[#e3b754] uppercase flex items-center gap-1.5">
+          <i class="fa-solid fa-cloud-arrow-down text-[#689cd2]"></i> Ready to Install as App
         </div>
         <p class="text-xs text-slate-300 leading-relaxed" id="loading-tip-text">
           Tap browser menu and select "Install app" to add to your home screen!
@@ -285,38 +285,38 @@
   </div>
 
   <!-- [UI OVERLAY] RACE START COUNTDOWN -->
-  <div id="modal-countdown" class="fixed inset-0 z-[90] bg-[#0b0f14]/85 backdrop-blur-md hidden flex items-center justify-center">
-    <div id="countdown-number" class="text-9xl font-black italic text-transparent bg-clip-text bg-gradient-to-r from-[#8cdbc9] via-[#7cb9e8] to-[#d4a373] drop-shadow-[0_0_24px_rgba(125,211,192,0.3)] animate-pulse">
+  <div id="modal-countdown" class="fixed inset-0 z-[90] bg-[#0d131c]/85 backdrop-blur-md hidden flex items-center justify-center">
+    <div id="countdown-number" class="text-9xl font-black italic text-transparent bg-clip-text bg-gradient-to-r from-[#e3b754] via-[#e5eaf0] to-[#689cd2] title-shadow animate-pulse">
       3
     </div>
   </div>
 
   <!-- [UI OVERLAY] TOP GAME HUD HEADER -->
-  <div id="game-hud" class="absolute top-0 left-0 right-0 z-40 flex justify-between items-center px-4 py-2 bg-[#0e131c]/92 backdrop-blur-md border-b border-slate-800/80 shadow-lg pointer-events-auto">
+  <div id="game-hud" class="absolute top-0 left-0 right-0 z-40 flex justify-between items-center px-4 py-2 bg-[#101723]/94 backdrop-blur-md border-b border-[#689cd2]/20 shadow-lg pointer-events-auto">
     <div class="flex items-center space-x-3">
       <button id="btn-back-menu" class="pit-btn-secondary px-3 py-1.5 rounded-lg flex items-center justify-center">
-        <i class="fa-solid fa-house text-sm text-[#7dd3c0]"></i>
+        <i class="fa-solid fa-house text-sm text-[#e3b754]"></i>
       </button>
       <div>
         <div id="hud-level-title" class="text-[11px] uppercase tracking-wider text-slate-400 font-bold">Level 1</div>
-        <div id="hud-timer" class="text-lg font-mono font-bold text-[#8cdbc9]">00:00.000</div>
+        <div id="hud-timer" class="text-lg font-mono font-bold text-[#e3b754]">00:00.000</div>
       </div>
     </div>
 
     <div class="flex items-center space-x-2">
       <div id="hud-best-time" class="hidden sm:block text-right mr-2">
         <div class="text-[9px] uppercase text-slate-400 font-bold">Track Record</div>
-        <div id="hud-best-val" class="text-xs font-mono text-[#d4a373]">--:--.---</div>
+        <div id="hud-best-val" class="text-xs font-mono text-[#689cd2]">--:--.---</div>
       </div>
-      <button id="btn-pause-game" class="pit-btn-secondary text-[#8cdbc9] text-xs px-3 py-1.5 rounded-lg font-bold flex items-center space-x-1">
+      <button id="btn-pause-game" class="pit-btn-secondary text-[#e3b754] text-xs px-3 py-1.5 rounded-lg font-bold flex items-center space-x-1">
         <i class="fa-solid fa-pause"></i>
         <span>Pause</span>
       </button>
       <button id="btn-edit-controls-hud" class="pit-btn-secondary text-slate-200 text-xs px-2.5 py-1.5 rounded-lg font-bold flex items-center space-x-1">
-        <i class="fa-solid fa-up-down-left-right text-[#7dd3c0]"></i>
+        <i class="fa-solid fa-up-down-left-right text-[#689cd2]"></i>
         <span class="hidden sm:inline">Controls</span>
       </button>
-      <button id="btn-full-map" class="pit-btn-secondary text-[#7cb9e8] text-xs px-3 py-1.5 rounded-lg font-bold flex items-center space-x-1">
+      <button id="btn-full-map" class="pit-btn-secondary text-[#689cd2] text-xs px-3 py-1.5 rounded-lg font-bold flex items-center space-x-1">
         <i class="fa-solid fa-map"></i>
         <span>Full Map</span>
       </button>
@@ -327,10 +327,10 @@
   </div>
 
   <!-- [UI OVERLAY] EDIT CONTROL LAYOUT BANNER -->
-  <div id="edit-layout-banner" class="absolute top-14 left-1/2 -translate-x-1/2 z-40 bg-[#68c2ae] text-slate-950 font-bold text-xs px-4 py-1.5 rounded-full shadow-lg hidden flex items-center space-x-3 pointer-events-auto">
+  <div id="edit-layout-banner" class="absolute top-14 left-1/2 -translate-x-1/2 z-40 bg-[#d4a23a] text-slate-950 font-bold text-xs px-4 py-1.5 rounded-full shadow-lg hidden flex items-center space-x-3 pointer-events-auto">
     <span>Drag controls to reposition • Use settings to scale size</span>
     <button id="btn-reset-controls" class="bg-slate-900 text-slate-100 px-2 py-0.5 rounded text-[10px] uppercase">Reset</button>
-    <button id="btn-save-controls" class="bg-emerald-800 text-slate-100 px-2.5 py-0.5 rounded text-[10px] uppercase">Done</button>
+    <button id="btn-save-controls" class="bg-[#234366] text-slate-100 px-2.5 py-0.5 rounded text-[10px] uppercase">Done</button>
   </div>
 
   <!-- ==========================================================================
@@ -369,26 +369,26 @@
 
     <!-- CLASSIC LEFT / RIGHT BUTTONS -->
     <div id="ctrl-buttons-wrapper" class="floating-control hidden flex space-x-3" style="bottom: 24px; left: 24px;">
-      <button id="btn-steer-left" class="pedal w-16 h-16 bg-gradient-to-b from-slate-800 to-slate-950 border border-teal-300/40 rounded-2xl flex items-center justify-center text-[#7dd3c0] text-2xl active:bg-[#68c2ae] active:text-slate-950">
+      <button id="btn-steer-left" class="pedal w-16 h-16 bg-gradient-to-b from-[#212e42] to-[#121924] border border-[#689cd2]/40 rounded-2xl flex items-center justify-center text-[#e3b754] text-2xl active:bg-[#d4a23a] active:text-slate-950">
         <i class="fa-solid fa-caret-left"></i>
       </button>
-      <button id="btn-steer-right" class="pedal w-16 h-16 bg-gradient-to-b from-slate-800 to-slate-950 border border-teal-300/40 rounded-2xl flex items-center justify-center text-[#7dd3c0] text-2xl active:bg-[#68c2ae] active:text-slate-950">
+      <button id="btn-steer-right" class="pedal w-16 h-16 bg-gradient-to-b from-[#212e42] to-[#121924] border border-[#689cd2]/40 rounded-2xl flex items-center justify-center text-[#e3b754] text-2xl active:bg-[#d4a23a] active:text-slate-950">
         <i class="fa-solid fa-caret-right"></i>
       </button>
     </div>
 
     <!-- BRAKE PEDAL -->
     <div id="ctrl-brake-wrapper" class="floating-control hidden flex flex-col items-center" style="bottom: 20px; right: 100px;">
-      <span class="text-[9px] font-bold text-rose-300 uppercase tracking-widest mb-1">Brake</span>
-      <button id="btn-pedal-brake" class="pedal w-14 h-24 bg-gradient-to-b from-rose-700/85 to-rose-950 border border-rose-400/45 rounded-2xl flex items-center justify-center text-slate-100 text-xl">
+      <span class="text-[9px] font-bold text-[#89b4df] uppercase tracking-widest mb-1">Brake</span>
+      <button id="btn-pedal-brake" class="pedal w-14 h-24 bg-gradient-to-b from-[#345982] to-[#1d344e] border border-[#689cd2]/50 rounded-2xl flex items-center justify-center text-slate-100 text-xl">
         <i class="fa-solid fa-angles-down"></i>
       </button>
     </div>
 
     <!-- GAS PEDAL -->
     <div id="ctrl-gas-wrapper" class="floating-control hidden flex flex-col items-center" style="bottom: 20px; right: 24px;">
-      <span class="text-[9px] font-bold text-teal-300 uppercase tracking-widest mb-1">Gas</span>
-      <button id="btn-pedal-gas" class="pedal w-14 h-28 bg-gradient-to-b from-teal-500/85 to-teal-900 border border-teal-300/50 rounded-2xl flex items-center justify-center text-slate-950 font-black text-xl">
+      <span class="text-[9px] font-bold text-[#e3b754] uppercase tracking-widest mb-1">Gas</span>
+      <button id="btn-pedal-gas" class="pedal w-14 h-28 bg-gradient-to-b from-[#dfb04a] to-[#9b6f1c] border border-[#f5d78e]/55 rounded-2xl flex items-center justify-center text-slate-950 font-black text-xl">
         <i class="fa-solid fa-angles-up"></i>
       </button>
     </div>
@@ -399,9 +399,9 @@
      ========================================================================== -->
 
   <!-- PAUSE MODAL -->
-  <div id="modal-pause" class="fixed inset-0 z-50 bg-[#0b0f14]/85 backdrop-blur-md hidden flex items-center justify-center p-4">
+  <div id="modal-pause" class="fixed inset-0 z-50 bg-[#0d131c]/85 backdrop-blur-md hidden flex items-center justify-center p-4">
     <div class="max-w-sm w-full pit-panel rounded-2xl p-6 text-center space-y-4">
-      <div class="w-12 h-12 bg-teal-400/15 border border-teal-300/45 rounded-full flex items-center justify-center mx-auto text-[#7dd3c0] text-xl">
+      <div class="w-12 h-12 bg-[#d4a23a]/15 border border-[#d4a23a]/45 rounded-full flex items-center justify-center mx-auto text-[#e3b754] text-xl">
         <i class="fa-solid fa-pause"></i>
       </div>
       <div>
@@ -423,18 +423,18 @@
   </div>
 
   <!-- FULL MAZE MAP OVERLAY MODAL -->
-  <div id="modal-full-map" class="fixed inset-0 z-40 bg-[#0b0f14]/95 backdrop-blur-md hidden flex flex-col items-center justify-center p-4">
+  <div id="modal-full-map" class="fixed inset-0 z-40 bg-[#0d131c]/95 backdrop-blur-md hidden flex flex-col items-center justify-center p-4">
     <div class="w-full max-w-3xl pit-panel rounded-2xl p-4 flex flex-col h-[88vh]">
       <div class="flex justify-between items-center border-b border-slate-800 pb-2 mb-2">
         <div class="flex items-center space-x-2">
-          <i class="fa-solid fa-map-location-dot text-[#7dd3c0]"></i>
+          <i class="fa-solid fa-map-location-dot text-[#e3b754]"></i>
           <span id="full-map-title" class="font-bold text-slate-100 text-sm">Full Maze View (Pinch to Zoom, Drag to Pan)</span>
         </div>
         <div class="flex items-center space-x-2">
-          <button id="btn-zoom-in-map" class="pit-btn-secondary text-[#7dd3c0] w-7 h-7 rounded-lg text-xs font-bold flex items-center justify-center">
+          <button id="btn-zoom-in-map" class="pit-btn-secondary text-[#e3b754] w-7 h-7 rounded-lg text-xs font-bold flex items-center justify-center">
             <i class="fa-solid fa-plus"></i>
           </button>
-          <button id="btn-zoom-out-map" class="pit-btn-secondary text-[#7dd3c0] w-7 h-7 rounded-lg text-xs font-bold flex items-center justify-center">
+          <button id="btn-zoom-out-map" class="pit-btn-secondary text-[#e3b754] w-7 h-7 rounded-lg text-xs font-bold flex items-center justify-center">
             <i class="fa-solid fa-minus"></i>
           </button>
           <button id="btn-reset-zoom-map" class="pit-btn-secondary text-slate-300 px-2 py-1 rounded-lg text-xs font-bold">
@@ -445,25 +445,25 @@
           </button>
         </div>
       </div>
-      <div id="full-map-canvas-wrapper" class="flex-1 w-full h-full flex items-center justify-center bg-[#090d13] border border-slate-800/80 rounded-xl overflow-hidden p-2 relative touch-none">
+      <div id="full-map-canvas-wrapper" class="flex-1 w-full h-full flex items-center justify-center bg-[#0a0f17] border border-slate-800/80 rounded-xl overflow-hidden p-2 relative touch-none">
         <canvas id="fullMapCanvas" class="cursor-grab active:cursor-grabbing"></canvas>
       </div>
     </div>
   </div>
 
   <!-- MAIN MENU OVERLAY -->
-  <div id="modal-menu" class="fixed inset-0 z-50 bg-[#0b0f14]/90 backdrop-blur-lg flex items-center justify-center p-4">
+  <div id="modal-menu" class="fixed inset-0 z-50 bg-[#0d131c]/92 backdrop-blur-lg flex items-center justify-center p-4">
     <div class="max-w-md w-full pit-panel rounded-2xl p-6 text-center space-y-4">
       <div>
-        <h1 class="text-4xl font-black italic tracking-wider text-transparent bg-clip-text bg-gradient-to-r from-[#8cdbc9] via-[#7cb9e8] to-[#d4a373] neon-text">
+        <h1 class="text-4xl font-black italic tracking-wider text-transparent bg-clip-text bg-gradient-to-r from-[#e3b754] via-[#e5eaf0] to-[#689cd2] title-shadow">
           TURBO MAZE
         </h1>
-        <p class="text-slate-400 text-xs mt-1 tracking-wide">Circuit Maze & Night Telemetry Edition</p>
+        <p class="text-[#9fb3c8] text-xs mt-1.5 tracking-wide font-medium">Precision Driving Through Every Turn.</p>
       </div>
 
       <!-- MODE SELECTION SWITCH -->
-      <div class="bg-[#0b0f16] p-1.5 rounded-xl border border-slate-800 flex">
-        <button id="menu-tab-standard" class="w-1/2 py-2 rounded-lg text-xs font-bold transition bg-[#68c2ae] text-slate-950 shadow">
+      <div class="bg-[#0c111a] p-1.5 rounded-xl border border-[#689cd2]/20 flex">
+        <button id="menu-tab-standard" class="w-1/2 py-2 rounded-lg text-xs font-bold transition bg-[#4a7fb5] text-white shadow">
           ☀️ Standard
         </button>
         <button id="menu-tab-dark" class="w-1/2 py-2 rounded-lg text-xs font-bold transition text-slate-400 hover:text-slate-200">
@@ -478,12 +478,12 @@
         </button>
 
         <button id="menu-btn-garage" class="w-full py-3 pit-btn-secondary font-bold rounded-xl flex items-center justify-center space-x-2 transition">
-          <i class="fa-solid fa-warehouse text-[#7dd3c0]"></i>
+          <i class="fa-solid fa-warehouse text-[#689cd2]"></i>
           <span>Car Garage & Showroom</span>
         </button>
 
         <button id="menu-btn-leaderboard" class="w-full py-3 pit-btn-secondary font-bold rounded-xl flex items-center justify-center space-x-2 transition">
-          <i class="fa-solid fa-trophy text-[#d4a373]"></i>
+          <i class="fa-solid fa-trophy text-[#e3b754]"></i>
           <span>Track Leaderboards</span>
         </button>
 
@@ -496,11 +496,11 @@
   </div>
 
   <!-- GARAGE & SHOWROOM MODAL -->
-  <div id="modal-garage" class="fixed inset-0 z-50 bg-[#0b0f14]/92 backdrop-blur-lg hidden flex items-center justify-center p-3 sm:p-4">
-    <div class="max-w-2xl w-full pit-panel border-teal-300/25 rounded-2xl p-4 sm:p-5 space-y-4 max-h-[92vh] h-[92vh] flex flex-col">
+  <div id="modal-garage" class="fixed inset-0 z-50 bg-[#0d131c]/94 backdrop-blur-lg hidden flex items-center justify-center p-3 sm:p-4">
+    <div class="max-w-2xl w-full pit-panel rounded-2xl p-4 sm:p-5 space-y-4 max-h-[92vh] h-[92vh] flex flex-col">
       <div class="flex justify-between items-center border-b border-slate-800 pb-3 shrink-0">
         <h2 class="text-lg font-bold text-slate-100 flex items-center gap-2">
-          <i class="fa-solid fa-warehouse text-[#7dd3c0]"></i> Car Garage & Customization Showroom
+          <i class="fa-solid fa-warehouse text-[#689cd2]"></i> Car Garage & Customization Showroom
         </h2>
         <button class="btn-close-modal text-slate-400 hover:text-slate-200 p-1">
           <i class="fa-solid fa-xmark text-lg"></i>
@@ -509,10 +509,10 @@
 
       <div class="grid grid-cols-1 md:grid-cols-2 gap-4 flex-1 overflow-y-auto custom-scroll pr-1 min-h-0">
         <div class="space-y-4 flex flex-col">
-          <div class="bg-[#0b0f16] border border-slate-800 rounded-2xl p-4 flex flex-col items-center justify-center relative overflow-hidden h-52 shrink-0 shadow-inner">
+          <div class="bg-[#0c111a] border border-slate-800 rounded-2xl p-4 flex flex-col items-center justify-center relative overflow-hidden h-52 shrink-0 shadow-inner">
             <div class="absolute top-2 left-3 text-[10px] font-bold text-slate-400 uppercase tracking-widest">Live 2D Preview</div>
             <canvas id="garagePreviewCanvas" class="w-48 h-48 cursor-grab active:cursor-grabbing"></canvas>
-            <div id="garage-car-model-badge" class="absolute bottom-2 text-xs font-mono font-bold text-[#8cdbc9] bg-slate-900/95 px-3 py-1 rounded-full border border-slate-700">Starter Buggy</div>
+            <div id="garage-car-model-badge" class="absolute bottom-2 text-xs font-mono font-bold text-[#e3b754] bg-slate-900/95 px-3 py-1 rounded-full border border-[#689cd2]/30">Starter Buggy</div>
           </div>
 
           <div>
@@ -534,7 +534,7 @@
 
           <div class="border-t border-slate-800 pt-3">
             <div class="flex justify-between items-center mb-2">
-              <label class="block text-xs uppercase tracking-wider text-[#7dd3c0] font-bold">Model Tuning (Stat Ranges)</label>
+              <label class="block text-xs uppercase tracking-wider text-[#e3b754] font-bold">Model Tuning (Stat Ranges)</label>
               <button id="btn-reset-garage-tuning" class="text-[10px] text-slate-400 hover:text-slate-200 underline">Reset Default</button>
             </div>
             <div id="garage-tuning-controls" class="space-y-3"></div>
@@ -551,11 +551,11 @@
   </div>
 
   <!-- LEVEL SELECT MODAL -->
-  <div id="modal-levels" class="fixed inset-0 z-50 bg-[#0b0f14]/90 backdrop-blur-lg hidden flex items-center justify-center p-3 sm:p-4" style="touch-action: auto;">
+  <div id="modal-levels" class="fixed inset-0 z-50 bg-[#0d131c]/92 backdrop-blur-lg hidden flex items-center justify-center p-3 sm:p-4" style="touch-action: auto;">
     <div class="max-w-2xl w-full pit-panel rounded-2xl p-4 sm:p-5 space-y-3 max-h-[92vh] h-[92vh] flex flex-col" style="touch-action: auto;">
       <div class="flex justify-between items-center border-b border-slate-800 pb-3 shrink-0">
         <h2 class="text-base sm:text-lg font-bold text-slate-100 flex items-center gap-2" id="level-modal-header">
-          <i class="fa-solid fa-layer-group text-[#7dd3c0]"></i> Campaign Levels
+          <i class="fa-solid fa-layer-group text-[#e3b754]"></i> Campaign Levels
         </h2>
         <button class="btn-close-modal text-slate-400 hover:text-slate-200 p-1">
           <i class="fa-solid fa-xmark text-lg"></i>
@@ -564,9 +564,9 @@
 
       <div class="flex gap-2 overflow-x-auto pb-2 border-b border-slate-800 shrink-0 custom-scroll" id="tier-tabs" style="touch-action: pan-x !important;"></div>
 
-      <div class="flex items-center justify-between bg-[#0b0f16]/90 px-3 py-2 rounded-xl border border-slate-800 shrink-0">
+      <div class="flex items-center justify-between bg-[#0c111a]/90 px-3 py-2 rounded-xl border border-slate-800 shrink-0">
         <span class="text-xs text-slate-400 font-bold" id="block-range-label">Select Range:</span>
-        <select id="level-block-select" class="bg-slate-800 border border-slate-700 rounded-lg px-2 py-1 text-slate-100 text-xs font-bold focus:outline-none focus:border-[#7dd3c0]"></select>
+        <select id="level-block-select" class="bg-slate-800 border border-slate-700 rounded-lg px-2 py-1 text-slate-100 text-xs font-bold focus:outline-none focus:border-[#d4a23a]"></select>
       </div>
 
       <div id="levels-container" class="space-y-2.5 overflow-y-auto custom-scroll pr-1 flex-1 min-h-0" style="touch-action: pan-y !important;"></div>
@@ -574,11 +574,11 @@
   </div>
 
   <!-- PRE-RACE CAR TUNING MODAL -->
-  <div id="modal-pre-race-tuning" class="fixed inset-0 z-50 bg-[#0b0f14]/90 backdrop-blur-lg hidden flex items-center justify-center p-4">
-    <div class="max-w-md w-full pit-panel border-teal-300/25 rounded-2xl p-5 space-y-4 max-h-[90vh] overflow-y-auto custom-scroll min-h-0">
+  <div id="modal-pre-race-tuning" class="fixed inset-0 z-50 bg-[#0d131c]/92 backdrop-blur-lg hidden flex items-center justify-center p-4">
+    <div class="max-w-md w-full pit-panel rounded-2xl p-5 space-y-4 max-h-[90vh] overflow-y-auto custom-scroll min-h-0">
       <div class="flex justify-between items-center border-b border-slate-800 pb-2">
         <h2 class="text-lg font-bold text-slate-100 flex items-center gap-2">
-          <i class="fa-solid fa-gauge-high text-[#7dd3c0]"></i> Pre-Race Car Setup
+          <i class="fa-solid fa-gauge-high text-[#e3b754]"></i> Pre-Race Car Setup
         </h2>
         <button id="btn-close-pre-race" class="text-slate-400 hover:text-slate-200 p-1">
           <i class="fa-solid fa-xmark text-lg"></i>
@@ -601,11 +601,11 @@
   </div>
 
   <!-- CONTROL SETTINGS & AUDIO PREFERENCES MODAL -->
-  <div id="modal-settings" class="fixed inset-0 z-50 bg-[#0b0f14]/90 backdrop-blur-lg hidden flex items-center justify-center p-4">
+  <div id="modal-settings" class="fixed inset-0 z-50 bg-[#0d131c]/92 backdrop-blur-lg hidden flex items-center justify-center p-4">
     <div class="max-w-md w-full pit-panel rounded-2xl p-5 space-y-4 max-h-[90vh] overflow-y-auto custom-scroll min-h-0">
       <div class="flex justify-between items-center border-b border-slate-800 pb-3">
         <h2 class="text-lg font-bold text-slate-100 flex items-center gap-2">
-          <i class="fa-solid fa-sliders text-[#7dd3c0]"></i> Preferences & Audio
+          <i class="fa-solid fa-sliders text-[#689cd2]"></i> Preferences & Audio
         </h2>
         <button class="btn-close-modal text-slate-400 hover:text-slate-200 p-1">
           <i class="fa-solid fa-xmark text-lg"></i>
@@ -615,14 +615,14 @@
       <div class="space-y-4">
         <!-- AUDIO VOLUME CONTROLS -->
         <div class="pit-card p-3 rounded-xl space-y-3">
-          <div class="text-xs uppercase tracking-wider text-[#7dd3c0] font-bold flex items-center gap-1.5">
-            <i class="fa-solid fa-volume-high"></i> Sound & Music Volume
+          <div class="text-xs uppercase tracking-wider text-[#e3b754] font-bold flex items-center gap-1.5">
+            <i class="fa-solid fa-volume-high text-[#689cd2]"></i> Sound & Music Volume
           </div>
 
           <div>
             <div class="flex justify-between items-center text-xs mb-1">
               <span class="text-slate-300 font-medium">Master Volume</span>
-              <span class="font-mono text-[#8cdbc9] font-bold" id="vol-master-val">100%</span>
+              <span class="font-mono text-[#e3b754] font-bold" id="vol-master-val">100%</span>
             </div>
             <input type="range" id="vol-master-range" min="0" max="1" step="0.05" value="1.0" class="w-full h-2 bg-slate-900 rounded-lg appearance-none cursor-pointer">
           </div>
@@ -630,7 +630,7 @@
           <div>
             <div class="flex justify-between items-center text-xs mb-1">
               <span class="text-slate-300 font-medium">Sound Effects (SFX)</span>
-              <span class="font-mono text-[#8cdbc9] font-bold" id="vol-sfx-val">100%</span>
+              <span class="font-mono text-[#e3b754] font-bold" id="vol-sfx-val">100%</span>
             </div>
             <input type="range" id="vol-sfx-range" min="0" max="1" step="0.05" value="1.0" class="w-full h-2 bg-slate-900 rounded-lg appearance-none cursor-pointer">
           </div>
@@ -638,7 +638,7 @@
           <div>
             <div class="flex justify-between items-center text-xs mb-1">
               <span class="text-slate-300 font-medium">Background Music (BGM)</span>
-              <span class="font-mono text-[#8cdbc9] font-bold" id="vol-bgm-val">70%</span>
+              <span class="font-mono text-[#e3b754] font-bold" id="vol-bgm-val">70%</span>
             </div>
             <input type="range" id="vol-bgm-range" min="0" max="1" step="0.05" value="0.7" class="w-full h-2 bg-slate-900 rounded-lg appearance-none cursor-pointer">
           </div>
@@ -647,8 +647,8 @@
         <div>
           <label class="block text-xs uppercase tracking-wider text-slate-400 font-bold mb-2">Steering Interface</label>
           <div class="grid grid-cols-3 gap-2">
-            <button id="opt-steer-joysticks" class="p-2.5 bg-teal-400/10 border-2 border-[#7dd3c0] rounded-xl text-center flex flex-col items-center space-y-1">
-              <i class="fa-solid fa-gamepad text-xl text-[#7dd3c0]"></i>
+            <button id="opt-steer-joysticks" class="p-2.5 bg-[#4a7fb5]/15 border-2 border-[#689cd2] rounded-xl text-center flex flex-col items-center space-y-1">
+              <i class="fa-solid fa-gamepad text-xl text-[#e3b754]"></i>
               <span class="text-[10px] font-bold text-slate-100">Dual Joysticks</span>
             </button>
             <button id="opt-steer-buttons" class="p-2.5 pit-card border-2 border-transparent rounded-xl text-center flex flex-col items-center space-y-1">
@@ -665,13 +665,13 @@
         <div class="pit-card p-3 rounded-xl">
           <div class="flex justify-between items-center text-xs mb-1.5">
             <span class="font-bold text-slate-300">Control Size Scale</span>
-            <span class="font-mono text-[#8cdbc9] font-bold" id="control-scale-val">100%</span>
+            <span class="font-mono text-[#e3b754] font-bold" id="control-scale-val">100%</span>
           </div>
           <input type="range" id="control-scale-range" min="0.7" max="1.5" step="0.05" value="1.0" class="w-full h-2 bg-slate-900 rounded-lg appearance-none cursor-pointer">
         </div>
 
         <div>
-          <button id="btn-start-adjust-controls" class="w-full py-2.5 pit-btn-secondary border-teal-300/30 text-[#8cdbc9] font-bold rounded-xl text-xs flex items-center justify-center space-x-2">
+          <button id="btn-start-adjust-controls" class="w-full py-2.5 pit-btn-secondary text-[#689cd2] font-bold rounded-xl text-xs flex items-center justify-center space-x-2">
             <i class="fa-solid fa-up-down-left-right"></i>
             <span>Drag & Customize Button Positions</span>
           </button>
@@ -679,7 +679,7 @@
 
         <div>
           <label class="block text-xs uppercase tracking-wider text-slate-400 font-bold mb-1">Driver Name</label>
-          <input type="text" id="input-player-name" maxlength="14" placeholder="SpeedRacer" class="w-full bg-[#0b0f16] border border-slate-700 rounded-xl px-4 py-2 text-slate-100 text-sm focus:outline-none focus:border-[#7dd3c0]">
+          <input type="text" id="input-player-name" maxlength="14" placeholder="SpeedRacer" class="w-full bg-[#0c111a] border border-slate-700 rounded-xl px-4 py-2 text-slate-100 text-sm focus:outline-none focus:border-[#689cd2]">
         </div>
       </div>
 
@@ -690,9 +690,9 @@
   </div>
 
   <!-- VICTORY MODAL -->
-  <div id="modal-victory" class="fixed inset-0 z-50 bg-[#0b0f14]/90 backdrop-blur-lg hidden flex items-center justify-center p-4">
-    <div class="max-w-md w-full pit-panel border-teal-300/35 rounded-2xl p-5 text-center space-y-4">
-      <div class="w-14 h-14 bg-teal-400/15 border border-teal-300/50 rounded-full flex items-center justify-center mx-auto text-[#7dd3c0] text-2xl">
+  <div id="modal-victory" class="fixed inset-0 z-50 bg-[#0d131c]/92 backdrop-blur-lg hidden flex items-center justify-center p-4">
+    <div class="max-w-md w-full pit-panel border-[#d4a23a]/40 rounded-2xl p-5 text-center space-y-4">
+      <div class="w-14 h-14 bg-[#d4a23a]/15 border border-[#d4a23a]/50 rounded-full flex items-center justify-center mx-auto text-[#e3b754] text-2xl">
         <i class="fa-solid fa-trophy"></i>
       </div>
 
@@ -703,8 +703,8 @@
 
       <div class="pit-card rounded-xl p-3.5">
         <div class="text-[10px] text-slate-400 font-bold uppercase">Time Recorded</div>
-        <div id="victory-final-time" class="text-2xl font-mono font-bold text-[#8cdbc9] my-0.5">00:45.420</div>
-        <div id="victory-record-status" class="text-xs font-bold text-[#d4a373] hidden">🎉 NEW PERSONAL BEST RECORD!</div>
+        <div id="victory-final-time" class="text-2xl font-mono font-bold text-[#e3b754] my-0.5">00:45.420</div>
+        <div id="victory-record-status" class="text-xs font-bold text-[#689cd2] hidden">🎉 NEW PERSONAL BEST RECORD!</div>
       </div>
 
       <div class="grid grid-cols-3 gap-2">
@@ -722,11 +722,11 @@
   </div>
 
   <!-- LEADERBOARD MODAL -->
-  <div id="modal-leaderboard" class="fixed inset-0 z-50 bg-[#0b0f14]/90 backdrop-blur-lg hidden flex items-center justify-center p-4">
+  <div id="modal-leaderboard" class="fixed inset-0 z-50 bg-[#0d131c]/92 backdrop-blur-lg hidden flex items-center justify-center p-4">
     <div class="max-w-md w-full pit-panel rounded-2xl p-5 space-y-4 max-h-[85vh] flex flex-col">
       <div class="flex justify-between items-center border-b border-slate-800 pb-2">
         <h2 class="text-lg font-bold text-slate-100 flex items-center gap-2">
-          <i class="fa-solid fa-trophy text-[#d4a373]"></i> Track Records
+          <i class="fa-solid fa-trophy text-[#e3b754]"></i> Track Records
         </h2>
         <button class="btn-close-modal text-slate-400 hover:text-slate-200 p-1">
           <i class="fa-solid fa-xmark text-lg"></i>
@@ -735,7 +735,7 @@
 
       <div>
         <label class="block text-[10px] uppercase text-slate-400 font-bold mb-1">Select Level</label>
-        <input type="number" id="leaderboard-level-input" min="1" max="10100" value="1" class="w-full bg-[#0b0f16] border border-slate-700 rounded-xl px-3 py-2 text-slate-100 text-xs font-bold focus:outline-none focus:border-[#7dd3c0]">
+        <input type="number" id="leaderboard-level-input" min="1" max="10100" value="1" class="w-full bg-[#0c111a] border border-slate-700 rounded-xl px-3 py-2 text-slate-100 text-xs font-bold focus:outline-none focus:border-[#689cd2]">
       </div>
 
       <div id="leaderboard-list" class="space-y-2 overflow-y-auto custom-scroll flex-1 pr-1 min-h-0" style="touch-action: pan-y !important;"></div>
@@ -749,7 +749,7 @@
     /* --------------------------------------------------------------------------
        SECTION 0: PWA SERVICE WORKER REGISTRATION & VERSION CHECK
        -------------------------------------------------------------------------- */
-    const CURRENT_GAME_VERSION = '1.2.6';
+    const CURRENT_GAME_VERSION = '1.3.0';
     function checkGameVersion() {
       const savedVersion = localStorage.getItem('tm_game_version');
       if (savedVersion !== CURRENT_GAME_VERSION) {
@@ -837,9 +837,7 @@
           this.init();
         }
         if (this.ctx && this.ctx.state === 'suspended') {
-          this.ctx.resume().then(() => {
-            console.log("AudioContext resumed successfully.");
-          }).catch(err => console.error("Audio resume failed", err));
+          this.ctx.resume().catch(err => console.error("Audio resume failed", err));
         }
       },
 
@@ -1177,13 +1175,13 @@
       minimapCacheCanvas.width = mapSize;
       minimapCacheCanvas.height = mapSize;
 
-      minimapCacheCtx.fillStyle = 'rgba(12, 16, 24, 0.94)';
+      minimapCacheCtx.fillStyle = 'rgba(13, 19, 28, 0.94)';
       minimapCacheCtx.fillRect(0, 0, mapSize, mapSize);
 
       const scaleX = mapSize / (currentMaze.cols * TILE_SIZE);
       const scaleY = mapSize / (currentMaze.rows * TILE_SIZE);
 
-      minimapCacheCtx.fillStyle = '#5c6b82';
+      minimapCacheCtx.fillStyle = '#536884';
       for (let r = 0; r < currentMaze.rows; r++) {
         for (let c = 0; c < currentMaze.cols; c++) {
           if (currentMaze.grid[r][c] === 1) {
@@ -1214,14 +1212,14 @@
     }
 
     /* --------------------------------------------------------------------------
-       SECTION 4: GARAGE, CAR MODELS & STAT RANGES
+       SECTION 4: GARAGE, CAR MODELS, EXPANDED COLORS & LIVERIES
        -------------------------------------------------------------------------- */
     
     const CAR_MODELS = {
       buggy: {
         id: 'buggy',
         name: 'Starter Buggy',
-        desc: 'Lightweight starter vehicle with lower stats for easy maneuvering.',
+        desc: 'Lightweight starter vehicle with agile handling for tight corners.',
         width: 24, height: 42,
         stats: { maxSpeed: 5.2, accel: 0.040, friction: 0.985, turnSpeed: 0.035 },
         ranges: {
@@ -1234,7 +1232,7 @@
       coupe: {
         id: 'coupe',
         name: 'Coupe GT',
-        desc: 'Balanced street racer with moderate speed and handling.',
+        desc: 'Balanced touring racer with steady speed and composed grip.',
         width: 28, height: 48,
         stats: { maxSpeed: 6.8, accel: 0.060, friction: 0.988, turnSpeed: 0.045 },
         ranges: {
@@ -1247,7 +1245,7 @@
       supercar: {
         id: 'supercar',
         name: 'Apex Supercar',
-        desc: 'Extreme top speed and cornering performance for pro drivers.',
+        desc: 'High-downforce aerodynamic racer built for rapid cornering.',
         width: 30, height: 50,
         stats: { maxSpeed: 9.2, accel: 0.095, friction: 0.995, turnSpeed: 0.075 },
         ranges: {
@@ -1260,7 +1258,7 @@
       muscle: {
         id: 'muscle',
         name: 'Viper Muscle',
-        desc: 'Massive raw acceleration and top speed with heavy drift handling.',
+        desc: 'Heavy torque V8 machine with strong straight-line thrust.',
         width: 32, height: 52,
         stats: { maxSpeed: 9.8, accel: 0.120, friction: 0.970, turnSpeed: 0.038 },
         ranges: {
@@ -1272,23 +1270,32 @@
       }
     };
 
+    /* Rich Non-Neon Automotive Paint Palette */
     const PAINT_COLORS = [
-      { name: 'Racing Blue', hex: '#0284c7' },
-      { name: 'Neon Cyan', hex: '#06b6d4' },
-      { name: 'Crimson Red', hex: '#dc2626' },
-      { name: 'Emerald Green', hex: '#10b981' },
-      { name: 'Cyber Purple', hex: '#8b5cf6' },
-      { name: 'Sunset Orange', hex: '#f97316' },
-      { name: 'Hot Pink', hex: '#ec4899' },
-      { name: 'Carbon Black', hex: '#1e293b' },
-      { name: 'Warm Bronze', hex: '#d4a373' }
+      { name: 'Cobalt Blue', hex: '#2b5b8c' },
+      { name: 'Ochre Gold', hex: '#c89228' },
+      { name: 'Navy Steel', hex: '#1e3a5f' },
+      { name: 'Mustard Rally', hex: '#b58422' },
+      { name: 'Slate Blue', hex: '#4a7fb5' },
+      { name: 'Sunburst Amber', hex: '#d4a23a' },
+      { name: 'Crimson Brick', hex: '#9e2a2b' },
+      { name: 'Forest Pine', hex: '#285943' },
+      { name: 'Burnt Terracotta', hex: '#b3542d' },
+      { name: 'Sandstone Beige', hex: '#bfa57d' },
+      { name: 'Graphite Grey', hex: '#384152' },
+      { name: 'Pearl Ivory', hex: '#d8dde6' }
     ];
 
+    /* Distinct Motorsport Decal & Livery Designs */
     const DECAL_STYLES = [
       { id: 'clean', name: 'Clean Solid' },
-      { id: 'stripes', name: 'Racing Stripes' },
-      { id: 'accent', name: 'Side Accent' },
-      { id: 'viper', name: 'Viper V-Shape' }
+      { id: 'stripes', name: 'Dual Racing Stripes' },
+      { id: 'center_gt', name: 'Center GT Band' },
+      { id: 'rally_flanks', name: 'Rally Side Panels' },
+      { id: 'chevron', name: 'Apex Chevron' },
+      { id: 'checkered', name: 'Checkered Hood' },
+      { id: 'twotone', name: 'Two-Tone Split' },
+      { id: 'roundel', name: 'Motorsport #07' }
     ];
 
     const STAT_CONFIGS = [
@@ -1302,7 +1309,7 @@
       const saved = localStorage.getItem('tm_garage_config');
       const defaultCfg = {
         modelId: 'buggy',
-        color: '#0284c7',
+        color: '#2b5b8c',
         decal: 'stripes',
         stats: { ...CAR_MODELS.buggy.stats }
       };
@@ -1311,10 +1318,11 @@
         const parsed = JSON.parse(saved);
         const model = CAR_MODELS[parsed.modelId] ? parsed.modelId : 'buggy';
         const modelSpec = CAR_MODELS[model];
+        const validDecal = DECAL_STYLES.some(d => d.id === parsed.decal) ? parsed.decal : 'stripes';
         return {
           modelId: model,
-          color: parsed.color || '#0284c7',
-          decal: parsed.decal || 'stripes',
+          color: parsed.color || '#2b5b8c',
+          decal: validDecal,
           stats: {
             maxSpeed: typeof parsed.stats?.maxSpeed === 'number' ? Math.max(modelSpec.ranges.maxSpeed.min, Math.min(modelSpec.ranges.maxSpeed.max, parsed.stats.maxSpeed)) : modelSpec.stats.maxSpeed,
             accel: typeof parsed.stats?.accel === 'number' ? Math.max(modelSpec.ranges.accel.min, Math.min(modelSpec.ranges.accel.max, parsed.stats.accel)) : modelSpec.stats.accel,
@@ -1401,7 +1409,7 @@
 
     const TILE_SIZE = 70;
 
-    /* Detailed Procedural Road & Architectural Barrier Patterns */
+    /* Realistic Procedural Tarmac Asphalt & Cast Concrete Barrier Patterns */
     let asphaltPattern = null;
     let wallCapPattern = null;
 
@@ -1411,53 +1419,77 @@
       pCanvas.height = 70;
       const pCtx = pCanvas.getContext('2d');
 
-      // Warm charcoal asphalt base
-      pCtx.fillStyle = '#181e28';
+      // Deep weathered tarmac base
+      pCtx.fillStyle = '#1b2029';
       pCtx.fillRect(0, 0, 70, 70);
 
-      // Fine mineral aggregate & subtle tire wear
-      for (let i = 0; i < 240; i++) {
-        const gx = (i * 31 + 11) % 70;
-        const gy = (i * 53 + 19) % 70;
-        if (i % 4 === 0) {
-          pCtx.fillStyle = 'rgba(212, 222, 236, 0.045)';
+      // Subtle darker wheel-rut shading down center of lane
+      const rutGrad = pCtx.createLinearGradient(0, 0, 70, 0);
+      rutGrad.addColorStop(0, 'rgba(10, 14, 20, 0.18)');
+      rutGrad.addColorStop(0.28, 'rgba(10, 14, 20, 0.34)');
+      rutGrad.addColorStop(0.5, 'rgba(255, 255, 255, 0.015)');
+      rutGrad.addColorStop(0.72, 'rgba(10, 14, 20, 0.34)');
+      rutGrad.addColorStop(1, 'rgba(10, 14, 20, 0.18)');
+      pCtx.fillStyle = rutGrad;
+      pCtx.fillRect(0, 0, 70, 70);
+
+      // Fine stone aggregate grain (quartz & basalt flecks)
+      for (let i = 0; i < 360; i++) {
+        const gx = (i * 37 + 13) % 70;
+        const gy = (i * 59 + 23) % 70;
+        if (i % 5 === 0) {
+          pCtx.fillStyle = 'rgba(218, 224, 232, 0.055)';
           pCtx.fillRect(gx, gy, 1.5, 1.5);
         } else if (i % 2 === 0) {
-          pCtx.fillStyle = 'rgba(8, 12, 18, 0.28)';
-          pCtx.fillRect(gx, gy, 2, 1.5);
+          pCtx.fillStyle = 'rgba(7, 10, 15, 0.34)';
+          pCtx.fillRect(gx, gy, 1.8, 1.4);
         } else {
-          pCtx.fillStyle = 'rgba(148, 163, 184, 0.025)';
+          pCtx.fillStyle = 'rgba(148, 163, 184, 0.03)';
           pCtx.fillRect(gx, gy, 1, 1);
         }
       }
 
-      // Soft center guide marker on each road tile
-      pCtx.fillStyle = 'rgba(148, 163, 184, 0.08)';
+      // Subtle hairline tarmac micro-seams
+      pCtx.strokeStyle = 'rgba(8, 11, 16, 0.25)';
+      pCtx.lineWidth = 0.8;
       pCtx.beginPath();
-      pCtx.arc(35, 35, 1.6, 0, Math.PI * 2);
-      pCtx.fill();
+      pCtx.moveTo(14, 18);
+      pCtx.lineTo(25, 24);
+      pCtx.moveTo(46, 52);
+      pCtx.lineTo(58, 48);
+      pCtx.stroke();
 
       return ctx.createPattern(pCanvas, 'repeat');
     }
 
     function createWallCapPattern() {
       const wCanvas = document.createElement('canvas');
-      wCanvas.width = 28;
-      wCanvas.height = 28;
+      wCanvas.width = 35;
+      wCanvas.height = 35;
       const wCtx = wCanvas.getContext('2d');
 
-      // Slate-concrete barrier cap
-      wCtx.fillStyle = '#293446';
-      wCtx.fillRect(0, 0, 28, 28);
+      // Architectural precast concrete slate
+      wCtx.fillStyle = '#2d3746';
+      wCtx.fillRect(0, 0, 35, 35);
 
-      // Subtle architectural micro-tile texture
-      wCtx.fillStyle = 'rgba(255, 255, 255, 0.035)';
-      wCtx.fillRect(2, 2, 10, 10);
-      wCtx.fillRect(16, 16, 10, 10);
+      // Concrete aggregate speckles & weathering
+      for (let i = 0; i < 65; i++) {
+        const x = (i * 19 + 5) % 35;
+        const y = (i * 29 + 7) % 35;
+        wCtx.fillStyle = i % 2 === 0 ? 'rgba(255,255,255,0.035)' : 'rgba(10,14,20,0.16)';
+        wCtx.fillRect(x, y, 1.5, 1.5);
+      }
 
-      wCtx.strokeStyle = 'rgba(10, 14, 22, 0.35)';
+      // Concrete slab expansion joints
+      wCtx.strokeStyle = 'rgba(13, 18, 26, 0.42)';
       wCtx.lineWidth = 1;
-      wCtx.strokeRect(0.5, 0.5, 27, 27);
+      wCtx.strokeRect(0.5, 0.5, 34, 34);
+
+      wCtx.strokeStyle = 'rgba(255, 255, 255, 0.04)';
+      wCtx.beginPath();
+      wCtx.moveTo(1, 1.5);
+      wCtx.lineTo(34, 1.5);
+      wCtx.stroke();
 
       return ctx.createPattern(wCanvas, 'repeat');
     }
@@ -1484,9 +1516,9 @@
       const progressBar = document.getElementById('loading-progress-bar');
       const tips = [
         "PWA installable! You can now install this game to your device home screen.",
-        "Visit the Garage to upgrade your car's model, paint, decals, and stats!",
-        "In Night Drive mode, use your twin headlights and spotlight to read corners early!",
-        "Press Enter on your keyboard at the victory screen or pre-race tuning to jump right in!"
+        "Visit the Garage to customize your car's model, paint color, racing livery, and stats!",
+        "In Night Drive mode, use your twin headlights to read upcoming corners early!",
+        "Press Enter on your keyboard at the victory screen or pre-race tuning to launch quickly!"
       ];
       
       document.getElementById('loading-tip-text').innerText = tips[Math.floor(Math.random() * tips.length)];
@@ -2252,7 +2284,7 @@
     }
 
     /* --------------------------------------------------------------------------
-       SECTION 10: CANVAS RENDERING (DETAILED ROADS, WALLS & SOFT GRADING)
+       SECTION 10: REALISTIC ROAD, CONCRETE BARRIER & DETAILED CAR RENDERING
        -------------------------------------------------------------------------- */
 
     function isWallAt(r, c) {
@@ -2260,33 +2292,51 @@
       return currentMaze.grid[r][c] === 1;
     }
 
-    function drawCheckeredZone(x, y, size, accentColor) {
+    function drawApexCurbStripe(x, y, length, side) {
+      const segCount = 5;
+      const segLen = length / segCount;
+      for (let i = 0; i < segCount; i++) {
+        // Alternating matte circuit blue & ochre yellow curb blocks
+        ctx.fillStyle = i % 2 === 0 ? '#3a6694' : '#c89632';
+        if (side === 'top') {
+          ctx.fillRect(x + i * segLen, y, segLen + 0.5, 4);
+        } else if (side === 'bottom') {
+          ctx.fillRect(x + i * segLen, y - 4, segLen + 0.5, 4);
+        } else if (side === 'left') {
+          ctx.fillRect(x, y + i * segLen, 4, segLen + 0.5);
+        } else if (side === 'right') {
+          ctx.fillRect(x - 4, y + i * segLen, 4, segLen + 0.5);
+        }
+      }
+    }
+
+    function drawCheckeredZone(x, y, size, primaryColor, secondaryColor) {
       ctx.save();
       ctx.beginPath();
-      ctx.roundRect(x + 3, y + 3, size - 6, size - 6, 7);
+      ctx.roundRect(x + 4, y + 4, size - 8, size - 8, 6);
       ctx.clip();
 
       const cells = 6;
-      const cellSize = (size - 6) / cells;
+      const cellSize = (size - 8) / cells;
       for (let r = 0; r < cells; r++) {
         for (let c = 0; c < cells; c++) {
           const isLight = (r + c) % 2 === 0;
-          ctx.fillStyle = isLight ? accentColor : 'rgba(12, 16, 24, 0.86)';
-          ctx.fillRect(x + 3 + c * cellSize, y + 3 + r * cellSize, cellSize + 0.5, cellSize + 0.5);
+          ctx.fillStyle = isLight ? primaryColor : secondaryColor;
+          ctx.fillRect(x + 4 + c * cellSize, y + 4 + r * cellSize, cellSize + 0.5, cellSize + 0.5);
         }
       }
 
       const grad = ctx.createRadialGradient(x + size / 2, y + size / 2, 4, x + size / 2, y + size / 2, size * 0.65);
-      grad.addColorStop(0, 'rgba(255, 255, 255, 0.12)');
-      grad.addColorStop(1, 'rgba(9, 13, 20, 0.42)');
+      grad.addColorStop(0, 'rgba(255, 255, 255, 0.14)');
+      grad.addColorStop(1, 'rgba(10, 14, 22, 0.45)');
       ctx.fillStyle = grad;
       ctx.fillRect(x, y, size, size);
 
       ctx.restore();
-      ctx.strokeStyle = accentColor;
+      ctx.strokeStyle = primaryColor;
       ctx.lineWidth = 2.5;
       ctx.beginPath();
-      ctx.roundRect(x + 3, y + 3, size - 6, size - 6, 7);
+      ctx.roundRect(x + 4, y + 4, size - 8, size - 8, 6);
       ctx.stroke();
     }
     
@@ -2309,65 +2359,73 @@
       const minRow = Math.max(0, Math.floor((car.y - halfH) / TILE_SIZE));
       const maxRow = Math.min(currentMaze.rows - 1, Math.ceil((car.y + halfH) / TILE_SIZE));
 
-      // Pass 1: Roadway Surface, Shoulder Curbs & Barrier Cast Shadows
+      // Pass 1: Realistic Tarmac Roadway, Center Dashes, Painted Circuit Curbs & Wall Shadows
       for (let r = minRow; r <= maxRow; r++) {
         for (let c = minCol; c <= maxCol; c++) {
           const x = c * TILE_SIZE;
           const y = r * TILE_SIZE;
           const wall = isWallAt(r, c);
 
-          if (!wall) {
-            ctx.fillStyle = asphaltPattern || '#181e28';
-            ctx.fillRect(x, y, TILE_SIZE, TILE_SIZE);
+          ctx.fillStyle = asphaltPattern || '#1b2029';
+          ctx.fillRect(x, y, TILE_SIZE, TILE_SIZE);
 
-            // Subtle warm sand shoulder trim where road meets a barrier
+          if (!wall) {
             const topW = isWallAt(r - 1, c);
             const botW = isWallAt(r + 1, c);
             const leftW = isWallAt(r, c - 1);
             const rightW = isWallAt(r, c + 1);
 
-            ctx.strokeStyle = 'rgba(212, 163, 115, 0.22)';
-            ctx.lineWidth = 2;
+            // Painted Blue & Yellow FIA-style Circuit Curbs along barrier edges
+            if (topW) drawApexCurbStripe(x, y, TILE_SIZE, 'top');
+            if (botW) drawApexCurbStripe(x, y + TILE_SIZE, TILE_SIZE, 'bottom');
+            if (leftW) drawApexCurbStripe(x, y, TILE_SIZE, 'left');
+            if (rightW) drawApexCurbStripe(x + TILE_SIZE, y, TILE_SIZE, 'right');
+
+            // Subtle white shoulder line inside curbs
+            ctx.strokeStyle = 'rgba(226, 232, 240, 0.22)';
+            ctx.lineWidth = 1.2;
             if (topW) {
-              ctx.beginPath();
-              ctx.moveTo(x + 4, y + 2.5);
-              ctx.lineTo(x + TILE_SIZE - 4, y + 2.5);
-              ctx.stroke();
+              ctx.beginPath(); ctx.moveTo(x, y + 5.5); ctx.lineTo(x + TILE_SIZE, y + 5.5); ctx.stroke();
             }
             if (botW) {
-              ctx.beginPath();
-              ctx.moveTo(x + 4, y + TILE_SIZE - 2.5);
-              ctx.lineTo(x + TILE_SIZE - 4, y + TILE_SIZE - 2.5);
-              ctx.stroke();
+              ctx.beginPath(); ctx.moveTo(x, y + TILE_SIZE - 5.5); ctx.lineTo(x + TILE_SIZE, y + TILE_SIZE - 5.5); ctx.stroke();
             }
             if (leftW) {
-              ctx.beginPath();
-              ctx.moveTo(x + 2.5, y + 4);
-              ctx.lineTo(x + 2.5, y + TILE_SIZE - 4);
-              ctx.stroke();
+              ctx.beginPath(); ctx.moveTo(x + 5.5, y); ctx.lineTo(x + 5.5, y + TILE_SIZE); ctx.stroke();
             }
             if (rightW) {
+              ctx.beginPath(); ctx.moveTo(x + TILE_SIZE - 5.5, y); ctx.lineTo(x + TILE_SIZE - 5.5, y + TILE_SIZE); ctx.stroke();
+            }
+
+            // Realistic dashed yellow center road markings along corridors
+            ctx.strokeStyle = 'rgba(212, 162, 58, 0.24)';
+            ctx.lineWidth = 2;
+            ctx.setLineDash([10, 10]);
+            if (topW && botW && !leftW && !rightW) {
               ctx.beginPath();
-              ctx.moveTo(x + TILE_SIZE - 2.5, y + 4);
-              ctx.lineTo(x + TILE_SIZE - 2.5, y + TILE_SIZE - 4);
+              ctx.moveTo(x + 4, y + TILE_SIZE / 2);
+              ctx.lineTo(x + TILE_SIZE - 4, y + TILE_SIZE / 2);
+              ctx.stroke();
+            } else if (leftW && rightW && !topW && !botW) {
+              ctx.beginPath();
+              ctx.moveTo(x + TILE_SIZE / 2, y + 4);
+              ctx.lineTo(x + TILE_SIZE / 2, y + TILE_SIZE - 4);
               ctx.stroke();
             }
+            ctx.setLineDash([]);
           } else {
-            ctx.fillStyle = asphaltPattern || '#181e28';
-            ctx.fillRect(x, y, TILE_SIZE, TILE_SIZE);
-
-            // Directional shadow cast onto open road tiles below/right of a wall
+            // Directional ground shadow cast onto adjacent open road tiles
             if (!isWallAt(r + 1, c) || !isWallAt(r, c + 1)) {
-              ctx.fillStyle = 'rgba(4, 7, 12, 0.58)';
+              ctx.fillStyle = 'rgba(4, 7, 12, 0.62)';
               ctx.beginPath();
-              ctx.roundRect(x + 5, y + 6, TILE_SIZE - 1, TILE_SIZE - 1, 7);
+              ctx.roundRect(x + 6, y + 7, TILE_SIZE, TILE_SIZE, 6);
               ctx.fill();
             }
           }
         }
       }
 
-      // Pass 2: Connected Multi-Layered Architectural Maze Barriers
+      // Pass 2: Layered Precast Concrete Maze Barriers with Steel Guardrails
       for (let r = minRow; r <= maxRow; r++) {
         for (let c = minCol; c <= maxCol; c++) {
           if (!isWallAt(r, c)) continue;
@@ -2379,25 +2437,25 @@
           const leftW = isWallAt(r, c - 1);
           const rightW = isWallAt(r, c + 1);
 
-          // Base plinth
-          ctx.fillStyle = '#141a24';
+          // Concrete barrier footing
+          ctx.fillStyle = '#141b26';
           ctx.fillRect(x, y, TILE_SIZE, TILE_SIZE);
 
-          // Extruded 3D side wall face
-          ctx.fillStyle = '#1b2330';
-          ctx.fillRect(x + 2, y + 3, TILE_SIZE - 4, TILE_SIZE - 4);
+          // Extruded 3D side concrete face
+          ctx.fillStyle = '#1e2736';
+          ctx.fillRect(x + 1, y + 2, TILE_SIZE - 2, TILE_SIZE - 2);
 
-          // Top textured barrier deck
-          ctx.fillStyle = wallCapPattern || '#293446';
+          // Top textured concrete deck
+          ctx.fillStyle = wallCapPattern || '#2d3746';
           ctx.fillRect(x + 3, y + 2, TILE_SIZE - 6, TILE_SIZE - 8);
 
-          // Recessed inner deck inset for architectural depth
-          ctx.strokeStyle = 'rgba(15, 20, 30, 0.55)';
+          // Recessed concrete panel relief
+          ctx.strokeStyle = 'rgba(13, 18, 26, 0.58)';
           ctx.lineWidth = 1.5;
-          ctx.strokeRect(x + 8, y + 7, TILE_SIZE - 16, TILE_SIZE - 16);
+          ctx.strokeRect(x + 9, y + 8, TILE_SIZE - 18, TILE_SIZE - 18);
 
-          // Exposed outer barrier edges (continuous along connected walls)
-          ctx.strokeStyle = 'rgba(203, 213, 225, 0.22)';
+          // Top/Left sunlit concrete bevel edge
+          ctx.strokeStyle = 'rgba(203, 213, 225, 0.28)';
           ctx.lineWidth = 2;
           if (!topW) {
             ctx.beginPath();
@@ -2412,34 +2470,39 @@
             ctx.stroke();
           }
 
-          ctx.strokeStyle = 'rgba(125, 211, 192, 0.22)';
-          ctx.lineWidth = 1.5;
+          // Bottom/Right steel guardrail accent
+          ctx.strokeStyle = 'rgba(104, 156, 210, 0.34)';
+          ctx.lineWidth = 2;
           if (!botW) {
             ctx.beginPath();
-            ctx.moveTo(x + 2, y + TILE_SIZE - 2);
-            ctx.lineTo(x + TILE_SIZE - 2, y + TILE_SIZE - 2);
+            ctx.moveTo(x + 2, y + TILE_SIZE - 3);
+            ctx.lineTo(x + TILE_SIZE - 2, y + TILE_SIZE - 3);
             ctx.stroke();
           }
           if (!rightW) {
             ctx.beginPath();
-            ctx.moveTo(x + TILE_SIZE - 2, y + 2);
-            ctx.lineTo(x + TILE_SIZE - 2, y + TILE_SIZE - 2);
+            ctx.moveTo(x + TILE_SIZE - 3, y + 2);
+            ctx.lineTo(x + TILE_SIZE - 3, y + TILE_SIZE - 2);
             ctx.stroke();
           }
 
-          // Subtle corner joint marker on exposed outer corners
+          // Corner bollard cap on exposed corners
           if (!topW && !leftW) {
-            ctx.fillStyle = 'rgba(212, 163, 115, 0.45)';
-            ctx.fillRect(x + 4, y + 4, 3, 3);
+            ctx.fillStyle = '#d4a23a';
+            ctx.fillRect(x + 4, y + 4, 4, 4);
+          }
+          if (!botW && !rightW) {
+            ctx.fillStyle = '#4a7fb5';
+            ctx.fillRect(x + TILE_SIZE - 8, y + TILE_SIZE - 9, 4, 4);
           }
         }
       }
 
-      // Tire / Track Trail Path
+      // Tire / Telemetry Path
       if (carTrailPath.length > 1) {
         ctx.save();
-        ctx.strokeStyle = 'rgba(125, 211, 192, 0.16)';
-        ctx.lineWidth = 11;
+        ctx.strokeStyle = 'rgba(74, 127, 181, 0.20)';
+        ctx.lineWidth = 10;
         ctx.lineCap = 'round';
         ctx.lineJoin = 'round';
         ctx.beginPath();
@@ -2449,30 +2512,30 @@
         }
         ctx.stroke();
 
-        ctx.strokeStyle = '#7cb9e8';
-        ctx.lineWidth = 4.2;
+        ctx.strokeStyle = '#689cd2';
+        ctx.lineWidth = 3.6;
         ctx.stroke();
         ctx.restore();
       }
 
       // Exhaust Smoke Particles
       for (const p of exhaustParticles) {
-        ctx.fillStyle = `rgba(148, 163, 184, ${p.life * 0.6})`;
+        ctx.fillStyle = `rgba(165, 178, 196, ${p.life * 0.55})`;
         ctx.beginPath();
         ctx.arc(p.x, p.y, p.size * p.life, 0, Math.PI * 2);
         ctx.fill();
       }
 
-      // Start & Finish Zones
+      // Start (Steel Blue) & Finish (Ochre Gold) Checkered Zones
       const startX = currentMaze.start.x * TILE_SIZE;
       const startY = currentMaze.start.y * TILE_SIZE;
-      drawCheckeredZone(startX, startY, TILE_SIZE, '#68c2ae');
+      drawCheckeredZone(startX, startY, TILE_SIZE, '#4a7fb5', '#131b27');
 
       const finishX = currentMaze.finish.x * TILE_SIZE;
       const finishY = currentMaze.finish.y * TILE_SIZE;
-      drawCheckeredZone(finishX, finishY, TILE_SIZE, '#d4a373');
+      drawCheckeredZone(finishX, finishY, TILE_SIZE, '#d4a23a', '#131b27');
 
-      // Night Drive: Soft Headlight Cones + Radial Spotlight
+      // Night Drive: Warm Headlight Cones + Radial Spotlight
       if (activeGameMode === 'dark') {
         const lightRadius = TILE_SIZE * 2.5;
 
@@ -2483,9 +2546,9 @@
         const beamLen = TILE_SIZE * 3.1;
         const beamSpread = TILE_SIZE * 1.45;
         const beamGrad = ctx.createLinearGradient(0, -car.height * 0.3, 0, -beamLen);
-        beamGrad.addColorStop(0, 'rgba(226, 244, 238, 0.18)');
-        beamGrad.addColorStop(0.55, 'rgba(140, 219, 201, 0.06)');
-        beamGrad.addColorStop(1, 'rgba(140, 219, 201, 0.0)');
+        beamGrad.addColorStop(0, 'rgba(247, 234, 196, 0.22)');
+        beamGrad.addColorStop(0.55, 'rgba(212, 162, 58, 0.07)');
+        beamGrad.addColorStop(1, 'rgba(212, 162, 58, 0.0)');
 
         ctx.fillStyle = beamGrad;
         ctx.beginPath();
@@ -2501,17 +2564,17 @@
         ctx.globalCompositeOperation = 'source-over';
         
         const spotlightGrad = ctx.createRadialGradient(car.x, car.y, 0, car.x, car.y, lightRadius);
-        spotlightGrad.addColorStop(0, 'rgba(6, 9, 15, 0.0)');
-        spotlightGrad.addColorStop(0.65, 'rgba(6, 9, 15, 0.85)');
-        spotlightGrad.addColorStop(1, 'rgba(6, 9, 15, 0.998)');
+        spotlightGrad.addColorStop(0, 'rgba(7, 11, 18, 0.0)');
+        spotlightGrad.addColorStop(0.65, 'rgba(7, 11, 18, 0.86)');
+        spotlightGrad.addColorStop(1, 'rgba(7, 11, 18, 0.998)');
 
         ctx.fillStyle = spotlightGrad;
         ctx.fillRect(car.x - halfW, car.y - halfH, halfW * 2, halfH * 2);
         
         ctx.restore();
       } else {
-        // Standard Mode: Subtle Calm Slate-Warm Tint
-        ctx.fillStyle = 'rgba(212, 163, 115, 0.018)';
+        // Standard Mode: Subtle Warm Daylight Asphalt Tint
+        ctx.fillStyle = 'rgba(212, 162, 58, 0.015)';
         ctx.fillRect(car.x - halfW, car.y - halfH, halfW * 2, halfH * 2);
       }
 
@@ -2523,8 +2586,8 @@
 
       if (car.isColliding) {
         ctx.save();
-        ctx.fillStyle = 'rgba(244, 114, 182, 0.24)';
-        ctx.strokeStyle = '#fb7185';
+        ctx.fillStyle = 'rgba(212, 162, 58, 0.22)';
+        ctx.strokeStyle = '#e3b754';
         ctx.lineWidth = 2.5;
         ctx.beginPath();
         ctx.arc(0, 0, car.height * 0.75, 0, Math.PI * 2);
@@ -2537,14 +2600,14 @@
 
       ctx.restore();
 
-      // Subtle Screen Edge Vignette for Cohesive Color Grading
+      // Subtle Screen Edge Vignette
       const vigRadius = Math.max(canvas.width, canvas.height) * 0.72;
       const vignette = ctx.createRadialGradient(
         screenCenterX, screenCenterY, vigRadius * 0.46,
         screenCenterX, screenCenterY, vigRadius
       );
-      vignette.addColorStop(0, 'rgba(11, 15, 20, 0)');
-      vignette.addColorStop(1, activeGameMode === 'dark' ? 'rgba(6, 9, 14, 0.52)' : 'rgba(11, 15, 20, 0.28)');
+      vignette.addColorStop(0, 'rgba(13, 19, 28, 0)');
+      vignette.addColorStop(1, activeGameMode === 'dark' ? 'rgba(7, 11, 18, 0.54)' : 'rgba(13, 19, 28, 0.30)');
       ctx.fillStyle = vignette;
       ctx.fillRect(0, 0, canvas.width, canvas.height);
 
@@ -2553,68 +2616,211 @@
       }
     }
 
+    /* Detailed Multi-Part Motorsport Car Renderer */
     function drawCustomCar(targetCtx, cx, cy, w, h, modelId, colorHex, decalStyle, isColliding) {
       targetCtx.save();
       targetCtx.translate(cx, cy);
 
-      targetCtx.fillStyle = 'rgba(0,0,0,0.52)';
+      const cornerRadius = modelId === 'supercar' ? [14, 14, 7, 7] : (modelId === 'muscle' ? 5 : (modelId === 'buggy' ? 11 : 8));
+
+      // 1. Ground Contact Shadow
+      targetCtx.fillStyle = 'rgba(0, 0, 0, 0.56)';
       targetCtx.beginPath();
-      targetCtx.roundRect(-w / 2 + 3, -h / 2 + 3, w, h, modelId === 'supercar' ? 12 : 8);
+      targetCtx.roundRect(-w / 2 + 3, -h / 2 + 4, w, h, cornerRadius);
       targetCtx.fill();
 
-      targetCtx.fillStyle = isColliding ? '#e11d48' : colorHex;
-      targetCtx.beginPath();
-      if (modelId === 'supercar') {
-        targetCtx.roundRect(-w / 2, -h / 2, w, h, [14, 14, 8, 8]);
-      } else if (modelId === 'muscle') {
-        targetCtx.roundRect(-w / 2, -h / 2, w, h, 6);
-      } else if (modelId === 'buggy') {
-        targetCtx.roundRect(-w / 2, -h / 2, w, h, 12);
-      } else {
-        targetCtx.roundRect(-w / 2, -h / 2, w, h, 8);
-      }
-      targetCtx.fill();
+      // 2. Tires & Wheel Arches (Exposed wider tires on Buggy, flush performance tires on others)
+      const tireW = modelId === 'buggy' ? 5 : 3.5;
+      const tireH = h * 0.22;
+      const tireOutset = modelId === 'buggy' ? 2.5 : 1.2;
+      targetCtx.fillStyle = '#0f141c';
+      targetCtx.strokeStyle = '#2d3748';
+      targetCtx.lineWidth = 1;
 
-      targetCtx.strokeStyle = isColliding ? '#fda4af' : 'rgba(226, 232, 240, 0.68)';
-      targetCtx.lineWidth = 2;
-      targetCtx.stroke();
+      const wheelPositions = [
+        [-w / 2 - tireOutset, -h * 0.32],
+        [w / 2 - tireW + tireOutset, -h * 0.32],
+        [-w / 2 - tireOutset, h * 0.14],
+        [w / 2 - tireW + tireOutset, h * 0.14]
+      ];
+      wheelPositions.forEach(([wx, wy]) => {
+        targetCtx.beginPath();
+        targetCtx.roundRect(wx, wy, tireW, tireH, 2);
+        targetCtx.fill();
+        targetCtx.stroke();
+      });
+
+      // 3. Main Painted Chassis Body (Clipped for clean livery application)
+      targetCtx.save();
+      targetCtx.beginPath();
+      targetCtx.roundRect(-w / 2, -h / 2, w, h, cornerRadius);
+      targetCtx.fillStyle = isColliding ? '#b84a27' : colorHex;
+      targetCtx.fill();
+      targetCtx.clip();
+
+      // Subtle metallic body contour shading (lighter center spine, darker flanks)
+      const bodyShade = targetCtx.createLinearGradient(-w / 2, 0, w / 2, 0);
+      bodyShade.addColorStop(0, 'rgba(0, 0, 0, 0.24)');
+      bodyShade.addColorStop(0.28, 'rgba(255, 255, 255, 0.08)');
+      bodyShade.addColorStop(0.5, 'rgba(255, 255, 255, 0.14)');
+      bodyShade.addColorStop(0.72, 'rgba(255, 255, 255, 0.08)');
+      bodyShade.addColorStop(1, 'rgba(0, 0, 0, 0.24)');
+      targetCtx.fillStyle = bodyShade;
+      targetCtx.fillRect(-w / 2, -h / 2, w, h);
+
+      // 4. Motorsport Decal / Livery Designs
+      const primaryTrim = '#f1f5f9';
+      const goldTrim = '#e3b754';
 
       if (decalStyle === 'stripes') {
-        targetCtx.fillStyle = 'rgba(241, 245, 249, 0.82)';
-        targetCtx.fillRect(-w * 0.2, -h / 2 + 2, 4, h - 4);
-        targetCtx.fillRect(w * 0.1, -h / 2 + 2, 4, h - 4);
-      } else if (decalStyle === 'accent') {
-        targetCtx.fillStyle = 'rgba(241, 245, 249, 0.86)';
-        targetCtx.fillRect(-w / 2 + 2, -h * 0.2, w - 4, 4);
-      } else if (decalStyle === 'viper') {
-        targetCtx.fillStyle = '#e2e8f0';
+        targetCtx.fillStyle = primaryTrim;
+        targetCtx.fillRect(-w * 0.22, -h / 2, w * 0.14, h);
+        targetCtx.fillRect(w * 0.08, -h / 2, w * 0.14, h);
+      } else if (decalStyle === 'center_gt') {
+        targetCtx.fillStyle = goldTrim;
+        targetCtx.fillRect(-w * 0.14, -h / 2, w * 0.28, h);
+        targetCtx.fillStyle = '#131b27';
+        targetCtx.fillRect(-w * 0.03, -h / 2, w * 0.06, h);
+      } else if (decalStyle === 'rally_flanks') {
+        targetCtx.fillStyle = primaryTrim;
+        targetCtx.fillRect(-w / 2, -h * 0.28, w * 0.18, h * 0.62);
+        targetCtx.fillRect(w / 2 - w * 0.18, -h * 0.28, w * 0.18, h * 0.62);
+        targetCtx.fillStyle = goldTrim;
+        targetCtx.fillRect(-w / 2, -h * 0.28, w, 3.5);
+      } else if (decalStyle === 'chevron') {
+        targetCtx.fillStyle = goldTrim;
         targetCtx.beginPath();
-        targetCtx.moveTo(0, -h * 0.4);
-        targetCtx.lineTo(w * 0.4, 0);
-        targetCtx.lineTo(0, h * 0.3);
-        targetCtx.lineTo(-w * 0.4, 0);
+        targetCtx.moveTo(-w / 2, -h * 0.12);
+        targetCtx.lineTo(0, -h * 0.44);
+        targetCtx.lineTo(w / 2, -h * 0.12);
+        targetCtx.lineTo(w / 2, 0);
+        targetCtx.lineTo(0, -h * 0.30);
+        targetCtx.lineTo(-w / 2, 0);
         targetCtx.closePath();
         targetCtx.fill();
+      } else if (decalStyle === 'checkered') {
+        const sq = w / 6;
+        for (let r = 0; r < 4; r++) {
+          for (let c = 0; c < 6; c++) {
+            targetCtx.fillStyle = (r + c) % 2 === 0 ? primaryTrim : '#131b27';
+            targetCtx.fillRect(-w / 2 + c * sq, -h / 2 + 3 + r * sq, sq, sq);
+          }
+        }
+      } else if (decalStyle === 'twotone') {
+        targetCtx.fillStyle = '#16202e';
+        targetCtx.beginPath();
+        targetCtx.moveTo(-w / 2, -h * 0.15);
+        targetCtx.lineTo(w / 2, h * 0.12);
+        targetCtx.lineTo(w / 2, h / 2);
+        targetCtx.lineTo(-w / 2, h / 2);
+        targetCtx.closePath();
+        targetCtx.fill();
+
+        targetCtx.strokeStyle = goldTrim;
+        targetCtx.lineWidth = 2.2;
+        targetCtx.beginPath();
+        targetCtx.moveTo(-w / 2, -h * 0.15);
+        targetCtx.lineTo(w / 2, h * 0.12);
+        targetCtx.stroke();
+      } else if (decalStyle === 'roundel') {
+        targetCtx.fillStyle = primaryTrim;
+        targetCtx.beginPath();
+        targetCtx.arc(0, h * 0.08, w * 0.33, 0, Math.PI * 2);
+        targetCtx.fill();
+        targetCtx.strokeStyle = '#131b27';
+        targetCtx.lineWidth = 1.5;
+        targetCtx.stroke();
+
+        targetCtx.fillStyle = '#131b27';
+        targetCtx.font = `bold ${Math.max(8, Math.round(w * 0.34))}px sans-serif`;
+        targetCtx.textAlign = 'center';
+        targetCtx.textBaseline = 'middle';
+        targetCtx.fillText('07', 0, h * 0.09);
       }
 
-      targetCtx.fillStyle = '#0b0f16';
+      // 5. Hood Intake / Sculpted Lines
+      targetCtx.strokeStyle = 'rgba(13, 19, 28, 0.38)';
+      targetCtx.lineWidth = 1;
+      targetCtx.beginPath();
+      targetCtx.moveTo(-w * 0.26, -h * 0.44);
+      targetCtx.lineTo(-w * 0.22, -h * 0.16);
+      targetCtx.moveTo(w * 0.26, -h * 0.44);
+      targetCtx.lineTo(w * 0.22, -h * 0.16);
+      targetCtx.stroke();
+
+      if (modelId === 'muscle' || modelId === 'supercar') {
+        targetCtx.fillStyle = 'rgba(13, 19, 28, 0.65)';
+        targetCtx.fillRect(-w * 0.14, -h * 0.36, w * 0.28, h * 0.10);
+      }
+
+      // 6. Front Windshield, Roof Panel & Rear Glass
+      targetCtx.fillStyle = '#101824';
       targetCtx.beginPath();
       if (modelId === 'supercar') {
-        targetCtx.roundRect(-w / 2 + 4, -h / 2 + 14, w - 8, h * 0.38, 6);
-      } else if (modelId === 'muscle') {
-        targetCtx.roundRect(-w / 2 + 5, -h / 2 + 12, w - 10, h * 0.42, 4);
+        targetCtx.roundRect(-w * 0.36, -h * 0.18, w * 0.72, h * 0.44, 6);
       } else {
-        targetCtx.roundRect(-w / 2 + 4, -h / 2 + 10, w - 8, h * 0.4, 5);
+        targetCtx.roundRect(-w * 0.36, -h * 0.20, w * 0.72, h * 0.46, 4);
       }
       targetCtx.fill();
 
-      targetCtx.fillStyle = isColliding ? '#fda4af' : '#e2f4ee';
-      targetCtx.fillRect(-w / 2 + 2, -h / 2 + 1, 5, 4);
-      targetCtx.fillRect(w / 2 - 7, -h / 2 + 1, 5, 4);
+      // Windshield Glass Reflection
+      targetCtx.fillStyle = 'rgba(148, 184, 218, 0.22)';
+      targetCtx.beginPath();
+      targetCtx.moveTo(-w * 0.30, -h * 0.17);
+      targetCtx.lineTo(w * 0.30, -h * 0.17);
+      targetCtx.lineTo(w * 0.24, -h * 0.05);
+      targetCtx.lineTo(-w * 0.24, -h * 0.05);
+      targetCtx.closePath();
+      targetCtx.fill();
+
+      // Roof Cap (unless roundel is centered on roof)
+      if (decalStyle !== 'roundel') {
+        targetCtx.fillStyle = isColliding ? '#b84a27' : colorHex;
+        targetCtx.beginPath();
+        targetCtx.roundRect(-w * 0.27, -h * 0.03, w * 0.54, h * 0.20, 3);
+        targetCtx.fill();
+        targetCtx.strokeStyle = 'rgba(255,255,255,0.14)';
+        targetCtx.lineWidth = 0.8;
+        targetCtx.stroke();
+      }
+
+      targetCtx.restore(); // End chassis clip
+
+      // 7. Crisp Outer Body Outline
+      targetCtx.strokeStyle = isColliding ? '#f5d78e' : 'rgba(226, 232, 240, 0.65)';
+      targetCtx.lineWidth = 1.6;
+      targetCtx.beginPath();
+      targetCtx.roundRect(-w / 2, -h / 2, w, h, cornerRadius);
+      targetCtx.stroke();
+
+      // 8. Side Mirrors
+      targetCtx.fillStyle = isColliding ? '#b84a27' : colorHex;
+      targetCtx.fillRect(-w / 2 - 2.5, -h * 0.14, 2.5, 4);
+      targetCtx.fillRect(w / 2, -h * 0.14, 2.5, 4);
+
+      // 9. Rear Spoiler / GT Wing (for Coupe, Supercar & Muscle)
+      if (modelId !== 'buggy') {
+        targetCtx.fillStyle = '#141c28';
+        targetCtx.strokeStyle = 'rgba(226, 232, 240, 0.35)';
+        targetCtx.lineWidth = 1;
+        targetCtx.beginPath();
+        targetCtx.roundRect(-w * 0.46, h / 2 - 4.5, w * 0.92, 4, 1.5);
+        targetCtx.fill();
+        targetCtx.stroke();
+      }
+
+      // 10. Front Headlights & Rear Taillights
+      targetCtx.fillStyle = isColliding ? '#f5d78e' : '#fef3c7';
+      targetCtx.fillRect(-w * 0.38, -h / 2 + 1, 5, 3);
+      targetCtx.fillRect(w * 0.38 - 5, -h / 2 + 1, 5, 3);
+
+      targetCtx.fillStyle = '#dc2626';
+      targetCtx.fillRect(-w * 0.36, h / 2 - 2.5, 5, 2);
+      targetCtx.fillRect(w * 0.36 - 5, h / 2 - 2.5, 5, 2);
 
       if (isColliding) {
-        targetCtx.fillStyle = '#fda4af';
-        targetCtx.font = 'bold 16px sans-serif';
+        targetCtx.fillStyle = '#e3b754';
+        targetCtx.font = 'bold 15px sans-serif';
         targetCtx.textAlign = 'center';
         targetCtx.fillText('⚠️', 0, -h / 2 - 6);
       }
@@ -2630,7 +2836,7 @@
       const y = (hudElem ? hudElem.offsetHeight : 55) + 10;
 
       ctx.drawImage(minimapCacheCanvas, x, y);
-      ctx.strokeStyle = 'rgba(125, 211, 192, 0.5)';
+      ctx.strokeStyle = 'rgba(104, 156, 210, 0.55)';
       ctx.lineWidth = 1.5;
       ctx.strokeRect(x, y, mapSize, mapSize);
 
@@ -2638,7 +2844,7 @@
       const scaleY = mapSize / (currentMaze.rows * TILE_SIZE);
 
       if (carTrailPath.length > 1) {
-        ctx.strokeStyle = '#7cb9e8';
+        ctx.strokeStyle = '#689cd2';
         ctx.lineWidth = 2;
         ctx.beginPath();
         ctx.moveTo(x + carTrailPath[0].x * scaleX, y + carTrailPath[0].y * scaleY);
@@ -2648,10 +2854,10 @@
         ctx.stroke();
       }
 
-      ctx.fillStyle = '#68c2ae';
+      ctx.fillStyle = '#4a7fb5';
       ctx.fillRect(x + currentMaze.start.x * TILE_SIZE * scaleX, y + currentMaze.start.y * TILE_SIZE * scaleY, Math.max(3, TILE_SIZE * scaleX), Math.max(3, TILE_SIZE * scaleY));
 
-      ctx.fillStyle = '#d4a373';
+      ctx.fillStyle = '#d4a23a';
       ctx.fillRect(x + currentMaze.finish.x * TILE_SIZE * scaleX, y + currentMaze.finish.y * TILE_SIZE * scaleY, Math.max(3, TILE_SIZE * scaleX), Math.max(3, TILE_SIZE * scaleY));
 
       const carMinimapX = x + car.x * scaleX;
@@ -2661,7 +2867,7 @@
       ctx.translate(carMinimapX, carMinimapY);
       ctx.rotate(car.angle);
 
-      ctx.fillStyle = '#f87171';
+      ctx.fillStyle = '#e3b754';
       ctx.beginPath();
       ctx.moveTo(0, -7);
       ctx.lineTo(4, 4);
@@ -2707,16 +2913,16 @@
           const py = offsetY + r * tileSize;
 
           if (currentMaze.grid[r][c] === 1) {
-            fullMapCtx.fillStyle = '#3b485e';
+            fullMapCtx.fillStyle = '#3b4a61';
           } else {
-            fullMapCtx.fillStyle = '#141a24';
+            fullMapCtx.fillStyle = '#151c27';
           }
           fullMapCtx.fillRect(px, py, tileSize, tileSize);
         }
       }
 
       if (carTrailPath.length > 1) {
-        fullMapCtx.strokeStyle = '#7cb9e8';
+        fullMapCtx.strokeStyle = '#689cd2';
         fullMapCtx.lineWidth = Math.max(2, tileSize * 0.6);
         fullMapCtx.lineCap = 'round';
         fullMapCtx.lineJoin = 'round';
@@ -2732,10 +2938,10 @@
         fullMapCtx.stroke();
       }
 
-      fullMapCtx.fillStyle = '#68c2ae';
+      fullMapCtx.fillStyle = '#4a7fb5';
       fullMapCtx.fillRect(offsetX + currentMaze.start.x * tileSize, offsetY + currentMaze.start.y * tileSize, tileSize, tileSize);
 
-      fullMapCtx.fillStyle = '#d4a373';
+      fullMapCtx.fillStyle = '#d4a23a';
       fullMapCtx.fillRect(offsetX + currentMaze.finish.x * tileSize, offsetY + currentMaze.finish.y * tileSize, tileSize, tileSize);
 
       const carMapX = offsetX + (car.x / TILE_SIZE) * tileSize;
@@ -2745,7 +2951,7 @@
       fullMapCtx.translate(carMapX, carMapY);
       fullMapCtx.rotate(car.angle);
 
-      fullMapCtx.fillStyle = '#f87171';
+      fullMapCtx.fillStyle = '#e3b754';
       const arrowSize = Math.max(6, tileSize * 1.2);
       fullMapCtx.beginPath();
       fullMapCtx.moveTo(0, -arrowSize);
@@ -2804,7 +3010,7 @@
 
       const modelContainer = document.getElementById('garage-model-grid');
       modelContainer.innerHTML = Object.values(CAR_MODELS).map(m => `
-        <button class="p-3 rounded-xl border text-left transition ${garageConfig.modelId === m.id ? 'bg-teal-400/10 border-[#7dd3c0] shadow-md' : 'pit-card hover:border-slate-600'}" onclick="selectGarageModel('${m.id}')">
+        <button class="p-3 rounded-xl border text-left transition ${garageConfig.modelId === m.id ? 'bg-[#4a7fb5]/15 border-[#689cd2] shadow-md' : 'pit-card hover:border-slate-600'}" onclick="selectGarageModel('${m.id}')">
           <div class="font-bold text-slate-100 text-xs">${m.name}</div>
           <div class="text-[10px] text-slate-400 mt-0.5 leading-tight">${m.desc}</div>
         </button>
@@ -2812,12 +3018,12 @@
 
       const colorContainer = document.getElementById('garage-color-palette');
       colorContainer.innerHTML = PAINT_COLORS.map(c => `
-        <button class="w-8 h-8 rounded-full border-2 transition ${garageConfig.color === c.hex ? 'border-teal-200 scale-110 shadow-lg' : 'border-transparent opacity-80 hover:opacity-100'}" style="background-color: ${c.hex};" title="${c.name}" onclick="selectGarageColor('${c.hex}')"></button>
+        <button class="w-8 h-8 rounded-full border-2 transition ${garageConfig.color === c.hex ? 'border-[#e3b754] scale-110 shadow-lg' : 'border-slate-700/70 opacity-85 hover:opacity-100'}" style="background-color: ${c.hex};" title="${c.name}" onclick="selectGarageColor('${c.hex}')"></button>
       `).join('');
 
       const decalContainer = document.getElementById('garage-decal-options');
       decalContainer.innerHTML = DECAL_STYLES.map(d => `
-        <button class="p-2.5 rounded-xl border text-xs font-bold transition ${garageConfig.decal === d.id ? 'bg-teal-400/10 border-[#7dd3c0] text-slate-100' : 'pit-card text-slate-400 hover:text-slate-200'}" onclick="selectGarageDecal('${d.id}')">
+        <button class="p-2.5 rounded-xl border text-xs font-bold transition ${garageConfig.decal === d.id ? 'bg-[#d4a23a]/15 border-[#d4a23a] text-slate-100' : 'pit-card text-slate-400 hover:text-slate-200'}" onclick="selectGarageDecal('${d.id}')">
           ${d.name}
         </button>
       `).join('');
@@ -2860,14 +3066,20 @@
       const drawPreview = () => {
         pCtx.clearRect(0, 0, pCanvas.width, pCanvas.height);
         
-        pCtx.fillStyle = '#0b0f16';
+        pCtx.fillStyle = '#0c111a';
         pCtx.fillRect(0, 0, pCanvas.width, pCanvas.height);
 
-        // Subtle turntable ring
-        pCtx.strokeStyle = 'rgba(125, 211, 192, 0.16)';
+        // Turntable rings in steel blue & ochre gold
+        pCtx.strokeStyle = 'rgba(104, 156, 210, 0.22)';
         pCtx.lineWidth = 1.5;
         pCtx.beginPath();
-        pCtx.arc(pCanvas.width / 2, pCanvas.height / 2, 56, 0, Math.PI * 2);
+        pCtx.arc(pCanvas.width / 2, pCanvas.height / 2, 58, 0, Math.PI * 2);
+        pCtx.stroke();
+
+        pCtx.strokeStyle = 'rgba(212, 162, 58, 0.18)';
+        pCtx.lineWidth = 1;
+        pCtx.beginPath();
+        pCtx.arc(pCanvas.width / 2, pCanvas.height / 2, 46, 0, Math.PI * 2);
         pCtx.stroke();
 
         pCtx.save();
@@ -2875,7 +3087,7 @@
         pCtx.rotate(rotAngle);
 
         const spec = CAR_MODELS[garageConfig.modelId];
-        drawCustomCar(pCtx, 0, 0, spec.width * 1.2, spec.height * 1.2, garageConfig.modelId, garageConfig.color, garageConfig.decal, false);
+        drawCustomCar(pCtx, 0, 0, spec.width * 1.3, spec.height * 1.3, garageConfig.modelId, garageConfig.color, garageConfig.decal, false);
 
         pCtx.restore();
 
@@ -2899,7 +3111,7 @@
           <div class="pit-card p-2.5 rounded-xl">
             <div class="flex justify-between items-center text-xs mb-1.5">
               <span class="font-bold text-slate-300">${cfg.label} <span class="text-[9px] text-slate-400 font-normal">(${range.min} - ${range.max})</span></span>
-              <span class="font-mono text-[#8cdbc9] font-bold" id="${targetContainerId}-val-${cfg.key}">${val.toFixed(cfg.dec)}</span>
+              <span class="font-mono text-[#e3b754] font-bold" id="${targetContainerId}-val-${cfg.key}">${val.toFixed(cfg.dec)}</span>
             </div>
             <div class="flex items-center space-x-2">
               <button class="w-8 h-8 pit-btn-secondary rounded-lg font-bold text-slate-100 flex items-center justify-center text-sm" onclick="adjustGarageStatStep('${cfg.key}', -${range.step}, '${targetContainerId}')">
@@ -3150,8 +3362,8 @@
       const btnStd = document.getElementById('menu-tab-standard');
       const btnDark = document.getElementById('menu-tab-dark');
 
-      btnStd.className = !isDark ? "w-1/2 py-2 rounded-lg text-xs font-bold transition bg-[#68c2ae] text-slate-950 shadow" : "w-1/2 py-2 rounded-lg text-xs font-bold transition text-slate-400 hover:text-slate-200";
-      btnDark.className = isDark ? "w-1/2 py-2 rounded-lg text-xs font-bold transition bg-[#68c2ae] text-slate-950 shadow" : "w-1/2 py-2 rounded-lg text-xs font-bold transition text-slate-400 hover:text-slate-200";
+      btnStd.className = !isDark ? "w-1/2 py-2 rounded-lg text-xs font-bold transition bg-[#4a7fb5] text-white shadow" : "w-1/2 py-2 rounded-lg text-xs font-bold transition text-slate-400 hover:text-slate-200";
+      btnDark.className = isDark ? "w-1/2 py-2 rounded-lg text-xs font-bold transition bg-[#4a7fb5] text-white shadow" : "w-1/2 py-2 rounded-lg text-xs font-bold transition text-slate-400 hover:text-slate-200";
 
       document.getElementById('menu-play-btn-label').innerText = isDark ? "Night Drive Campaign" : "Standard Campaign";
       
@@ -3185,9 +3397,9 @@
       const btnButtons = document.getElementById('opt-steer-buttons');
       const btnWheel = document.getElementById('opt-steer-wheel');
 
-      btnJoysticks.className = isJoysticks ? "p-2.5 bg-teal-400/10 border-2 border-[#7dd3c0] rounded-xl text-center flex flex-col items-center space-y-1" : "p-2.5 pit-card border-2 border-transparent rounded-xl text-center flex flex-col items-center space-y-1";
-      btnButtons.className = isButtons ? "p-2.5 bg-teal-400/10 border-2 border-[#7dd3c0] rounded-xl text-center flex flex-col items-center space-y-1" : "p-2.5 pit-card border-2 border-transparent rounded-xl text-center flex flex-col items-center space-y-1";
-      btnWheel.className = isWheel ? "p-2.5 bg-teal-400/10 border-2 border-[#7dd3c0] rounded-xl text-center flex flex-col items-center space-y-1" : "p-2.5 pit-card border-2 border-transparent rounded-xl text-center flex flex-col items-center space-y-1";
+      btnJoysticks.className = isJoysticks ? "p-2.5 bg-[#4a7fb5]/15 border-2 border-[#689cd2] rounded-xl text-center flex flex-col items-center space-y-1" : "p-2.5 pit-card border-2 border-transparent rounded-xl text-center flex flex-col items-center space-y-1";
+      btnButtons.className = isButtons ? "p-2.5 bg-[#4a7fb5]/15 border-2 border-[#689cd2] rounded-xl text-center flex flex-col items-center space-y-1" : "p-2.5 pit-card border-2 border-transparent rounded-xl text-center flex flex-col items-center space-y-1";
+      btnWheel.className = isWheel ? "p-2.5 bg-[#4a7fb5]/15 border-2 border-[#689cd2] rounded-xl text-center flex flex-col items-center space-y-1" : "p-2.5 pit-card border-2 border-transparent rounded-xl text-center flex flex-col items-center space-y-1";
     }
 
     function saveSettings() {
@@ -3204,8 +3416,8 @@
       const maxUnlocked = getMaxUnlockedLevel(activeGameMode);
 
       document.getElementById('level-modal-header').innerHTML = activeGameMode === 'dark' 
-        ? `<i class="fa-solid fa-moon text-[#7dd3c0]"></i> Night Drive Campaign`
-        : `<i class="fa-solid fa-layer-group text-[#7dd3c0]"></i> Campaign Levels`;
+        ? `<i class="fa-solid fa-moon text-[#689cd2]"></i> Night Drive Campaign`
+        : `<i class="fa-solid fa-layer-group text-[#e3b754]"></i> Campaign Levels`;
 
       const unlockedTiers = tiers.filter((tier, idx) => {
         if (idx === 0) return true;
@@ -3218,7 +3430,7 @@
       }
 
       container.innerHTML = unlockedTiers.map(tier => `
-        <button class="px-4 py-2 rounded-xl text-xs font-bold whitespace-nowrap transition ${selectedTierKey === tier.key ? 'bg-[#68c2ae] text-slate-950 shadow-md' : 'pit-btn-secondary text-slate-400 hover:text-slate-200'}" onclick="filterTier('${tier.key}')">
+        <button class="px-4 py-2 rounded-xl text-xs font-bold whitespace-nowrap transition ${selectedTierKey === tier.key ? 'bg-[#d4a23a] text-slate-950 shadow-md' : 'pit-btn-secondary text-slate-400 hover:text-slate-200'}" onclick="filterTier('${tier.key}')">
           ${tier.label}
         </button>
       `).join('');
@@ -3270,13 +3482,13 @@
         const pb = localStorage.getItem(`tm_pb_${cfg.id}`);
         const card = document.createElement('div');
         
-        card.className = `p-3 rounded-xl border flex justify-between items-center transition ${isUnlocked ? 'pit-card hover:border-teal-300/35 cursor-pointer active:scale-98' : 'bg-[#0b0f16]/70 border-slate-800/70 opacity-60 cursor-not-allowed'}`;
+        card.className = `p-3 rounded-xl border flex justify-between items-center transition ${isUnlocked ? 'pit-card hover:border-[#d4a23a]/45 cursor-pointer active:scale-98' : 'bg-[#0c111a]/70 border-slate-800/70 opacity-60 cursor-not-allowed'}`;
         
         card.innerHTML = `
           <div>
             <div class="font-bold text-slate-100 text-xs sm:text-sm flex items-center space-x-2">
               <span>${cfg.name}</span>
-              <span class="text-[9px] bg-teal-400/10 text-[#8cdbc9] px-2 py-0.5 rounded border border-teal-300/25 font-mono">${cfg.size}x${cfg.size}</span>
+              <span class="text-[9px] bg-[#4a7fb5]/20 text-[#89b4df] px-2 py-0.5 rounded border border-[#689cd2]/30 font-mono">${cfg.size}x${cfg.size}</span>
             </div>
             <div class="text-[10px] text-slate-400 mt-0.5">${isUnlocked ? (pb ? `Best Record: ${formatTime(parseFloat(pb))}` : 'Unlocked • No time recorded') : '🔒 Locked (Complete prior level)'}</div>
           </div>
@@ -3313,13 +3525,13 @@
       list.innerHTML = records.map((item, idx) => `
         <div class="p-2.5 pit-card rounded-xl flex justify-between items-center">
           <div class="flex items-center space-x-3">
-            <span class="font-bold ${idx===0?'text-[#8cdbc9]':idx===1?'text-[#d4a373]':'text-slate-400'} text-xs">#${idx+1}</span>
+            <span class="font-bold ${idx===0?'text-[#e3b754]':idx===1?'text-[#689cd2]':'text-slate-400'} text-xs">#${idx+1}</span>
             <div>
               <div class="font-bold text-slate-100 text-xs">${escapeHtml(item.driver || 'Driver')}</div>
               <div class="text-[9px] text-slate-400">${item.date || ''}</div>
             </div>
           </div>
-          <div class="font-mono font-bold text-[#7cb9e8] text-xs">${formatTime(item.timeMs)}</div>
+          <div class="font-mono font-bold text-[#e3b754] text-xs">${formatTime(item.timeMs)}</div>
         </div>
       `).join('');
     }
