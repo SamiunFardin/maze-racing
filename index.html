@@ -98,6 +98,43 @@
       border-color: rgba(255, 202, 40, 0.58);
     }
 
+    /* Upgraded Motorsport Game Title Styling */
+    .turbo-title-badge {
+      display: inline-block;
+      position: relative;
+      padding: 0.25rem 0.75rem;
+    }
+    .turbo-title-main {
+      font-weight: 900;
+      font-style: italic;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      background: linear-gradient(180deg, #ffffff 0%, #ffe082 42%, #ffca28 65%, #d98e00 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      filter: drop-shadow(0 3px 0 #091322) drop-shadow(0 6px 14px rgba(0, 0, 0, 0.85));
+      position: relative;
+      z-index: 2;
+    }
+    .turbo-title-sub-accent {
+      height: 3px;
+      width: 82%;
+      margin: 4px auto 0;
+      border-radius: 999px;
+      background: linear-gradient(90deg, transparent 0%, #3b7dd1 20%, #ffca28 50%, #3b7dd1 80%, transparent 100%);
+      box-shadow: 0 0 10px rgba(255, 202, 40, 0.45);
+    }
+
+    /* Animated Menu Maze Canvas */
+    #menuBgMazeCanvas {
+      position: fixed;
+      inset: 0;
+      width: 100vw;
+      height: 100vh;
+      z-index: 45;
+      pointer-events: none;
+    }
+
     /* Loading Logo Animations */
     @keyframes carFloat {
       0%, 100% { transform: translateY(0) scale(1); }
@@ -253,22 +290,65 @@
   <!-- [UI OVERLAY] INITIAL LOADING SCREEN -->
   <div id="modal-loading-screen" class="fixed inset-0 z-[100] bg-[#070c14] flex flex-col items-center justify-center p-6 space-y-6 transition-opacity duration-700">
     <div class="max-w-xs w-full text-center space-y-4">
-      <div class="w-32 h-32 mx-auto rounded-3xl border border-[#4b91e8]/45 shadow-[0_16px_44px_rgba(0,0,0,0.82)] bg-gradient-to-tr from-[#09111e] via-[#12243f] to-[#1b3863] flex items-center justify-center relative overflow-hidden animate-car-float">
-        <svg class="w-24 h-24 text-[#ffca28]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
-          <path d="M2 13l2-3h3l2 3h8l2-3h3l1 3v2H2v-2z" fill="currentColor" fill-opacity="0.24"></path>
-          <path d="M2 13h20v2a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2v-2z"></path>
-          <circle cx="6.5" cy="16.5" r="2.5" fill="#070c14" stroke="#68a9f7" stroke-width="1.8"></circle>
-          <circle cx="17.5" cy="16.5" r="2.5" fill="#070c14" stroke="#68a9f7" stroke-width="1.8"></circle>
-          <path d="M14 8l4-4m0 0l-3 1m3-1v3" stroke="#68a9f7" stroke-linecap="round" stroke-linejoin="round"></path>
+      <div class="w-36 h-36 mx-auto rounded-3xl border-2 border-[#4b91e8]/55 shadow-[0_18px_48px_rgba(0,0,0,0.88),inset_0_1px_0_rgba(255,255,255,0.14)] bg-gradient-to-b from-[#132644] via-[#0b172a] to-[#070d17] flex items-center justify-center relative overflow-hidden animate-car-float">
+        <svg class="w-28 h-28" viewBox="0 0 120 120" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <linearGradient id="crestRing" x1="15" y1="15" x2="105" y2="105" gradientUnits="userSpaceOnUse">
+              <stop offset="0%" stop-color="#68a9f7"/>
+              <stop offset="50%" stop-color="#ffca28"/>
+              <stop offset="100%" stop-color="#1e4b85"/>
+            </linearGradient>
+            <linearGradient id="carBodyGrad" x1="60" y1="22" x2="60" y2="96" gradientUnits="userSpaceOnUse">
+              <stop offset="0%" stop-color="#ffd54f"/>
+              <stop offset="55%" stop-color="#f5b000"/>
+              <stop offset="100%" stop-color="#b87700"/>
+            </linearGradient>
+            <linearGradient id="visorGrad" x1="45" y1="45" x2="75" y2="62" gradientUnits="userSpaceOnUse">
+              <stop offset="0%" stop-color="#09111e"/>
+              <stop offset="100%" stop-color="#1d3b66"/>
+            </linearGradient>
+          </defs>
+          <!-- Outer Motorsport Crest & Maze Track Ring -->
+          <circle cx="60" cy="60" r="52" stroke="url(#crestRing)" stroke-width="3" stroke-dasharray="28 6 12 6"/>
+          <circle cx="60" cy="60" r="44" stroke="#225494" stroke-width="1.5" stroke-opacity="0.7"/>
+          <!-- Stylized Maze Apex Corners in Background -->
+          <path d="M26 42H38V28M94 42H82V28M26 78H38V92M94 78H82V92" stroke="#4b91e8" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" stroke-opacity="0.75"/>
+          <!-- Speed Motion Streaks -->
+          <line x1="46" y1="95" x2="46" y2="105" stroke="#68a9f7" stroke-width="2" stroke-linecap="round"/>
+          <line x1="60" y1="98" x2="60" y2="109" stroke="#ffca28" stroke-width="2.4" stroke-linecap="round"/>
+          <line x1="74" y1="95" x2="74" y2="105" stroke="#68a9f7" stroke-width="2" stroke-linecap="round"/>
+          <!-- Top-Down Supercar Silhouette -->
+          <rect x="37" y="34" width="6" height="14" rx="2" fill="#090e17" stroke="#68a9f7" stroke-width="1.2"/>
+          <rect x="77" y="34" width="6" height="14" rx="2" fill="#090e17" stroke="#68a9f7" stroke-width="1.2"/>
+          <rect x="36" y="70" width="7" height="16" rx="2" fill="#090e17" stroke="#68a9f7" stroke-width="1.2"/>
+          <rect x="77" y="70" width="7" height="16" rx="2" fill="#090e17" stroke="#68a9f7" stroke-width="1.2"/>
+          <!-- Rear Carbon Wing -->
+          <rect x="40" y="86" width="40" height="5.5" rx="2" fill="#0c1524" stroke="#ffca28" stroke-width="1.3"/>
+          <!-- Main Aero Chassis -->
+          <path d="M44 32C44 25 51 21 60 21C69 21 76 25 76 32L78 79C78 84 74 87 69 87H51C46 87 42 84 42 79L44 32Z" fill="url(#carBodyGrad)" stroke="#fff3c4" stroke-width="1.4"/>
+          <!-- Dual Racing Stripes -->
+          <rect x="54.5" y="22" width="3.8" height="64" fill="#09111e" fill-opacity="0.82"/>
+          <rect x="61.7" y="22" width="3.8" height="64" fill="#09111e" fill-opacity="0.82"/>
+          <!-- Cockpit Canopy -->
+          <path d="M48 47C48 42 53 39 60 39C67 39 72 42 72 47L70 67C70 70 66 72 60 72C54 72 50 70 50 67L48 47Z" fill="url(#visorGrad)" stroke="#68a9f7" stroke-width="1.2"/>
+          <!-- Windshield Glare -->
+          <path d="M51 46C53 43 56 42 60 42C64 42 67 43 69 46L67 52H53L51 46Z" fill="#93c5fd" fill-opacity="0.38"/>
+          <!-- LED Headlights -->
+          <path d="M46 27L52 25" stroke="#ffffff" stroke-width="2.4" stroke-linecap="round"/>
+          <path d="M74 27L68 25" stroke="#ffffff" stroke-width="2.4" stroke-linecap="round"/>
         </svg>
         <div class="absolute inset-0 bg-gradient-to-r from-transparent via-amber-300/15 to-transparent -translate-x-full animate-shimmer pointer-events-none"></div>
       </div>
 
       <div>
-        <h1 class="text-3xl font-black italic tracking-wider text-transparent bg-clip-text bg-gradient-to-r from-[#ffca28] via-[#f1f6fc] to-[#68a9f7] title-shadow">
-          TURBO MAZE
-        </h1>
-        <p class="text-xs text-[#9bb3d1] mt-1.5 tracking-wide font-medium">Precision Driving Through Every Turn.</p>
+        <div class="turbo-title-badge">
+          <div class="text-[10px] font-extrabold uppercase tracking-[0.32em] text-[#68a9f7] mb-0.5">Circuit Navigation</div>
+          <h1 class="text-4xl turbo-title-main">
+            TURBO MAZE
+          </h1>
+          <div class="turbo-title-sub-accent"></div>
+        </div>
+        <p class="text-xs text-[#9bb3d1] mt-2 tracking-wide font-medium">Precision Driving Through Every Turn.</p>
       </div>
 
       <div class="w-full bg-[#0c1524] border border-[#1e4b85]/45 rounded-full h-2.5 overflow-hidden p-0.5">
@@ -379,18 +459,18 @@
       </button>
     </div>
 
-    <!-- BRAKE PEDAL -->
+    <!-- BRAKE PEDAL (RED) -->
     <div id="ctrl-brake-wrapper" class="floating-control hidden flex flex-col items-center" style="bottom: 20px; right: 100px;">
-      <span class="text-[9px] font-bold text-[#7cb5fa] uppercase tracking-widest mb-1">Brake</span>
-      <button id="btn-pedal-brake" class="pedal w-14 h-24 bg-gradient-to-b from-[#235494] to-[#122d52] border border-[#68a9f7]/60 rounded-2xl flex items-center justify-center text-[#f1f6fc] text-xl">
+      <span class="text-[9px] font-bold text-[#f87171] uppercase tracking-widest mb-1">Brake</span>
+      <button id="btn-pedal-brake" class="pedal w-14 h-24 bg-gradient-to-b from-[#dc2626] to-[#7f1d1d] border border-[#fca5a5]/70 rounded-2xl flex items-center justify-center text-[#ffffff] text-xl shadow-[0_6px_16px_rgba(220,38,38,0.4)]">
         <i class="fa-solid fa-angles-down"></i>
       </button>
     </div>
 
-    <!-- GAS PEDAL -->
+    <!-- GAS PEDAL (BLUE) -->
     <div id="ctrl-gas-wrapper" class="floating-control hidden flex flex-col items-center" style="bottom: 20px; right: 24px;">
-      <span class="text-[9px] font-bold text-[#ffca28] uppercase tracking-widest mb-1">Gas</span>
-      <button id="btn-pedal-gas" class="pedal w-14 h-28 bg-gradient-to-b from-[#ffca28] to-[#c47d00] border border-[#fff3c4]/70 rounded-2xl flex items-center justify-center text-[#080d16] font-black text-xl">
+      <span class="text-[9px] font-bold text-[#60a5fa] uppercase tracking-widest mb-1">Gas</span>
+      <button id="btn-pedal-gas" class="pedal w-14 h-28 bg-gradient-to-b from-[#2563eb] to-[#1e3a8a] border border-[#93c5fd]/75 rounded-2xl flex items-center justify-center text-[#ffffff] font-black text-xl shadow-[0_6px_18px_rgba(37,99,235,0.45)]">
         <i class="fa-solid fa-angles-up"></i>
       </button>
     </div>
@@ -400,26 +480,45 @@
      [MODALS & MENUS]
      ========================================================================== -->
 
-  <!-- PAUSE MODAL -->
-  <div id="modal-pause" class="fixed inset-0 z-50 bg-[#070c14]/88 backdrop-blur-md hidden flex items-center justify-center p-4">
-    <div class="max-w-sm w-full pit-panel rounded-2xl p-6 text-center space-y-4">
-      <div class="w-12 h-12 bg-[#f5b000]/20 border border-[#ffca28]/55 rounded-full flex items-center justify-center mx-auto text-[#ffca28] text-xl">
-        <i class="fa-solid fa-pause"></i>
+  <!-- ANIMATED RANDOM MAZE BACKGROUND FOR ALL NON-RACING PAGES & MENUS -->
+  <canvas id="menuBgMazeCanvas"></canvas>
+
+  <!-- PAUSE MODAL WITH MID-RACE CAR TUNING -->
+  <div id="modal-pause" class="fixed inset-0 z-50 bg-[#070c14]/82 backdrop-blur-md hidden flex items-center justify-center p-4">
+    <div class="max-w-md w-full pit-panel rounded-2xl p-5 text-center space-y-3.5 max-h-[92vh] overflow-y-auto custom-scroll">
+      <div class="flex items-center justify-center gap-3">
+        <div class="w-10 h-10 bg-[#f5b000]/20 border border-[#ffca28]/55 rounded-full flex items-center justify-center text-[#ffca28] text-base shrink-0">
+          <i class="fa-solid fa-pause"></i>
+        </div>
+        <div class="text-left">
+          <h2 class="text-xl font-black tracking-wide text-[#f1f6fc] leading-tight">RACE PAUSED</h2>
+          <p class="text-[11px] text-[#9bb3d1]">Pit lane open — tune your setup mid-race.</p>
+        </div>
       </div>
-      <div>
-        <h2 class="text-2xl font-black tracking-wide text-[#f1f6fc]">RACE PAUSED</h2>
-        <p class="text-xs text-[#9bb3d1] mt-1">Pit stop active — take a breather, driver.</p>
+
+      <!-- Mid-Race Car Tuning Section -->
+      <div class="pit-card rounded-xl p-3 text-left space-y-2.5">
+        <div class="flex justify-between items-center border-b border-[#1e4b85]/45 pb-1.5">
+          <span class="text-xs font-bold uppercase tracking-wider text-[#ffca28] flex items-center gap-1.5">
+            <i class="fa-solid fa-wrench text-[#68a9f7]"></i> Pit Stop Car Tuning
+          </span>
+          <button id="btn-reset-tuning-pause" class="text-[10px] text-[#9bb3d1] hover:text-[#f1f6fc] underline">Reset Default</button>
+        </div>
+        <div id="pause-tuning-controls" class="space-y-2.5"></div>
       </div>
-      <div class="space-y-2 pt-2">
-        <button id="pause-btn-resume" class="w-full py-3 pit-btn-primary font-bold rounded-xl text-sm">
-          Resume Race
+
+      <div class="space-y-2 pt-1">
+        <button id="pause-btn-resume" class="w-full py-3 pit-btn-primary font-bold rounded-xl text-sm flex items-center justify-center gap-2">
+          <i class="fa-solid fa-play"></i> Resume Race
         </button>
-        <button id="pause-btn-restart" class="w-full py-2.5 pit-btn-secondary font-bold rounded-xl text-sm">
-          Restart Level
-        </button>
-        <button id="pause-btn-menu" class="w-full py-2.5 pit-btn-secondary font-bold rounded-xl text-sm">
-          Main Menu
-        </button>
+        <div class="grid grid-cols-2 gap-2">
+          <button id="pause-btn-restart" class="py-2.5 pit-btn-secondary font-bold rounded-xl text-xs sm:text-sm">
+            Restart Level
+          </button>
+          <button id="pause-btn-menu" class="py-2.5 pit-btn-secondary font-bold rounded-xl text-xs sm:text-sm">
+            Main Menu
+          </button>
+        </div>
       </div>
     </div>
   </div>
@@ -454,13 +553,17 @@
   </div>
 
   <!-- MAIN MENU OVERLAY -->
-  <div id="modal-menu" class="fixed inset-0 z-50 bg-[#070c14]/94 backdrop-blur-lg flex items-center justify-center p-4">
+  <div id="modal-menu" class="fixed inset-0 z-50 bg-[#070c14]/72 backdrop-blur-[3px] flex items-center justify-center p-4">
     <div class="max-w-md w-full pit-panel rounded-2xl p-6 text-center space-y-4">
       <div>
-        <h1 class="text-4xl font-black italic tracking-wider text-transparent bg-clip-text bg-gradient-to-r from-[#ffca28] via-[#f1f6fc] to-[#68a9f7] title-shadow">
-          TURBO MAZE
-        </h1>
-        <p class="text-[#9bb3d1] text-xs mt-1.5 tracking-wide font-medium">Precision Driving Through Every Turn.</p>
+        <div class="turbo-title-badge">
+          <div class="text-[10px] font-extrabold uppercase tracking-[0.34em] text-[#68a9f7] mb-0.5">Apex Labyrinth Racing</div>
+          <h1 class="text-4xl sm:text-5xl turbo-title-main">
+            TURBO MAZE
+          </h1>
+          <div class="turbo-title-sub-accent"></div>
+        </div>
+        <p class="text-[#9bb3d1] text-xs mt-2 tracking-wide font-medium">Precision Driving Through Every Turn.</p>
       </div>
 
       <!-- MODE SELECTION SWITCH -->
@@ -498,7 +601,7 @@
   </div>
 
   <!-- GARAGE & SHOWROOM MODAL -->
-  <div id="modal-garage" class="fixed inset-0 z-50 bg-[#070c14]/95 backdrop-blur-lg hidden flex items-center justify-center p-3 sm:p-4">
+  <div id="modal-garage" class="fixed inset-0 z-50 bg-[#070c14]/76 backdrop-blur-[3px] hidden flex items-center justify-center p-3 sm:p-4">
     <div class="max-w-2xl w-full pit-panel rounded-2xl p-4 sm:p-5 space-y-4 max-h-[92vh] h-[92vh] flex flex-col">
       <div class="flex justify-between items-center border-b border-[#1e4b85]/45 pb-3 shrink-0">
         <h2 class="text-lg font-bold text-[#f1f6fc] flex items-center gap-2">
@@ -553,7 +656,7 @@
   </div>
 
   <!-- LEVEL SELECT MODAL -->
-  <div id="modal-levels" class="fixed inset-0 z-50 bg-[#070c14]/94 backdrop-blur-lg hidden flex items-center justify-center p-3 sm:p-4" style="touch-action: auto;">
+  <div id="modal-levels" class="fixed inset-0 z-50 bg-[#070c14]/76 backdrop-blur-[3px] hidden flex items-center justify-center p-3 sm:p-4" style="touch-action: auto;">
     <div class="max-w-2xl w-full pit-panel rounded-2xl p-4 sm:p-5 space-y-3 max-h-[92vh] h-[92vh] flex flex-col" style="touch-action: auto;">
       <div class="flex justify-between items-center border-b border-[#1e4b85]/45 pb-3 shrink-0">
         <h2 class="text-base sm:text-lg font-bold text-[#f1f6fc] flex items-center gap-2" id="level-modal-header">
@@ -576,7 +679,7 @@
   </div>
 
   <!-- PRE-RACE CAR TUNING MODAL -->
-  <div id="modal-pre-race-tuning" class="fixed inset-0 z-50 bg-[#070c14]/94 backdrop-blur-lg hidden flex items-center justify-center p-4">
+  <div id="modal-pre-race-tuning" class="fixed inset-0 z-50 bg-[#070c14]/76 backdrop-blur-[3px] hidden flex items-center justify-center p-4">
     <div class="max-w-md w-full pit-panel rounded-2xl p-5 space-y-4 max-h-[90vh] overflow-y-auto custom-scroll min-h-0">
       <div class="flex justify-between items-center border-b border-[#1e4b85]/45 pb-2">
         <h2 class="text-lg font-bold text-[#f1f6fc] flex items-center gap-2">
@@ -603,7 +706,7 @@
   </div>
 
   <!-- CONTROL SETTINGS & AUDIO PREFERENCES MODAL -->
-  <div id="modal-settings" class="fixed inset-0 z-50 bg-[#070c14]/94 backdrop-blur-lg hidden flex items-center justify-center p-4">
+  <div id="modal-settings" class="fixed inset-0 z-50 bg-[#070c14]/76 backdrop-blur-[3px] hidden flex items-center justify-center p-4">
     <div class="max-w-md w-full pit-panel rounded-2xl p-5 space-y-4 max-h-[90vh] overflow-y-auto custom-scroll min-h-0">
       <div class="flex justify-between items-center border-b border-[#1e4b85]/45 pb-3">
         <h2 class="text-lg font-bold text-[#f1f6fc] flex items-center gap-2">
@@ -692,7 +795,7 @@
   </div>
 
   <!-- VICTORY MODAL -->
-  <div id="modal-victory" class="fixed inset-0 z-50 bg-[#070c14]/94 backdrop-blur-lg hidden flex items-center justify-center p-4">
+  <div id="modal-victory" class="fixed inset-0 z-50 bg-[#070c14]/76 backdrop-blur-[3px] hidden flex items-center justify-center p-4">
     <div class="max-w-md w-full pit-panel border-[#f5b000]/55 rounded-2xl p-5 text-center space-y-4">
       <div class="w-14 h-14 bg-[#f5b000]/20 border border-[#ffca28]/65 rounded-full flex items-center justify-center mx-auto text-[#ffca28] text-2xl">
         <i class="fa-solid fa-trophy"></i>
@@ -724,7 +827,7 @@
   </div>
 
   <!-- LEADERBOARD MODAL -->
-  <div id="modal-leaderboard" class="fixed inset-0 z-50 bg-[#070c14]/94 backdrop-blur-lg hidden flex items-center justify-center p-4">
+  <div id="modal-leaderboard" class="fixed inset-0 z-50 bg-[#070c14]/76 backdrop-blur-[3px] hidden flex items-center justify-center p-4">
     <div class="max-w-md w-full pit-panel rounded-2xl p-5 space-y-4 max-h-[85vh] flex flex-col">
       <div class="flex justify-between items-center border-b border-[#1e4b85]/45 pb-2">
         <h2 class="text-lg font-bold text-[#f1f6fc] flex items-center gap-2">
@@ -1411,101 +1514,126 @@
 
     const TILE_SIZE = 70;
 
-    /* Upgraded Procedural Tarmac Asphalt & Reinforced Architectural Wall Patterns */
+    /* Upgraded Isotropic Tarmac Asphalt & Continuous Brick Masonry Wall Patterns */
     let asphaltPattern = null;
-    let wallCapPattern = null;
+    let wallBrickPattern = null;
 
     function createAsphaltPattern() {
+      // 140x140 isotropic stone-aggregate asphalt without directional stripes/ruts
       const pCanvas = document.createElement('canvas');
-      pCanvas.width = 70;
-      pCanvas.height = 70;
+      pCanvas.width = 140;
+      pCanvas.height = 140;
       const pCtx = pCanvas.getContext('2d');
 
-      // Rich deep slate-charcoal motorsport tarmac base
-      pCtx.fillStyle = '#121924';
-      pCtx.fillRect(0, 0, 70, 70);
+      // Uniform deep slate-charcoal asphalt base
+      pCtx.fillStyle = '#131a26';
+      pCtx.fillRect(0, 0, 140, 140);
 
-      // Subtle dual tire-track wear paths down the lane
-      const rutGrad = pCtx.createLinearGradient(0, 0, 70, 0);
-      rutGrad.addColorStop(0, 'rgba(6, 10, 17, 0.25)');
-      rutGrad.addColorStop(0.24, 'rgba(5, 9, 15, 0.45)');
-      rutGrad.addColorStop(0.5, 'rgba(59, 125, 209, 0.03)');
-      rutGrad.addColorStop(0.76, 'rgba(5, 9, 15, 0.45)');
-      rutGrad.addColorStop(1, 'rgba(6, 10, 17, 0.25)');
-      pCtx.fillStyle = rutGrad;
-      pCtx.fillRect(0, 0, 70, 70);
+      // Deterministic pseudo-random isotropic mineral aggregate (no directional streaks or white shadows)
+      let seed = 4219;
+      const rand = () => {
+        seed = (seed * 1664525 + 1013904223) % 4294967296;
+        return seed / 4294967296;
+      };
 
-      // Crisp stone aggregate mineral flecks (quartz, granite, dark basalt)
-      for (let i = 0; i < 420; i++) {
-        const gx = (i * 37 + 13) % 70;
-        const gy = (i * 59 + 23) % 70;
-        if (i % 6 === 0) {
-          pCtx.fillStyle = 'rgba(226, 236, 250, 0.07)';
-          pCtx.fillRect(gx, gy, 1.4, 1.4);
-        } else if (i % 2 === 0) {
-          pCtx.fillStyle = 'rgba(4, 7, 13, 0.42)';
-          pCtx.fillRect(gx, gy, 1.7, 1.4);
+      for (let i = 0; i < 1600; i++) {
+        const gx = Math.floor(rand() * 140);
+        const gy = Math.floor(rand() * 140);
+        const roll = rand();
+        if (roll < 0.14) {
+          pCtx.fillStyle = 'rgba(195, 214, 240, 0.045)';
+          pCtx.fillRect(gx, gy, 1.3, 1.3);
+        } else if (roll < 0.62) {
+          pCtx.fillStyle = 'rgba(5, 8, 15, 0.36)';
+          pCtx.fillRect(gx, gy, 1.5, 1.5);
         } else {
-          pCtx.fillStyle = 'rgba(93, 160, 242, 0.035)';
-          pCtx.fillRect(gx, gy, 1.1, 1.1);
+          pCtx.fillStyle = 'rgba(43, 108, 184, 0.032)';
+          pCtx.fillRect(gx, gy, 1.2, 1.2);
         }
       }
-
-      // Subtle tarmac expansion micro-seams
-      pCtx.strokeStyle = 'rgba(5, 8, 14, 0.35)';
-      pCtx.lineWidth = 0.8;
-      pCtx.beginPath();
-      pCtx.moveTo(12, 16);
-      pCtx.lineTo(26, 22);
-      pCtx.moveTo(44, 52);
-      pCtx.lineTo(59, 47);
-      pCtx.stroke();
 
       return ctx.createPattern(pCanvas, 'repeat');
     }
 
-    function createWallCapPattern() {
-      const wCanvas = document.createElement('canvas');
-      wCanvas.width = 35;
-      wCanvas.height = 35;
-      const wCtx = wCanvas.getContext('2d');
+    function createWallBrickPattern() {
+      // Seamless world-space running-bond brick texture (70x70 tile = 5 courses of 14px height, 2 bricks of 35px width per course)
+      const bCanvas = document.createElement('canvas');
+      bCanvas.width = 70;
+      bCanvas.height = 70;
+      const bCtx = bCanvas.getContext('2d');
 
-      // Deep armored navy-slate steel composite deck
-      wCtx.fillStyle = '#182b47';
-      wCtx.fillRect(0, 0, 35, 35);
+      // Deep recessed mortar bed
+      bCtx.fillStyle = '#09111d';
+      bCtx.fillRect(0, 0, 70, 70);
 
-      // Fine brushed metallic diagonal hatch texture
-      wCtx.strokeStyle = 'rgba(93, 160, 242, 0.07)';
-      wCtx.lineWidth = 1;
-      for (let d = -35; d < 70; d += 7) {
-        wCtx.beginPath();
-        wCtx.moveTo(d, 0);
-        wCtx.lineTo(d + 35, 35);
-        wCtx.stroke();
+      const rows = 5;
+      const brickH = 70 / rows; // 14px
+      const brickW = 35;        // 35px
+      const mortar = 2;
+
+      const brickShades = [
+        '#1b3358',
+        '#1f3b64',
+        '#172c4d',
+        '#234270',
+        '#1a3154'
+      ];
+
+      let seed = 9081;
+      const rand = () => {
+        seed = (seed * 1664525 + 1013904223) % 4294967296;
+        return seed / 4294967296;
+      };
+
+      for (let r = 0; r < rows; r++) {
+        const y = r * brickH;
+        const offset = (r % 2 === 1) ? brickW / 2 : 0;
+
+        for (let c = -1; c <= 2; c++) {
+          const x = c * brickW + offset;
+          const bx = x + mortar / 2;
+          const by = y + mortar / 2;
+          const bw = brickW - mortar;
+          const bh = brickH - mortar;
+
+          const shadeIdx = (r * 3 + c + 4) % brickShades.length;
+          bCtx.fillStyle = brickShades[shadeIdx];
+          bCtx.fillRect(bx, by, bw, bh);
+
+          // Top sunlit brick bevel
+          bCtx.fillStyle = 'rgba(147, 197, 253, 0.16)';
+          bCtx.fillRect(bx, by, bw, 1.5);
+
+          // Left brick highlight
+          bCtx.fillStyle = 'rgba(147, 197, 253, 0.08)';
+          bCtx.fillRect(bx, by, 1.2, bh);
+
+          // Bottom brick shadow
+          bCtx.fillStyle = 'rgba(4, 8, 15, 0.45)';
+          bCtx.fillRect(bx, by + bh - 1.6, bw, 1.6);
+
+          // Subtle ceramic/kiln brick surface grain
+          for (let g = 0; g < 10; g++) {
+            const gx = bx + 2 + rand() * (bw - 4);
+            const gy = by + 2 + rand() * (bh - 4);
+            bCtx.fillStyle = rand() > 0.5 ? 'rgba(255, 202, 40, 0.04)' : 'rgba(5, 9, 16, 0.25)';
+            bCtx.fillRect(gx, gy, 1.3, 1.3);
+          }
+        }
       }
 
-      // Subtle metallic grain
-      for (let i = 0; i < 45; i++) {
-        const x = (i * 19 + 5) % 35;
-        const y = (i * 29 + 7) % 35;
-        wCtx.fillStyle = i % 2 === 0 ? 'rgba(255, 255, 255, 0.04)' : 'rgba(6, 11, 20, 0.25)';
-        wCtx.fillRect(x, y, 1.4, 1.4);
-      }
-
-      // Armor plate seam border
-      wCtx.strokeStyle = 'rgba(7, 12, 20, 0.55)';
-      wCtx.lineWidth = 1;
-      wCtx.strokeRect(0.5, 0.5, 34, 34);
-
-      return ctx.createPattern(wCanvas, 'repeat');
+      return ctx.createPattern(bCanvas, 'repeat');
     }
 
     window.addEventListener('load', () => {
       asphaltPattern = createAsphaltPattern();
-      wallCapPattern = createWallCapPattern();
+      wallBrickPattern = createWallBrickPattern();
       applyCarModelStats();
       resizeCanvas();
-      window.addEventListener('resize', resizeCanvas);
+      window.addEventListener('resize', () => {
+        resizeCanvas();
+        resizeMenuBgCanvas();
+      });
       setupControls();
       setupJoystickControls();
       setupDraggableControlCustomizer();
@@ -1514,6 +1642,7 @@
       setupUIEventListeners();
       setupFullMapInteractions();
       updateControlUI();
+      initMenuBgMazeAnimation();
       runInitialLoadingScreen();
     });
 
@@ -2142,8 +2271,10 @@
         pauseStartedAt = performance.now();
         AudioEngine.stopBGM();
         AudioEngine.stopEngineSound();
+        renderTuningUI('pause-tuning-controls');
         pauseModal.classList.remove('hidden');
       } else {
+        applyCarModelStats();
         pausedTimeTotal += (performance.now() - pauseStartedAt);
         lastFrameTime = performance.now();
         AudioEngine.startBGM(activeGameMode === 'dark');
@@ -2210,17 +2341,48 @@
       if (isAccelerating) {
         if (forwardInput > 0) {
           car.speed = Math.min(car.speed + (car.accel * forwardInput * timeScale), car.maxSpeed * forwardInput);
-          if (Math.random() < 0.6) {
-            const backOffsetX = car.x - Math.sin(car.angle) * (car.height / 2);
-            const backOffsetY = car.y + Math.cos(car.angle) * (car.height / 2);
-            exhaustParticles.push({
-              x: backOffsetX + (Math.random() - 0.5) * 8,
-              y: backOffsetY + (Math.random() - 0.5) * 8,
-              vx: -Math.sin(car.angle) * (1 + Math.random() * 2),
-              vy: Math.cos(car.angle) * (1 + Math.random() * 2),
-              life: 1.0,
-              decay: 0.04 + Math.random() * 0.03,
-              size: 4 + Math.random() * 4
+          const speedRatio = Math.min(1, Math.abs(car.speed) / Math.max(1, car.maxSpeed));
+          const spawnChance = 0.45 + forwardInput * 0.45;
+          if (Math.random() < spawnChance) {
+            const rearDist = car.height * 0.5 + 2;
+            const backCenterX = car.x - Math.sin(car.angle) * rearDist;
+            const backCenterY = car.y + Math.cos(car.angle) * rearDist;
+            const pipeSpread = car.width * 0.22;
+            const perpX = Math.cos(car.angle);
+            const perpY = Math.sin(car.angle);
+
+            [-1, 1].forEach(side => {
+              if (Math.random() > 0.72) return;
+              const px = backCenterX + perpX * (side * pipeSpread) + (Math.random() - 0.5) * 2;
+              const py = backCenterY + perpY * (side * pipeSpread) + (Math.random() - 0.5) * 2;
+              const jetSpeed = 1.6 + forwardInput * 2.2 + Math.random() * 1.4;
+              const spreadAngle = car.angle + (Math.random() - 0.5) * 0.36;
+
+              exhaustParticles.push({
+                kind: 'smoke',
+                x: px,
+                y: py,
+                vx: -Math.sin(spreadAngle) * jetSpeed,
+                vy: Math.cos(spreadAngle) * jetSpeed,
+                life: 1.0,
+                decay: 0.028 + Math.random() * 0.02,
+                size: 3.2 + Math.random() * 2.2,
+                growth: 0.22 + Math.random() * 0.14
+              });
+
+              if (forwardInput > 0.65 && (speedRatio > 0.68 || Math.random() < 0.28)) {
+                exhaustParticles.push({
+                  kind: 'flame',
+                  x: px,
+                  y: py,
+                  vx: -Math.sin(spreadAngle) * (jetSpeed * 1.45),
+                  vy: Math.cos(spreadAngle) * (jetSpeed * 1.45),
+                  life: 1.0,
+                  decay: 0.095 + Math.random() * 0.05,
+                  size: 2.8 + Math.random() * 2.0,
+                  growth: -0.06
+                });
+              }
             });
           }
         } else {
@@ -2234,6 +2396,9 @@
         const p = exhaustParticles[i];
         p.x += p.vx * timeScale;
         p.y += p.vy * timeScale;
+        p.vx *= Math.pow(0.95, timeScale);
+        p.vy *= Math.pow(0.95, timeScale);
+        p.size = Math.max(0.5, p.size + (p.growth || 0) * timeScale);
         p.life -= p.decay * timeScale;
         if (p.life <= 0) exhaustParticles.splice(i, 1);
       }
@@ -2365,14 +2530,14 @@
       const minRow = Math.max(0, Math.floor((car.y - halfH) / TILE_SIZE));
       const maxRow = Math.min(currentMaze.rows - 1, Math.ceil((car.y + halfH) / TILE_SIZE));
 
-      // Pass 1: Enhanced Tarmac Road Surface, FIA Curbs, Shoulder Lines, Center Markings & Wall Shadows
+      // Pass 1: Continuous Asphalt Road Surface, Symmetric Contact Shadows, FIA Curbs & Connected Centerlines
       for (let r = minRow; r <= maxRow; r++) {
         for (let c = minCol; c <= maxCol; c++) {
           const x = c * TILE_SIZE;
           const y = r * TILE_SIZE;
           const wall = isWallAt(r, c);
 
-          ctx.fillStyle = asphaltPattern || '#121924';
+          ctx.fillStyle = asphaltPattern || '#131a26';
           ctx.fillRect(x, y, TILE_SIZE, TILE_SIZE);
 
           if (!wall) {
@@ -2380,11 +2545,40 @@
             const botW = isWallAt(r + 1, c);
             const leftW = isWallAt(r, c - 1);
             const rightW = isWallAt(r, c + 1);
+            const tlW = isWallAt(r - 1, c - 1);
+            const trW = isWallAt(r - 1, c + 1);
+            const blW = isWallAt(r + 1, c - 1);
+            const brW = isWallAt(r + 1, c + 1);
 
-            // Subtle asphalt slab joint grid for speed perception
-            ctx.strokeStyle = 'rgba(59, 125, 209, 0.05)';
-            ctx.lineWidth = 1;
-            ctx.strokeRect(x + 0.5, y + 0.5, TILE_SIZE - 1, TILE_SIZE - 1);
+            // Omnidirectional soft ambient occlusion shadow cast by adjacent walls onto road edges (no directional bias)
+            if (topW) {
+              const g = ctx.createLinearGradient(x, y, x, y + 12);
+              g.addColorStop(0, 'rgba(3, 6, 12, 0.52)');
+              g.addColorStop(1, 'rgba(3, 6, 12, 0)');
+              ctx.fillStyle = g;
+              ctx.fillRect(x, y, TILE_SIZE, 12);
+            }
+            if (botW) {
+              const g = ctx.createLinearGradient(x, y + TILE_SIZE, x, y + TILE_SIZE - 12);
+              g.addColorStop(0, 'rgba(3, 6, 12, 0.52)');
+              g.addColorStop(1, 'rgba(3, 6, 12, 0)');
+              ctx.fillStyle = g;
+              ctx.fillRect(x, y + TILE_SIZE - 12, TILE_SIZE, 12);
+            }
+            if (leftW) {
+              const g = ctx.createLinearGradient(x, y, x + 12, y);
+              g.addColorStop(0, 'rgba(3, 6, 12, 0.52)');
+              g.addColorStop(1, 'rgba(3, 6, 12, 0)');
+              ctx.fillStyle = g;
+              ctx.fillRect(x, y, 12, TILE_SIZE);
+            }
+            if (rightW) {
+              const g = ctx.createLinearGradient(x + TILE_SIZE, y, x + TILE_SIZE - 12, y);
+              g.addColorStop(0, 'rgba(3, 6, 12, 0.52)');
+              g.addColorStop(1, 'rgba(3, 6, 12, 0)');
+              ctx.fillStyle = g;
+              ctx.fillRect(x + TILE_SIZE - 12, y, 12, TILE_SIZE);
+            }
 
             // Painted Deep Blue & Bright Amber-Gold FIA Circuit Curbs along barrier edges
             if (topW) drawApexCurbStripe(x, y, TILE_SIZE, 'top');
@@ -2392,57 +2586,87 @@
             if (leftW) drawApexCurbStripe(x, y, TILE_SIZE, 'left');
             if (rightW) drawApexCurbStripe(x + TILE_SIZE, y, TILE_SIZE, 'right');
 
-            // Crisp bright-white track boundary shoulder lines inside curbs
-            ctx.strokeStyle = 'rgba(241, 246, 252, 0.36)';
-            ctx.lineWidth = 1.4;
-            if (topW) {
-              ctx.beginPath(); ctx.moveTo(x, y + 6.5); ctx.lineTo(x + TILE_SIZE, y + 6.5); ctx.stroke();
+            // Smooth corner curb caps where two walls meet at an inner apex
+            if (topW && leftW) {
+              ctx.fillStyle = '#f5b000';
+              ctx.fillRect(x, y, 6, 6);
             }
-            if (botW) {
-              ctx.beginPath(); ctx.moveTo(x, y + TILE_SIZE - 6.5); ctx.lineTo(x + TILE_SIZE, y + TILE_SIZE - 6.5); ctx.stroke();
+            if (topW && rightW) {
+              ctx.fillStyle = '#1b4d8f';
+              ctx.fillRect(x + TILE_SIZE - 6, y, 6, 6);
             }
-            if (leftW) {
-              ctx.beginPath(); ctx.moveTo(x + 6.5, y); ctx.lineTo(x + 6.5, y + TILE_SIZE); ctx.stroke();
+            if (botW && leftW) {
+              ctx.fillStyle = '#1b4d8f';
+              ctx.fillRect(x, y + TILE_SIZE - 6, 6, 6);
             }
-            if (rightW) {
-              ctx.beginPath(); ctx.moveTo(x + TILE_SIZE - 6.5, y); ctx.lineTo(x + TILE_SIZE - 6.5, y + TILE_SIZE); ctx.stroke();
+            if (botW && rightW) {
+              ctx.fillStyle = '#f5b000';
+              ctx.fillRect(x + TILE_SIZE - 6, y + TILE_SIZE - 6, 6, 6);
             }
 
-            // Road Centerline Guidance (dashed bright gold along corridors, subtle node at turns)
-            ctx.strokeStyle = 'rgba(255, 202, 40, 0.32)';
-            ctx.lineWidth = 2.2;
-            ctx.setLineDash([11, 9]);
-            if (topW && botW && !leftW && !rightW) {
-              ctx.beginPath();
-              ctx.moveTo(x + 3, y + TILE_SIZE / 2);
-              ctx.lineTo(x + TILE_SIZE - 3, y + TILE_SIZE / 2);
-              ctx.stroke();
-            } else if (leftW && rightW && !topW && !botW) {
-              ctx.beginPath();
-              ctx.moveTo(x + TILE_SIZE / 2, y + 3);
-              ctx.lineTo(x + TILE_SIZE / 2, y + TILE_SIZE - 3);
-              ctx.stroke();
-            } else {
-              // Subtle intersection directional guide dot
-              ctx.fillStyle = 'rgba(255, 202, 40, 0.22)';
-              ctx.beginPath();
-              ctx.arc(x + TILE_SIZE / 2, y + TILE_SIZE / 2, 2.5, 0, Math.PI * 2);
-              ctx.fill();
+            // Continuous white track boundary shoulder lines that connect cleanly around corners
+            ctx.strokeStyle = 'rgba(241, 246, 252, 0.34)';
+            ctx.lineWidth = 1.4;
+            const shOff = 6.5;
+            if (topW) {
+              const sx1 = leftW ? x + shOff : x;
+              const sx2 = rightW ? x + TILE_SIZE - shOff : x + TILE_SIZE;
+              ctx.beginPath(); ctx.moveTo(sx1, y + shOff); ctx.lineTo(sx2, y + shOff); ctx.stroke();
+            }
+            if (botW) {
+              const sx1 = leftW ? x + shOff : x;
+              const sx2 = rightW ? x + TILE_SIZE - shOff : x + TILE_SIZE;
+              ctx.beginPath(); ctx.moveTo(sx1, y + TILE_SIZE - shOff); ctx.lineTo(sx2, y + TILE_SIZE - shOff); ctx.stroke();
+            }
+            if (leftW) {
+              const sy1 = topW ? y + shOff : y;
+              const sy2 = botW ? y + TILE_SIZE - shOff : y + TILE_SIZE;
+              ctx.beginPath(); ctx.moveTo(x + shOff, sy1); ctx.lineTo(x + shOff, sy2); ctx.stroke();
+            }
+            if (rightW) {
+              const sy1 = topW ? y + shOff : y;
+              const sy2 = botW ? y + TILE_SIZE - shOff : y + TILE_SIZE;
+              ctx.beginPath(); ctx.moveTo(x + TILE_SIZE - shOff, sy1); ctx.lineTo(x + TILE_SIZE - shOff, sy2); ctx.stroke();
+            }
+
+            // Outer corner shoulder arcs around convex wall tips
+            if (!topW && !leftW && tlW) {
+              ctx.beginPath(); ctx.arc(x, y, shOff, 0, Math.PI * 0.5); ctx.stroke();
+            }
+            if (!topW && !rightW && trW) {
+              ctx.beginPath(); ctx.arc(x + TILE_SIZE, y, shOff, Math.PI * 0.5, Math.PI); ctx.stroke();
+            }
+            if (!botW && !leftW && blW) {
+              ctx.beginPath(); ctx.arc(x, y + TILE_SIZE, shOff, Math.PI * 1.5, Math.PI * 2); ctx.stroke();
+            }
+            if (!botW && !rightW && brW) {
+              ctx.beginPath(); ctx.arc(x + TILE_SIZE, y + TILE_SIZE, shOff, Math.PI, Math.PI * 1.5); ctx.stroke();
+            }
+
+            // Continuous Centerline Guidance connecting every open exit from the tile center
+            const cx = x + TILE_SIZE / 2;
+            const cy = y + TILE_SIZE / 2;
+            ctx.strokeStyle = 'rgba(255, 202, 40, 0.28)';
+            ctx.lineWidth = 2;
+            ctx.setLineDash([9, 8]);
+            if (!topW) {
+              ctx.beginPath(); ctx.moveTo(cx, cy); ctx.lineTo(cx, y); ctx.stroke();
+            }
+            if (!botW) {
+              ctx.beginPath(); ctx.moveTo(cx, cy); ctx.lineTo(cx, y + TILE_SIZE); ctx.stroke();
+            }
+            if (!leftW) {
+              ctx.beginPath(); ctx.moveTo(cx, cy); ctx.lineTo(x, cy); ctx.stroke();
+            }
+            if (!rightW) {
+              ctx.beginPath(); ctx.moveTo(cx, cy); ctx.lineTo(x + TILE_SIZE, cy); ctx.stroke();
             }
             ctx.setLineDash([]);
-          } else {
-            // Deep directional ground shadow cast onto adjacent road tiles
-            if (!isWallAt(r + 1, c) || !isWallAt(r, c + 1)) {
-              ctx.fillStyle = 'rgba(3, 6, 12, 0.72)';
-              ctx.beginPath();
-              ctx.roundRect(x + 7, y + 8, TILE_SIZE, TILE_SIZE, 6);
-              ctx.fill();
-            }
           }
         }
       }
 
-      // Pass 2: Upgraded Armored Steel & Concrete Maze Walls with Seamless Connected Borders
+      // Pass 2: Continuous Seamless Brick Maze Walls with Sculpted Corner Joints & Continuous Coping Trim
       for (let r = minRow; r <= maxRow; r++) {
         for (let c = minCol; c <= maxCol; c++) {
           if (!isWallAt(r, c)) continue;
@@ -2453,96 +2677,117 @@
           const botW = isWallAt(r + 1, c);
           const leftW = isWallAt(r, c - 1);
           const rightW = isWallAt(r, c + 1);
+          const tlW = isWallAt(r - 1, c - 1);
+          const trW = isWallAt(r - 1, c + 1);
+          const blW = isWallAt(r + 1, c - 1);
+          const brW = isWallAt(r + 1, c + 1);
 
-          // 1. Heavy Dark Navy Foundation Base
-          ctx.fillStyle = '#09111e';
+          // 1. Continuous World-Space Brick Masonry Fill (spans seamlessly across all connected wall cells)
+          ctx.fillStyle = wallBrickPattern || '#1b3358';
           ctx.fillRect(x, y, TILE_SIZE, TILE_SIZE);
 
-          // 2. Extruded 3D Side Skirt (connects seamlessly to adjacent wall tiles)
-          const padL = leftW ? 0 : 2;
-          const padR = rightW ? 0 : 2;
-          const padT = topW ? 0 : 2;
-          const padB = botW ? 0 : 2;
+          // 2. Continuous Outer Coping Border & Bevel Rim ONLY along road-facing perimeter edges
+          const trimW = 5;
 
-          ctx.fillStyle = '#11223b';
-          ctx.fillRect(x + padL, y + padT, TILE_SIZE - padL - padR, TILE_SIZE - padT - padB);
+          // Dark outer mortar/curb edge against the road
+          ctx.fillStyle = '#070d17';
+          if (!topW) ctx.fillRect(x, y, TILE_SIZE, 2);
+          if (!botW) ctx.fillRect(x, y + TILE_SIZE - 2, TILE_SIZE, 2);
+          if (!leftW) ctx.fillRect(x, y, 2, TILE_SIZE);
+          if (!rightW) ctx.fillRect(x + TILE_SIZE - 2, y, 2, TILE_SIZE);
 
-          // 3. Brushed Steel-Slate Armored Top Deck
-          const capL = leftW ? 0 : 5;
-          const capR = rightW ? 0 : 5;
-          const capT = topW ? 0 : 5;
-          const capB = botW ? 0 : 7;
+          // Stone/Concrete Coping Cap Band along exposed walls
+          ctx.fillStyle = '#12243f';
+          if (!topW) ctx.fillRect(x, y + 2, TILE_SIZE, trimW);
+          if (!botW) ctx.fillRect(x, y + TILE_SIZE - 2 - trimW, TILE_SIZE, trimW);
+          if (!leftW) ctx.fillRect(x + 2, y, trimW, TILE_SIZE);
+          if (!rightW) ctx.fillRect(x + TILE_SIZE - 2 - trimW, y, trimW, TILE_SIZE);
 
-          ctx.fillStyle = wallCapPattern || '#182b47';
-          ctx.fillRect(x + capL, y + capT, TILE_SIZE - capL - capR, TILE_SIZE - capT - capB);
-
-          // 4. Recessed Structural Armor Panel & Diagonal Brace
-          ctx.strokeStyle = 'rgba(6, 11, 20, 0.65)';
+          // Crisp Amber-Gold & Royal-Blue Continuous Guardrail Pinstripe along wall perimeter
+          ctx.strokeStyle = '#ffca28';
           ctx.lineWidth = 1.5;
-          ctx.strokeRect(x + 11, y + 11, TILE_SIZE - 22, TILE_SIZE - 24);
-
-          ctx.fillStyle = 'rgba(34, 84, 148, 0.25)';
-          ctx.fillRect(x + 13, y + 13, TILE_SIZE - 26, TILE_SIZE - 28);
-
-          // Inner rivet studs on wall blocks
-          ctx.fillStyle = 'rgba(147, 197, 253, 0.35)';
-          ctx.fillRect(x + 14, y + 14, 2, 2);
-          ctx.fillRect(x + TILE_SIZE - 16, y + 14, 2, 2);
-          ctx.fillRect(x + 14, y + TILE_SIZE - 18, 2, 2);
-          ctx.fillRect(x + TILE_SIZE - 16, y + TILE_SIZE - 18, 2, 2);
-
-          // 5. Crisp Sunlit Top & Left Bevel Rim (only on exposed edges)
-          ctx.strokeStyle = 'rgba(147, 197, 253, 0.45)';
-          ctx.lineWidth = 2;
           if (!topW) {
-            ctx.beginPath();
-            ctx.moveTo(x + capL, y + capT);
-            ctx.lineTo(x + TILE_SIZE - capR, y + capT);
-            ctx.stroke();
+            const x1 = leftW ? x : x + trimW;
+            const x2 = rightW ? x + TILE_SIZE : x + TILE_SIZE - trimW;
+            ctx.beginPath(); ctx.moveTo(x1, y + trimW + 1); ctx.lineTo(x2, y + trimW + 1); ctx.stroke();
+          }
+          if (!botW) {
+            const x1 = leftW ? x : x + trimW;
+            const x2 = rightW ? x + TILE_SIZE : x + TILE_SIZE - trimW;
+            ctx.beginPath(); ctx.moveTo(x1, y + TILE_SIZE - trimW - 1); ctx.lineTo(x2, y + TILE_SIZE - trimW - 1); ctx.stroke();
           }
           if (!leftW) {
-            ctx.beginPath();
-            ctx.moveTo(x + capL, y + capT);
-            ctx.lineTo(x + capL, y + TILE_SIZE - capB);
-            ctx.stroke();
-          }
-
-          // 6. Deep Royal Blue & Gold Guardrail Trim on Exposed Bottom & Right Edges
-          if (!botW) {
-            ctx.fillStyle = '#225494';
-            ctx.fillRect(x + padL, y + TILE_SIZE - 5, TILE_SIZE - padL - padR, 3);
-            ctx.fillStyle = '#f5b000';
-            ctx.fillRect(x + padL + 6, y + TILE_SIZE - 4, TILE_SIZE - padL - padR - 12, 1.5);
+            const y1 = topW ? y : y + trimW;
+            const y2 = botW ? y + TILE_SIZE : y + TILE_SIZE - trimW;
+            ctx.beginPath(); ctx.moveTo(x + trimW + 1, y1); ctx.lineTo(x + trimW + 1, y2); ctx.stroke();
           }
           if (!rightW) {
-            ctx.fillStyle = '#225494';
-            ctx.fillRect(x + TILE_SIZE - 5, y + padT, 3, TILE_SIZE - padT - padB);
+            const y1 = topW ? y : y + trimW;
+            const y2 = botW ? y + TILE_SIZE : y + TILE_SIZE - trimW;
+            ctx.beginPath(); ctx.moveTo(x + TILE_SIZE - trimW - 1, y1); ctx.lineTo(x + TILE_SIZE - trimW - 1, y2); ctx.stroke();
           }
 
-          // 7. High-Visibility Amber-Gold & Cobalt Corner Bollard Caps on Exposed Corners
-          if (!topW && !leftW) {
+          // 3. Sculpted Corner Joints (Convex Outer Corners & Concave Inner L/T/X Junctions)
+          const drawCornerCap = (cx, cy) => {
+            ctx.fillStyle = '#0d1b30';
+            ctx.fillRect(cx - 5, cy - 5, 10, 10);
+            ctx.strokeStyle = '#4b91e8';
+            ctx.lineWidth = 1.3;
+            ctx.strokeRect(cx - 4.5, cy - 4.5, 9, 9);
             ctx.fillStyle = '#ffca28';
+            ctx.fillRect(cx - 1.5, cy - 1.5, 3, 3);
+          };
+
+          // Convex outer corners (where two exposed sides meet)
+          if (!topW && !leftW) drawCornerCap(x + 5, y + 5);
+          if (!topW && !rightW) drawCornerCap(x + TILE_SIZE - 5, y + 5);
+          if (!botW && !leftW) drawCornerCap(x + 5, y + TILE_SIZE - 5);
+          if (!botW && !rightW) drawCornerCap(x + TILE_SIZE - 5, y + TILE_SIZE - 5);
+
+          // Concave inner corners (where wall turns 90 degrees into another wall)
+          if (topW && leftW && !tlW) {
+            ctx.fillStyle = '#12243f';
+            ctx.fillRect(x, y, trimW + 2, trimW + 2);
+            ctx.strokeStyle = '#ffca28';
+            ctx.lineWidth = 1.5;
             ctx.beginPath();
-            ctx.arc(x + 7, y + 7, 3, 0, Math.PI * 2);
-            ctx.fill();
+            ctx.moveTo(x, y + trimW + 1);
+            ctx.lineTo(x + trimW + 1, y + trimW + 1);
+            ctx.lineTo(x + trimW + 1, y);
+            ctx.stroke();
           }
-          if (!topW && !rightW) {
-            ctx.fillStyle = '#3b7dd1';
+          if (topW && rightW && !trW) {
+            ctx.fillStyle = '#12243f';
+            ctx.fillRect(x + TILE_SIZE - trimW - 2, y, trimW + 2, trimW + 2);
+            ctx.strokeStyle = '#ffca28';
+            ctx.lineWidth = 1.5;
             ctx.beginPath();
-            ctx.arc(x + TILE_SIZE - 7, y + 7, 3, 0, Math.PI * 2);
-            ctx.fill();
+            ctx.moveTo(x + TILE_SIZE, y + trimW + 1);
+            ctx.lineTo(x + TILE_SIZE - trimW - 1, y + trimW + 1);
+            ctx.lineTo(x + TILE_SIZE - trimW - 1, y);
+            ctx.stroke();
           }
-          if (!botW && !leftW) {
-            ctx.fillStyle = '#3b7dd1';
+          if (botW && leftW && !blW) {
+            ctx.fillStyle = '#12243f';
+            ctx.fillRect(x, y + TILE_SIZE - trimW - 2, trimW + 2, trimW + 2);
+            ctx.strokeStyle = '#ffca28';
+            ctx.lineWidth = 1.5;
             ctx.beginPath();
-            ctx.arc(x + 7, y + TILE_SIZE - 8, 3, 0, Math.PI * 2);
-            ctx.fill();
+            ctx.moveTo(x, y + TILE_SIZE - trimW - 1);
+            ctx.lineTo(x + trimW + 1, y + TILE_SIZE - trimW - 1);
+            ctx.lineTo(x + trimW + 1, y + TILE_SIZE);
+            ctx.stroke();
           }
-          if (!botW && !rightW) {
-            ctx.fillStyle = '#ffca28';
+          if (botW && rightW && !brW) {
+            ctx.fillStyle = '#12243f';
+            ctx.fillRect(x + TILE_SIZE - trimW - 2, y + TILE_SIZE - trimW - 2, trimW + 2, trimW + 2);
+            ctx.strokeStyle = '#ffca28';
+            ctx.lineWidth = 1.5;
             ctx.beginPath();
-            ctx.arc(x + TILE_SIZE - 7, y + TILE_SIZE - 8, 3, 0, Math.PI * 2);
-            ctx.fill();
+            ctx.moveTo(x + TILE_SIZE, y + TILE_SIZE - trimW - 1);
+            ctx.lineTo(x + TILE_SIZE - trimW - 1, y + TILE_SIZE - trimW - 1);
+            ctx.lineTo(x + TILE_SIZE - trimW - 1, y + TILE_SIZE);
+            ctx.stroke();
           }
         }
       }
@@ -2567,12 +2812,29 @@
         ctx.restore();
       }
 
-      // Exhaust Smoke Particles
+      // Upgraded Exhaust Smoke Plumes & Turbo Flame Bursts
       for (const p of exhaustParticles) {
-        ctx.fillStyle = `rgba(181, 199, 222, ${p.life * 0.58})`;
-        ctx.beginPath();
-        ctx.arc(p.x, p.y, p.size * p.life, 0, Math.PI * 2);
-        ctx.fill();
+        if (p.kind === 'flame') {
+          const grad = ctx.createRadialGradient(p.x, p.y, 0.2, p.x, p.y, p.size * 1.6);
+          grad.addColorStop(0, `rgba(255, 252, 220, ${p.life})`);
+          grad.addColorStop(0.45, `rgba(255, 190, 40, ${p.life * 0.9})`);
+          grad.addColorStop(0.8, `rgba(59, 130, 246, ${p.life * 0.55})`);
+          grad.addColorStop(1, 'rgba(30, 64, 175, 0)');
+          ctx.fillStyle = grad;
+          ctx.beginPath();
+          ctx.arc(p.x, p.y, p.size * 1.6, 0, Math.PI * 2);
+          ctx.fill();
+        } else {
+          const alpha = Math.pow(p.life, 1.35) * 0.44;
+          const smokeGrad = ctx.createRadialGradient(p.x, p.y, 0.5, p.x, p.y, p.size);
+          smokeGrad.addColorStop(0, `rgba(215, 228, 245, ${alpha})`);
+          smokeGrad.addColorStop(0.6, `rgba(148, 172, 204, ${alpha * 0.65})`);
+          smokeGrad.addColorStop(1, 'rgba(100, 125, 160, 0)');
+          ctx.fillStyle = smokeGrad;
+          ctx.beginPath();
+          ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+          ctx.fill();
+        }
       }
 
       // Start (Deep Royal Blue) & Finish (Vibrant Amber-Gold) Checkered Zones
@@ -3290,7 +3552,7 @@
       const cfg = STAT_CONFIGS.find(c => c.key === key);
       const dec = cfg ? cfg.dec : 3;
 
-      ['garage-tuning-controls', 'pre-race-tuning-controls', 'settings-tuning-controls'].forEach(cid => {
+      ['garage-tuning-controls', 'pre-race-tuning-controls', 'settings-tuning-controls', 'pause-tuning-controls'].forEach(cid => {
         const valSpan = document.getElementById(`${cid}-val-${key}`);
         const rangeInput = document.getElementById(`${cid}-range-${key}`);
         if (valSpan) valSpan.innerText = clamped.toFixed(dec);
@@ -3444,6 +3706,7 @@
       bindAction('btn-reset-tuning-pr', () => resetGarageStatsToDefault());
       bindAction('btn-reset-tuning-settings', () => resetGarageStatsToDefault());
       bindAction('btn-reset-garage-tuning', () => resetGarageStatsToDefault());
+      bindAction('btn-reset-tuning-pause', () => resetGarageStatsToDefault());
 
       document.querySelectorAll('.btn-close-modal').forEach(btn => {
         btn.onclick = (e) => {
@@ -3496,6 +3759,7 @@
       renderGarageUI();
       renderTuningUI('pre-race-tuning-controls');
       renderTuningUI('settings-tuning-controls');
+      renderTuningUI('pause-tuning-controls');
     }
 
     function setMenuGameMode(mode) {
@@ -3689,6 +3953,196 @@
 
     function escapeHtml(str) {
       return str.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+    }
+
+    /* --------------------------------------------------------------------------
+       SECTION 12: ANIMATED RANDOM MAZE BACKGROUND FOR MENUS & NON-RACING PAGES
+       -------------------------------------------------------------------------- */
+    let menuBgCanvas = null;
+    let menuBgCtx = null;
+    let menuBgMaze = null;
+    let menuBgSeed = Math.floor(Math.random() * 90000) + 10000;
+    let menuBgAnimId = null;
+    let menuBgCamera = { x: 0, y: 0 };
+    let menuBgRunner = { path: [], progress: 0 };
+
+    function resizeMenuBgCanvas() {
+      if (!menuBgCanvas) return;
+      menuBgCanvas.width = window.innerWidth;
+      menuBgCanvas.height = window.innerHeight;
+    }
+
+    function buildMenuBgMaze() {
+      menuBgSeed = (menuBgSeed * 1664525 + 1013904223) % 4294967296;
+      const m = generateDFSComplexMaze(31, 31, menuBgSeed);
+      menuBgMaze = m;
+
+      // Compute BFS solution path so an autonomous racer car glides through the background maze
+      const queue = [[1, 1]];
+      const parent = Array(m.rows).fill().map(() => Array(m.cols).fill(null));
+      parent[1][1] = [-1, -1];
+      const dirs = [[1, 0], [-1, 0], [0, 1], [0, -1]];
+      while (queue.length > 0) {
+        const [r, c] = queue.shift();
+        if (r === m.finish.y && c === m.finish.x) break;
+        for (const [dr, dc] of dirs) {
+          const nr = r + dr;
+          const nc = c + dc;
+          if (nr >= 0 && nr < m.rows && nc >= 0 && nc < m.cols && m.grid[nr][nc] === 0 && !parent[nr][nc]) {
+            parent[nr][nc] = [r, c];
+            queue.push([nr, nc]);
+          }
+        }
+      }
+
+      const path = [];
+      let curr = [m.finish.y, m.finish.x];
+      while (curr && curr[0] !== -1) {
+        path.push({ x: curr[1] + 0.5, y: curr[0] + 0.5 });
+        curr = parent[curr[0]][curr[1]];
+      }
+      path.reverse();
+      menuBgRunner.path = path.length > 1 ? path : [{ x: 1.5, y: 1.5 }, { x: 2.5, y: 1.5 }];
+      menuBgRunner.progress = 0;
+    }
+
+    function isAnyNonRacingMenuOpen() {
+      if (!gameActive) return true;
+      const modalIds = [
+        'modal-menu', 'modal-garage', 'modal-levels',
+        'modal-pre-race-tuning', 'modal-settings',
+        'modal-victory', 'modal-leaderboard', 'modal-loading-screen'
+      ];
+      return modalIds.some(id => {
+        const el = document.getElementById(id);
+        return el && !el.classList.contains('hidden');
+      });
+    }
+
+    function initMenuBgMazeAnimation() {
+      menuBgCanvas = document.getElementById('menuBgMazeCanvas');
+      if (!menuBgCanvas) return;
+      menuBgCtx = menuBgCanvas.getContext('2d');
+      resizeMenuBgCanvas();
+      buildMenuBgMaze();
+
+      const cell = 44;
+
+      const animateMenuBg = () => {
+        const showBg = isAnyNonRacingMenuOpen();
+        menuBgCanvas.style.display = showBg ? 'block' : 'none';
+
+        if (showBg && menuBgMaze) {
+          const w = menuBgCanvas.width;
+          const h = menuBgCanvas.height;
+          const mazeW = menuBgMaze.cols * cell;
+          const mazeH = menuBgMaze.rows * cell;
+
+          menuBgRunner.progress += 0.045;
+          if (menuBgRunner.progress >= menuBgRunner.path.length - 1) {
+            buildMenuBgMaze();
+          }
+
+          const idx = Math.floor(menuBgRunner.progress);
+          const frac = menuBgRunner.progress - idx;
+          const p0 = menuBgRunner.path[Math.min(idx, menuBgRunner.path.length - 1)];
+          const p1 = menuBgRunner.path[Math.min(idx + 1, menuBgRunner.path.length - 1)];
+          const rx = (p0.x + (p1.x - p0.x) * frac) * cell;
+          const ry = (p0.y + (p1.y - p0.y) * frac) * cell;
+          const rAngle = Math.atan2(p1.y - p0.y, p1.x - p0.x) + Math.PI / 2;
+
+          const targetCamX = Math.max(0, Math.min(Math.max(0, mazeW - w), rx - w / 2));
+          const targetCamY = Math.max(0, Math.min(Math.max(0, mazeH - h), ry - h / 2));
+          menuBgCamera.x += (targetCamX - menuBgCamera.x) * 0.04;
+          menuBgCamera.y += (targetCamY - menuBgCamera.y) * 0.04;
+
+          menuBgCtx.fillStyle = '#070c14';
+          menuBgCtx.fillRect(0, 0, w, h);
+
+          menuBgCtx.save();
+          menuBgCtx.translate(-menuBgCamera.x, -menuBgCamera.y);
+
+          const startCol = Math.max(0, Math.floor(menuBgCamera.x / cell));
+          const endCol = Math.min(menuBgMaze.cols - 1, Math.ceil((menuBgCamera.x + w) / cell));
+          const startRow = Math.max(0, Math.floor(menuBgCamera.y / cell));
+          const endRow = Math.min(menuBgMaze.rows - 1, Math.ceil((menuBgCamera.y + h) / cell));
+
+          for (let r = startRow; r <= endRow; r++) {
+            for (let c = startCol; c <= endCol; c++) {
+              const px = c * cell;
+              const py = r * cell;
+              if (menuBgMaze.grid[r][c] === 1) {
+                menuBgCtx.fillStyle = '#13243f';
+                menuBgCtx.fillRect(px, py, cell, cell);
+
+                // Subtle brick courses
+                menuBgCtx.strokeStyle = 'rgba(7, 12, 20, 0.65)';
+                menuBgCtx.lineWidth = 1;
+                menuBgCtx.beginPath();
+                menuBgCtx.moveTo(px, py + cell * 0.33);
+                menuBgCtx.lineTo(px + cell, py + cell * 0.33);
+                menuBgCtx.moveTo(px, py + cell * 0.66);
+                menuBgCtx.lineTo(px + cell, py + cell * 0.66);
+                menuBgCtx.moveTo(px + cell * 0.5, py);
+                menuBgCtx.lineTo(px + cell * 0.5, py + cell * 0.33);
+                menuBgCtx.moveTo(px + cell * 0.25, py + cell * 0.33);
+                menuBgCtx.lineTo(px + cell * 0.25, py + cell * 0.66);
+                menuBgCtx.moveTo(px + cell * 0.75, py + cell * 0.66);
+                menuBgCtx.lineTo(px + cell * 0.75, py + cell);
+                menuBgCtx.stroke();
+
+                // Continuous gold coping along exposed wall edges
+                menuBgCtx.strokeStyle = 'rgba(255, 202, 40, 0.26)';
+                menuBgCtx.lineWidth = 1.4;
+                if (r > 0 && menuBgMaze.grid[r - 1][c] === 0) {
+                  menuBgCtx.beginPath(); menuBgCtx.moveTo(px, py + 1.5); menuBgCtx.lineTo(px + cell, py + 1.5); menuBgCtx.stroke();
+                }
+                if (r < menuBgMaze.rows - 1 && menuBgMaze.grid[r + 1][c] === 0) {
+                  menuBgCtx.beginPath(); menuBgCtx.moveTo(px, py + cell - 1.5); menuBgCtx.lineTo(px + cell, py + cell - 1.5); menuBgCtx.stroke();
+                }
+                if (c > 0 && menuBgMaze.grid[r][c - 1] === 0) {
+                  menuBgCtx.beginPath(); menuBgCtx.moveTo(px + 1.5, py); menuBgCtx.lineTo(px + 1.5, py + cell); menuBgCtx.stroke();
+                }
+                if (c < menuBgMaze.cols - 1 && menuBgMaze.grid[r][c + 1] === 0) {
+                  menuBgCtx.beginPath(); menuBgCtx.moveTo(px + cell - 1.5, py); menuBgCtx.lineTo(px + cell - 1.5, py + cell); menuBgCtx.stroke();
+                }
+              } else {
+                menuBgCtx.fillStyle = '#0b121e';
+                menuBgCtx.fillRect(px, py, cell, cell);
+              }
+            }
+          }
+
+          // Glowing path trail behind the autonomous car
+          if (idx > 0) {
+            menuBgCtx.strokeStyle = 'rgba(75, 145, 232, 0.34)';
+            menuBgCtx.lineWidth = 4;
+            menuBgCtx.lineCap = 'round';
+            menuBgCtx.lineJoin = 'round';
+            menuBgCtx.beginPath();
+            menuBgCtx.moveTo(menuBgRunner.path[0].x * cell, menuBgRunner.path[0].y * cell);
+            for (let i = 1; i <= idx; i++) {
+              menuBgCtx.lineTo(menuBgRunner.path[i].x * cell, menuBgRunner.path[i].y * cell);
+            }
+            menuBgCtx.lineTo(rx, ry);
+            menuBgCtx.stroke();
+          }
+
+          // Autonomous mini-racer gliding through the menu maze
+          menuBgCtx.save();
+          menuBgCtx.translate(rx, ry);
+          menuBgCtx.rotate(rAngle);
+          drawCustomCar(menuBgCtx, 0, 0, 16, 28, garageConfig.modelId, garageConfig.color, garageConfig.decal, false);
+          menuBgCtx.restore();
+
+          menuBgCtx.restore();
+        }
+
+        menuBgAnimId = requestAnimationFrame(animateMenuBg);
+      };
+
+      if (menuBgAnimId) cancelAnimationFrame(menuBgAnimId);
+      menuBgAnimId = requestAnimationFrame(animateMenuBg);
     }
   </script>
 </body>
