@@ -4,7 +4,6 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>Turbo Maze Racer</title>
-  <script src="https://cdn.tailwindcss.com"></script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   
   <!-- ==========================================================================
@@ -21,7 +20,8 @@
 
   <style>
     /* ==========================================================================
-       1. GLOBAL RESET & DEEP ROYAL BLUE + BRIGHT AMBER-GOLD CIRCUIT TOKENS
+       1. GLOBAL RESET, PRODUCTION UTILITY CLASSES & CIRCUIT TOKENS
+       (Replaces runtime Tailwind CDN script for instant startup & zero JIT overhead)
        ========================================================================== */
     :root {
       --bg-void: #070c14;
@@ -39,13 +39,30 @@
       --text-muted: #8ea7c7;
     }
 
-    * {
+    *, ::before, ::after {
       user-select: none;
       -webkit-user-select: none;
       box-sizing: border-box;
+      border-width: 0;
+      border-style: solid;
+      border-color: currentColor;
+    }
+    button, input, select {
+      font-family: inherit;
+      font-size: 100%;
+      line-height: inherit;
+      color: inherit;
+      margin: 0;
+      padding: 0;
     }
     button {
+      background-color: transparent;
+      background-image: none;
+      cursor: pointer;
       touch-action: manipulation;
+    }
+    h1, h2, p {
+      margin: 0;
     }
     canvas, .floating-control {
       touch-action: none;
@@ -59,12 +76,333 @@
       background-color: var(--bg-void);
       color: var(--text-primary);
       font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      line-height: 1.5;
     }
     .font-mono, #hud-timer, #hud-best-val, #victory-final-time {
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
       font-variant-numeric: tabular-nums;
     }
     .title-shadow {
       text-shadow: 0 3px 16px rgba(4, 8, 15, 0.92);
+    }
+
+    /* Production Utility Layer (Exact equivalents of used Tailwind utilities) */
+    .fixed { position: fixed; }
+    .absolute { position: absolute; }
+    .relative { position: relative; }
+    .inset-0 { inset: 0px; }
+    .top-0 { top: 0px; }
+    .top-2 { top: 0.5rem; }
+    .top-14 { top: 3.5rem; }
+    .left-0 { left: 0px; }
+    .left-3 { left: 0.75rem; }
+    .left-1\/2 { left: 50%; }
+    .right-0 { right: 0px; }
+    .bottom-2 { bottom: 0.5rem; }
+    .-translate-x-1\/2 { transform: translateX(-50%); }
+    .-translate-x-full { transform: translateX(-100%); }
+
+    .z-10 { z-index: 10; }
+    .z-30 { z-index: 30; }
+    .z-40 { z-index: 40; }
+    .z-50 { z-index: 50; }
+    .z-\[90\] { z-index: 90; }
+    .z-\[100\] { z-index: 100; }
+
+    .flex { display: flex; }
+    .grid { display: grid; }
+    .block { display: block; }
+    .inline-block { display: inline-block; }
+    .hidden { display: none !important; }
+    .flex-col { flex-direction: column; }
+    .flex-wrap { flex-wrap: wrap; }
+    .flex-1 { flex: 1 1 0%; }
+    .shrink-0 { flex-shrink: 0; }
+    .items-center { align-items: center; }
+    .justify-center { justify-content: center; }
+    .justify-between { justify-content: space-between; }
+    .grid-cols-1 { grid-template-columns: repeat(1, minmax(0, 1fr)); }
+    .grid-cols-2 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .grid-cols-3 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+
+    .gap-1\.5 { gap: 0.375rem; }
+    .gap-2 { gap: 0.5rem; }
+    .gap-3 { gap: 0.75rem; }
+    .gap-4 { gap: 1rem; }
+    .space-x-1 > :not([hidden]) ~ :not([hidden]) { margin-left: 0.25rem; }
+    .space-x-2 > :not([hidden]) ~ :not([hidden]) { margin-left: 0.5rem; }
+    .space-x-3 > :not([hidden]) ~ :not([hidden]) { margin-left: 0.75rem; }
+    .space-y-1 > :not([hidden]) ~ :not([hidden]) { margin-top: 0.25rem; }
+    .space-y-2 > :not([hidden]) ~ :not([hidden]) { margin-top: 0.5rem; }
+    .space-y-2\.5 > :not([hidden]) ~ :not([hidden]) { margin-top: 0.625rem; }
+    .space-y-3 > :not([hidden]) ~ :not([hidden]) { margin-top: 0.75rem; }
+    .space-y-3\.5 > :not([hidden]) ~ :not([hidden]) { margin-top: 0.875rem; }
+    .space-y-4 > :not([hidden]) ~ :not([hidden]) { margin-top: 1rem; }
+    .space-y-6 > :not([hidden]) ~ :not([hidden]) { margin-top: 1.5rem; }
+
+    .w-7 { width: 1.75rem; }
+    .w-8 { width: 2rem; }
+    .w-10 { width: 2.5rem; }
+    .w-14 { width: 3.5rem; }
+    .w-16 { width: 4rem; }
+    .w-28 { width: 7rem; }
+    .w-36 { width: 9rem; }
+    .w-48 { width: 12rem; }
+    .w-1\/2 { width: 50%; }
+    .w-1\/3 { width: 33.333333%; }
+    .w-2\/3 { width: 66.666667%; }
+    .w-full { width: 100%; }
+    .w-screen { width: 100vw; }
+    .max-w-xs { max-width: 20rem; }
+    .max-w-md { max-width: 28rem; }
+    .max-w-2xl { max-width: 42rem; }
+    .max-w-3xl { max-width: 48rem; }
+
+    .h-2 { height: 0.5rem; }
+    .h-2\.5 { height: 0.625rem; }
+    .h-7 { height: 1.75rem; }
+    .h-8 { height: 2rem; }
+    .h-10 { height: 2.5rem; }
+    .h-14 { height: 3.5rem; }
+    .h-16 { height: 4rem; }
+    .h-24 { height: 6rem; }
+    .h-28 { height: 7rem; }
+    .h-36 { height: 9rem; }
+    .h-48 { height: 12rem; }
+    .h-52 { height: 13rem; }
+    .h-full { height: 100%; }
+    .h-screen { height: 100vh; }
+    .h-\[88vh\] { height: 88vh; }
+    .h-\[92vh\] { height: 92vh; }
+    .min-h-0 { min-height: 0px; }
+    .max-h-\[85vh\] { max-height: 85vh; }
+    .max-h-\[90vh\] { max-height: 90vh; }
+    .max-h-\[92vh\] { max-height: 92vh; }
+
+    .mx-auto { margin-left: auto; margin-right: auto; }
+    .my-0\.5 { margin-top: 0.125rem; margin-bottom: 0.125rem; }
+    .mt-0\.5 { margin-top: 0.125rem; }
+    .mt-1 { margin-top: 0.25rem; }
+    .mt-2 { margin-top: 0.5rem; }
+    .mr-1 { margin-right: 0.25rem; }
+    .mr-2 { margin-right: 0.5rem; }
+    .ml-1 { margin-left: 0.25rem; }
+    .mb-0\.5 { margin-bottom: 0.125rem; }
+    .mb-1 { margin-bottom: 0.25rem; }
+    .mb-1\.5 { margin-bottom: 0.375rem; }
+    .mb-2 { margin-bottom: 0.5rem; }
+
+    .p-0\.5 { padding: 0.125rem; }
+    .p-1 { padding: 0.25rem; }
+    .p-1\.5 { padding: 0.375rem; }
+    .p-2 { padding: 0.5rem; }
+    .p-2\.5 { padding: 0.625rem; }
+    .p-3 { padding: 0.75rem; }
+    .p-3\.5 { padding: 0.875rem; }
+    .p-4 { padding: 1rem; }
+    .p-5 { padding: 1.25rem; }
+    .p-6 { padding: 1.5rem; }
+    .px-2 { padding-left: 0.5rem; padding-right: 0.5rem; }
+    .px-2\.5 { padding-left: 0.625rem; padding-right: 0.625rem; }
+    .px-3 { padding-left: 0.75rem; padding-right: 0.75rem; }
+    .px-4 { padding-left: 1rem; padding-right: 1rem; }
+    .py-0\.5 { padding-top: 0.125rem; padding-bottom: 0.125rem; }
+    .py-1 { padding-top: 0.25rem; padding-bottom: 0.25rem; }
+    .py-1\.5 { padding-top: 0.375rem; padding-bottom: 0.375rem; }
+    .py-2 { padding-top: 0.5rem; padding-bottom: 0.5rem; }
+    .py-2\.5 { padding-top: 0.625rem; padding-bottom: 0.625rem; }
+    .py-3 { padding-top: 0.75rem; padding-bottom: 0.75rem; }
+    .py-3\.5 { padding-top: 0.875rem; padding-bottom: 0.875rem; }
+    .py-6 { padding-top: 1.5rem; padding-bottom: 1.5rem; }
+    .pt-1 { padding-top: 0.25rem; }
+    .pt-2 { padding-top: 0.5rem; }
+    .pt-3 { padding-top: 0.75rem; }
+    .pr-1 { padding-right: 0.25rem; }
+    .pb-1\.5 { padding-bottom: 0.375rem; }
+    .pb-2 { padding-bottom: 0.5rem; }
+    .pb-3 { padding-bottom: 0.75rem; }
+
+    .overflow-hidden { overflow: hidden; }
+    .overflow-x-auto { overflow-x: auto; }
+    .overflow-y-auto { overflow-y: auto; }
+    .whitespace-nowrap { white-space: nowrap; }
+    .pointer-events-none { pointer-events: none; }
+    .pointer-events-auto { pointer-events: auto; }
+    .touch-none { touch-action: none; }
+    .cursor-pointer { cursor: pointer; }
+    .cursor-not-allowed { cursor: not-allowed; }
+    .cursor-grab { cursor: grab; }
+    .active\:cursor-grabbing:active { cursor: grabbing; }
+    .appearance-none { appearance: none; -webkit-appearance: none; }
+
+    .rounded { border-radius: 0.25rem; }
+    .rounded-lg { border-radius: 0.5rem; }
+    .rounded-xl { border-radius: 0.75rem; }
+    .rounded-2xl { border-radius: 1rem; }
+    .rounded-3xl { border-radius: 1.5rem; }
+    .rounded-full { border-radius: 9999px; }
+
+    .border { border-width: 1px; }
+    .border-2 { border-width: 2px; }
+    .border-b { border-bottom-width: 1px; }
+    .border-t { border-top-width: 1px; }
+    .border-transparent { border-color: transparent; }
+    .border-\[\#183d6e\]\/30 { border-color: rgba(24, 61, 110, 0.3); }
+    .border-\[\#1e4b85\]\/40 { border-color: rgba(30, 75, 133, 0.4); }
+    .border-\[\#1e4b85\]\/45 { border-color: rgba(30, 75, 133, 0.45); }
+    .border-\[\#225494\]\/60 { border-color: rgba(34, 84, 148, 0.6); }
+    .border-\[\#3b7dd1\]\/30 { border-color: rgba(59, 125, 209, 0.3); }
+    .border-\[\#3b7dd1\]\/45 { border-color: rgba(59, 125, 209, 0.45); }
+    .border-\[\#4b91e8\] { border-color: #4b91e8; }
+    .border-\[\#4b91e8\]\/40 { border-color: rgba(75, 145, 232, 0.4); }
+    .border-\[\#4b91e8\]\/45 { border-color: rgba(75, 145, 232, 0.45); }
+    .border-\[\#4b91e8\]\/50 { border-color: rgba(75, 145, 232, 0.5); }
+    .border-\[\#4b91e8\]\/55 { border-color: rgba(75, 145, 232, 0.55); }
+    .border-\[\#f5b000\] { border-color: #f5b000; }
+    .border-\[\#f5b000\]\/55 { border-color: rgba(245, 176, 0, 0.55); }
+    .border-\[\#ffca28\]\/55 { border-color: rgba(255, 202, 40, 0.55); }
+    .border-\[\#ffca28\]\/65 { border-color: rgba(255, 202, 40, 0.65); }
+    .border-\[\#fca5a5\]\/70 { border-color: rgba(252, 165, 165, 0.7); }
+    .border-\[\#93c5fd\]\/75 { border-color: rgba(147, 197, 253, 0.75); }
+    .hover\:border-\[\#3b7dd1\]\/50:hover { border-color: rgba(59, 125, 209, 0.5); }
+    .hover\:border-\[\#f5b000\]\/65:hover { border-color: rgba(245, 176, 0, 0.65); }
+    .focus\:border-\[\#f5b000\]:focus { border-color: #f5b000; }
+    .focus\:border-\[\#ffca28\]:focus { border-color: #ffca28; }
+    .focus\:outline-none:focus { outline: 2px solid transparent; outline-offset: 2px; }
+
+    .bg-\[\#060a12\] { background-color: #060a12; }
+    .bg-\[\#070c14\] { background-color: #070c14; }
+    .bg-\[\#070c14\]\/72 { background-color: rgba(7, 12, 20, 0.72); }
+    .bg-\[\#070c14\]\/75 { background-color: rgba(7, 12, 20, 0.75); }
+    .bg-\[\#070c14\]\/76 { background-color: rgba(7, 12, 20, 0.76); }
+    .bg-\[\#070c14\]\/82 { background-color: rgba(7, 12, 20, 0.82); }
+    .bg-\[\#070c14\]\/88 { background-color: rgba(7, 12, 20, 0.88); }
+    .bg-\[\#070c14\]\/95 { background-color: rgba(7, 12, 20, 0.95); }
+    .bg-\[\#09111e\] { background-color: #09111e; }
+    .bg-\[\#0a121f\]\/95 { background-color: rgba(10, 18, 31, 0.95); }
+    .bg-\[\#0c1524\] { background-color: #0c1524; }
+    .bg-\[\#0c1524\]\/95 { background-color: rgba(12, 21, 36, 0.95); }
+    .bg-\[\#121e30\] { background-color: #121e30; }
+    .bg-\[\#132238\] { background-color: #132238; }
+    .bg-\[\#1b4d8f\] { background-color: #1b4d8f; }
+    .bg-\[\#1e4b85\] { background-color: #1e4b85; }
+    .bg-\[\#1e4b85\]\/35 { background-color: rgba(30, 75, 133, 0.35); }
+    .bg-\[\#1e4b85\]\/45 { background-color: rgba(30, 75, 133, 0.45); }
+    .bg-\[\#f5b000\] { background-color: #f5b000; }
+    .bg-\[\#f5b000\]\/20 { background-color: rgba(245, 176, 0, 0.2); }
+    .active\:bg-\[\#f5b000\]:active { background-color: #f5b000; }
+
+    .bg-gradient-to-b { background-image: linear-gradient(to bottom, var(--tw-gradient-stops)); }
+    .bg-gradient-to-r { background-image: linear-gradient(to right, var(--tw-gradient-stops)); }
+    .from-\[\#132644\] { --tw-gradient-from: #132644; --tw-gradient-stops: var(--tw-gradient-from), var(--tw-gradient-to, rgba(19, 38, 68, 0)); }
+    .via-\[\#0b172a\] { --tw-gradient-stops: var(--tw-gradient-from), #0b172a, var(--tw-gradient-to, rgba(11, 23, 42, 0)); }
+    .to-\[\#070d17\] { --tw-gradient-to: #070d17; }
+    .from-\[\#2b6cb8\] { --tw-gradient-from: #2b6cb8; --tw-gradient-stops: var(--tw-gradient-from), var(--tw-gradient-to, rgba(43, 108, 184, 0)); }
+    .to-\[\#ffca28\] { --tw-gradient-to: #ffca28; }
+    .from-\[\#ffca28\] { --tw-gradient-from: #ffca28; --tw-gradient-stops: var(--tw-gradient-from), var(--tw-gradient-to, rgba(255, 202, 40, 0)); }
+    .via-\[\#f1f6fc\] { --tw-gradient-stops: var(--tw-gradient-from), #f1f6fc, var(--tw-gradient-to, rgba(241, 246, 252, 0)); }
+    .to-\[\#68a9f7\] { --tw-gradient-to: #68a9f7; }
+    .from-\[\#172a47\] { --tw-gradient-from: #172a47; --tw-gradient-stops: var(--tw-gradient-from), var(--tw-gradient-to, rgba(23, 42, 71, 0)); }
+    .to-\[\#0b1526\] { --tw-gradient-to: #0b1526; }
+    .from-\[\#dc2626\] { --tw-gradient-from: #dc2626; --tw-gradient-stops: var(--tw-gradient-from), var(--tw-gradient-to, rgba(220, 38, 38, 0)); }
+    .to-\[\#7f1d1d\] { --tw-gradient-to: #7f1d1d; }
+    .from-\[\#2563eb\] { --tw-gradient-from: #2563eb; --tw-gradient-stops: var(--tw-gradient-from), var(--tw-gradient-to, rgba(37, 99, 235, 0)); }
+    .to-\[\#1e3a8a\] { --tw-gradient-to: #1e3a8a; }
+    .from-transparent { --tw-gradient-from: transparent; --tw-gradient-stops: var(--tw-gradient-from), var(--tw-gradient-to, rgba(0, 0, 0, 0)); }
+    .via-amber-300\/15 { --tw-gradient-stops: var(--tw-gradient-from), rgba(252, 211, 77, 0.15), var(--tw-gradient-to, rgba(252, 211, 77, 0)); }
+    .to-transparent { --tw-gradient-to: transparent; }
+    .bg-clip-text { -webkit-background-clip: text; background-clip: text; }
+    .text-transparent { color: transparent; }
+
+    .text-left { text-align: left; }
+    .text-center { text-align: center; }
+    .text-right { text-align: right; }
+    .text-\[9px\] { font-size: 9px; line-height: 1.25; }
+    .text-\[10px\] { font-size: 10px; line-height: 1.3; }
+    .text-\[11px\] { font-size: 11px; line-height: 1.35; }
+    .text-xs { font-size: 0.75rem; line-height: 1rem; }
+    .text-sm { font-size: 0.875rem; line-height: 1.25rem; }
+    .text-base { font-size: 1rem; line-height: 1.5rem; }
+    .text-lg { font-size: 1.125rem; line-height: 1.75rem; }
+    .text-xl { font-size: 1.25rem; line-height: 1.75rem; }
+    .text-2xl { font-size: 1.5rem; line-height: 2rem; }
+    .text-4xl { font-size: 2.25rem; line-height: 2.5rem; }
+    .text-9xl { font-size: 8rem; line-height: 1; }
+
+    .font-normal { font-weight: 400; }
+    .font-medium { font-weight: 500; }
+    .font-bold { font-weight: 700; }
+    .font-extrabold { font-weight: 800; }
+    .font-black { font-weight: 900; }
+    .italic { font-style: italic; }
+    .uppercase { text-transform: uppercase; }
+    .underline { text-decoration-line: underline; }
+    .leading-tight { line-height: 1.25; }
+    .leading-relaxed { line-height: 1.625; }
+    .tracking-wide { letter-spacing: 0.025em; }
+    .tracking-wider { letter-spacing: 0.05em; }
+    .tracking-widest { letter-spacing: 0.1em; }
+    .tracking-\[0\.32em\] { letter-spacing: 0.32em; }
+    .tracking-\[0\.34em\] { letter-spacing: 0.34em; }
+
+    .text-\[\#ffffff\] { color: #ffffff; }
+    .text-\[\#f1f6fc\] { color: #f1f6fc; }
+    .text-\[\#e4eefb\] { color: #e4eefb; }
+    .text-\[\#d6e4f5\] { color: #d6e4f5; }
+    .text-\[\#9bb3d1\] { color: #9bb3d1; }
+    .text-\[\#8ea7c7\] { color: #8ea7c7; }
+    .text-\[\#7cb5fa\] { color: #7cb5fa; }
+    .text-\[\#68a9f7\] { color: #68a9f7; }
+    .text-\[\#60a5fa\] { color: #60a5fa; }
+    .text-\[\#ffca28\] { color: #ffca28; }
+    .text-\[\#f87171\] { color: #f87171; }
+    .text-\[\#4c6482\] { color: #4c6482; }
+    .text-\[\#090e17\] { color: #090e17; }
+    .text-\[\#080d16\] { color: #080d16; }
+    .hover\:text-\[\#f1f6fc\]:hover { color: #f1f6fc; }
+    .active\:text-\[\#080d16\]:active { color: #080d16; }
+
+    .opacity-60 { opacity: 0.6; }
+    .opacity-85 { opacity: 0.85; }
+    .hover\:opacity-100:hover { opacity: 1; }
+
+    .shadow { box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px -1px rgba(0, 0, 0, 0.1); }
+    .shadow-md { box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -2px rgba(0, 0, 0, 0.1); }
+    .shadow-lg { box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -4px rgba(0, 0, 0, 0.1); }
+    .shadow-inner { box-shadow: inset 0 2px 4px 0 rgba(0, 0, 0, 0.05); }
+    .shadow-\[0_6px_16px_rgba\(220\,38\,38\,0\.4\)\] { box-shadow: 0 6px 16px rgba(220, 38, 38, 0.4); }
+    .shadow-\[0_6px_18px_rgba\(37\,99\,235\,0\.45\)\] { box-shadow: 0 6px 18px rgba(37, 99, 235, 0.45); }
+    .shadow-\[0_18px_48px_rgba\(0\,0\,0\,0\.88\)\,inset_0_1px_0_rgba\(255\,255\,255\,0\.14\)\] { box-shadow: 0 18px 48px rgba(0, 0, 0, 0.88), inset 0 1px 0 rgba(255, 255, 255, 0.14); }
+
+    .backdrop-blur-\[3px\] { -webkit-backdrop-filter: blur(3px); backdrop-filter: blur(3px); }
+    .backdrop-blur-md { -webkit-backdrop-filter: blur(12px); backdrop-filter: blur(12px); }
+
+    .transition { transition-property: color, background-color, border-color, text-decoration-color, fill, stroke, opacity, box-shadow, transform, filter, backdrop-filter; transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1); transition-duration: 150ms; }
+    .transition-all { transition-property: all; transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1); transition-duration: 150ms; }
+    .transition-opacity { transition-property: opacity; transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1); transition-duration: 150ms; }
+    .duration-300 { transition-duration: 300ms; }
+    .duration-700 { transition-duration: 700ms; }
+    .transform { transform: translate(var(--tw-translate-x, 0), var(--tw-translate-y, 0)) rotate(var(--tw-rotate, 0)) skewX(var(--tw-skew-x, 0)) skewY(var(--tw-skew-y, 0)) scaleX(var(--tw-scale-x, 1)) scaleY(var(--tw-scale-y, 1)); }
+    .scale-110 { transform: scale(1.1); }
+    .active\:scale-95:active { transform: scale(0.95); }
+    .active\:scale-98:active { transform: scale(0.98); }
+
+    @keyframes pulse {
+      50% { opacity: 0.5; }
+    }
+    .animate-pulse { animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite; }
+
+    @media (min-width: 640px) {
+      .sm\:block { display: block; }
+      .sm\:inline { display: inline; }
+      .sm\:p-4 { padding: 1rem; }
+      .sm\:p-5 { padding: 1.25rem; }
+      .sm\:text-sm { font-size: 0.875rem; line-height: 1.25rem; }
+      .sm\:text-lg { font-size: 1.125rem; line-height: 1.75rem; }
+      .sm\:text-5xl { font-size: 3rem; line-height: 1; }
+    }
+    @media (min-width: 768px) {
+      .md\:grid-cols-2 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
     }
 
     /* Cohesive Deep Navy-Blue & Bright Amber-Gold Surfaces */
@@ -749,6 +1087,21 @@
           </div>
         </div>
 
+        <!-- GRAPHICS & EFFECTS MODE -->
+        <div class="pit-card p-3 rounded-xl space-y-2">
+          <div class="flex justify-between items-center">
+            <span class="text-xs uppercase tracking-wider text-[#ffca28] font-bold flex items-center gap-1.5">
+              <i class="fa-solid fa-sparkles text-[#68a9f7]"></i> Graphics & Particles
+            </span>
+            <span id="opt-low-effects-badge" class="text-[10px] font-bold px-2 py-0.5 rounded bg-[#1e4b85]/45 text-[#7cb5fa] border border-[#4b91e8]/40">High Quality</span>
+          </div>
+          <p class="text-[11px] text-[#9bb3d1]">Switch to Low Effects on older devices to reduce exhaust particles, tire trails, and edge vignettes while keeping the full track look.</p>
+          <button id="btn-toggle-low-effects" class="w-full py-2 pit-btn-secondary text-[#f1f6fc] font-bold rounded-xl text-xs flex items-center justify-center gap-2">
+            <i class="fa-solid fa-gauge-simple-high text-[#ffca28]"></i>
+            <span id="btn-low-effects-label">Switch to Low Effects Mode</span>
+          </button>
+        </div>
+
         <div>
           <label class="block text-xs uppercase tracking-wider text-[#9bb3d1] font-bold mb-2">Steering Interface</label>
           <div class="grid grid-cols-3 gap-2">
@@ -889,6 +1242,7 @@
       bgmGain: null,
       engineOsc: null,
       engineGain: null,
+      crashNoiseBuffer: null,
       bgmIntervalId: null,
       isInitialized: false,
 
@@ -914,6 +1268,14 @@
           this.masterGain.connect(this.ctx.destination);
 
           this.updateVolumes();
+
+          // Precompute reusable crash noise buffer once
+          const bufferSize = Math.floor(this.ctx.sampleRate * 0.15);
+          this.crashNoiseBuffer = this.ctx.createBuffer(1, bufferSize, this.ctx.sampleRate);
+          const data = this.crashNoiseBuffer.getChannelData(0);
+          for (let i = 0; i < bufferSize; i++) {
+            data[i] = (Math.random() * 2 - 1) * Math.exp(-i / (bufferSize * 0.3));
+          }
 
           this.engineOsc = this.ctx.createOscillator();
           this.engineOsc.type = 'sawtooth';
@@ -981,17 +1343,10 @@
 
       playCrash() {
         this.unlock();
-        if (!this.ctx || this.ctx.state !== 'running') return;
+        if (!this.ctx || this.ctx.state !== 'running' || !this.crashNoiseBuffer) return;
         try {
-          const bufferSize = this.ctx.sampleRate * 0.15;
-          const buffer = this.ctx.createBuffer(1, bufferSize, this.ctx.sampleRate);
-          const data = buffer.getChannelData(0);
-          for (let i = 0; i < bufferSize; i++) {
-            data[i] = (Math.random() * 2 - 1) * Math.exp(-i / (bufferSize * 0.3));
-          }
-
           const noise = this.ctx.createBufferSource();
-          noise.buffer = buffer;
+          noise.buffer = this.crashNoiseBuffer;
 
           const filter = this.ctx.createBiquadFilter();
           filter.type = 'lowpass';
@@ -1103,15 +1458,47 @@
     });
 
     /* --------------------------------------------------------------------------
-       SECTION 2: PROCEDURAL MAZE GENERATION
+       SECTION 2: PROCEDURAL MAZE GENERATION & NEIGHBOR BITMASK PRECOMPUTATION
        -------------------------------------------------------------------------- */
     
+    // Neighbor bitmask flags (1 = wall, 0 = road)
+    const NB_TOP   = 1;
+    const NB_BOT   = 2;
+    const NB_LEFT  = 4;
+    const NB_RIGHT = 8;
+    const NB_TL    = 16;
+    const NB_TR    = 32;
+    const NB_BL    = 64;
+    const NB_BR    = 128;
+
     function LCG(seed) {
       let s = seed;
       return function() {
         s = (s * 1664525 + 1013904223) % 4294967296;
         return s / 4294967296;
       };
+    }
+
+    function computeWallNeighborMasks(grid, rows, cols) {
+      const masks = Array(rows);
+      const isW = (r, c) => (r < 0 || r >= rows || c < 0 || c >= cols) ? 1 : grid[r][c];
+      for (let r = 0; r < rows; r++) {
+        const rowMasks = new Uint8Array(cols);
+        for (let c = 0; c < cols; c++) {
+          let m = 0;
+          if (isW(r - 1, c) === 1) m |= NB_TOP;
+          if (isW(r + 1, c) === 1) m |= NB_BOT;
+          if (isW(r, c - 1) === 1) m |= NB_LEFT;
+          if (isW(r, c + 1) === 1) m |= NB_RIGHT;
+          if (isW(r - 1, c - 1) === 1) m |= NB_TL;
+          if (isW(r - 1, c + 1) === 1) m |= NB_TR;
+          if (isW(r + 1, c - 1) === 1) m |= NB_BL;
+          if (isW(r + 1, c + 1) === 1) m |= NB_BR;
+          rowMasks[c] = m;
+        }
+        masks[r] = rowMasks;
+      }
+      return masks;
     }
 
     function generateDFSComplexMaze(cols, rows, seed) {
@@ -1161,8 +1548,11 @@
       grid[gridRows - 2][gridCols - 3] = 0; 
       grid[gridRows - 3][gridCols - 2] = 0;
 
+      const neighborMasks = computeWallNeighborMasks(grid, gridRows, gridCols);
+
       return {
         grid,
+        neighborMasks,
         cols: gridCols,
         rows: gridRows,
         start: { x: 1, y: 1 },
@@ -1449,7 +1839,8 @@
     let playerSettings = {
       steeringMode: localStorage.getItem('tm_steer_mode') || 'joysticks',
       playerName: localStorage.getItem('tm_player_name') || 'Driver' + Math.floor(Math.random()*1000),
-      controlScale: parseFloat(localStorage.getItem('tm_control_scale') || '1.0')
+      controlScale: parseFloat(localStorage.getItem('tm_control_scale') || '1.0'),
+      lowEffects: localStorage.getItem('tm_low_effects') === 'true'
     };
 
     let isEditingControls = false;
@@ -1491,7 +1882,7 @@
     };
 
     /* --------------------------------------------------------------------------
-       SECTION 5: GAME ENGINE LOOP & RUNTIME STATE
+       SECTION 5: GAME ENGINE LOOP, OFFSCREEN MAZE CHUNK CACHE & RUNTIME STATE
        -------------------------------------------------------------------------- */
     
     let gameActive = false;
@@ -1502,34 +1893,86 @@
     let elapsedTime = 0;
     let animFrameId = null;
     let lastFrameTime = 0;
+    let lastRenderedHudTimerStr = '';
 
     let mapZoomScale = 1.0;
     let mapPanX = 0;
     let mapPanY = 0;
 
+    // Cached static full-map canvas so panning/zooming doesn't redraw every tile
+    const fullMapStaticCache = {
+      mazeId: null,
+      canvas: document.createElement('canvas'),
+      tilePx: 12
+    };
+
     const canvas = document.getElementById('gameCanvas');
     const ctx = canvas.getContext('2d');
     const fullMapCanvas = document.getElementById('fullMapCanvas');
     const fullMapCtx = fullMapCanvas.getContext('2d');
+    const hudTimerEl = document.getElementById('hud-timer');
+    const gameHudEl = document.getElementById('game-hud');
 
     const TILE_SIZE = 70;
+    const CHUNK_TILES = 12; // 12x12 tiles = 840x840px per reusable offscreen chunk
+
+    // Offscreen Maze Chunk Cache (renders static road, curbs, walls, start/finish once per chunk)
+    const MazeChunkCache = {
+      mazeId: null,
+      lowEffects: null,
+      chunks: new Map(),
+
+      reset(mazeId) {
+        if (this.mazeId !== mazeId || this.lowEffects !== playerSettings.lowEffects) {
+          this.chunks.clear();
+          this.mazeId = mazeId;
+          this.lowEffects = playerSettings.lowEffects;
+        }
+      },
+
+      getChunk(chunkRow, chunkCol) {
+        const key = `${chunkRow},${chunkCol}`;
+        let chunkCanvas = this.chunks.get(key);
+        if (chunkCanvas) return chunkCanvas;
+
+        const rStart = chunkRow * CHUNK_TILES;
+        const cStart = chunkCol * CHUNK_TILES;
+        const rEnd = Math.min(currentMaze.rows - 1, rStart + CHUNK_TILES - 1);
+        const cEnd = Math.min(currentMaze.cols - 1, cStart + CHUNK_TILES - 1);
+
+        const wTiles = cEnd - cStart + 1;
+        const hTiles = rEnd - rStart + 1;
+        if (wTiles <= 0 || hTiles <= 0) return null;
+
+        chunkCanvas = document.createElement('canvas');
+        chunkCanvas.width = wTiles * TILE_SIZE;
+        chunkCanvas.height = hTiles * TILE_SIZE;
+        const cCtx = chunkCanvas.getContext('2d');
+
+        // Align pattern origin to world coordinates so seamless bricks & asphalt match across chunk borders
+        cCtx.save();
+        cCtx.translate(-cStart * TILE_SIZE, -rStart * TILE_SIZE);
+        renderMazeRegionToContext(cCtx, rStart, rEnd, cStart, cEnd, playerSettings.lowEffects);
+        cCtx.restore();
+
+        this.chunks.set(key, chunkCanvas);
+        return chunkCanvas;
+      }
+    };
 
     /* Upgraded Isotropic Tarmac Asphalt & Continuous Brick Masonry Wall Patterns */
     let asphaltPattern = null;
     let wallBrickPattern = null;
 
     function createAsphaltPattern() {
-      // 140x140 isotropic stone-aggregate asphalt without directional stripes/ruts
       const pCanvas = document.createElement('canvas');
       pCanvas.width = 140;
       pCanvas.height = 140;
       const pCtx = pCanvas.getContext('2d');
 
-      // Uniform deep slate-charcoal asphalt base
       pCtx.fillStyle = '#131a26';
       pCtx.fillRect(0, 0, 140, 140);
 
-      // Deterministic pseudo-random isotropic mineral aggregate (no directional streaks or white shadows)
       let seed = 4219;
       const rand = () => {
         seed = (seed * 1664525 + 1013904223) % 4294967296;
@@ -1556,19 +1999,17 @@
     }
 
     function createWallBrickPattern() {
-      // Seamless world-space running-bond brick texture (70x70 tile = 5 courses of 14px height, 2 bricks of 35px width per course)
       const bCanvas = document.createElement('canvas');
       bCanvas.width = 70;
       bCanvas.height = 70;
       const bCtx = bCanvas.getContext('2d');
 
-      // Deep recessed mortar bed
       bCtx.fillStyle = '#09111d';
       bCtx.fillRect(0, 0, 70, 70);
 
       const rows = 5;
-      const brickH = 70 / rows; // 14px
-      const brickW = 35;        // 35px
+      const brickH = 70 / rows;
+      const brickW = 35;
       const mortar = 2;
 
       const brickShades = [
@@ -1600,19 +2041,15 @@
           bCtx.fillStyle = brickShades[shadeIdx];
           bCtx.fillRect(bx, by, bw, bh);
 
-          // Top sunlit brick bevel
           bCtx.fillStyle = 'rgba(147, 197, 253, 0.16)';
           bCtx.fillRect(bx, by, bw, 1.5);
 
-          // Left brick highlight
           bCtx.fillStyle = 'rgba(147, 197, 253, 0.08)';
           bCtx.fillRect(bx, by, 1.2, bh);
 
-          // Bottom brick shadow
           bCtx.fillStyle = 'rgba(4, 8, 15, 0.45)';
           bCtx.fillRect(bx, by + bh - 1.6, bw, 1.6);
 
-          // Subtle ceramic/kiln brick surface grain
           for (let g = 0; g < 10; g++) {
             const gx = bx + 2 + rand() * (bw - 4);
             const gy = by + 2 + rand() * (bh - 4);
@@ -1639,12 +2076,40 @@
       setupDraggableControlCustomizer();
       restoreSavedControlPositions();
       applyControlScale(playerSettings.controlScale);
+      updateLowEffectsUI();
       setupUIEventListeners();
       setupFullMapInteractions();
+      setupVisibilityAutoPause();
       updateControlUI();
       initMenuBgMazeAnimation();
       runInitialLoadingScreen();
     });
+
+    function setupVisibilityAutoPause() {
+      document.addEventListener('visibilitychange', () => {
+        if (document.hidden) {
+          // Auto-pause active race when tab loses visibility; resume only when player chooses
+          if (gameActive && !isPaused) {
+            togglePause();
+          }
+          // Suspend background menu animation while tab is hidden
+          stopMenuBgMazeAnimation();
+          // Suspend garage preview animation if hidden
+          if (garagePreviewAnimId) {
+            cancelAnimationFrame(garagePreviewAnimId);
+            garagePreviewAnimId = null;
+          }
+        } else {
+          // Resume menu background animation only if a non-racing menu is open
+          scheduleMenuBgMazeAnimation();
+          // Resume garage preview only if garage modal is currently visible
+          const garageModal = document.getElementById('modal-garage');
+          if (garageModal && !garageModal.classList.contains('hidden')) {
+            renderGaragePreviewCanvas();
+          }
+        }
+      });
+    }
 
     function runInitialLoadingScreen() {
       const loadingScreen = document.getElementById('modal-loading-screen');
@@ -1667,6 +2132,7 @@
           loadingScreen.style.opacity = '0';
           setTimeout(() => {
             loadingScreen.classList.add('hidden');
+            scheduleMenuBgMazeAnimation();
           }, 700);
         }
       }, 100);
@@ -1731,7 +2197,7 @@
           ctrl.style.right = 'auto';
         };
 
-        const onEnd = (e) => {
+        const onEnd = () => {
           if (!isDragging) return;
           isDragging = false;
           saveControlPositions();
@@ -2101,8 +2567,7 @@
         const mapSize = 105;
         const padding = 12;
         const minX = canvas.width - mapSize - padding;
-        const hudElem = document.getElementById('game-hud');
-        const minY = (hudElem ? hudElem.offsetHeight : 55) + 10;
+        const minY = (gameHudEl ? gameHudEl.offsetHeight : 55) + 10;
         const maxX = minX + mapSize;
         const maxY = minY + mapSize;
 
@@ -2189,12 +2654,14 @@
       renderTuningUI('pre-race-tuning-controls');
       document.getElementById('modal-levels').classList.add('hidden');
       document.getElementById('modal-pre-race-tuning').classList.remove('hidden');
+      scheduleMenuBgMazeAnimation();
     }
 
     function startCountdownAndRace(mazeConfig) {
       currentMaze = getOrGenerateMaze(mazeConfig);
       activeGameMode = currentMaze.mode || 'standard';
 
+      MazeChunkCache.reset(currentMaze.id);
       applyCarModelStats();
       AudioEngine.stopBGM();
 
@@ -2218,11 +2685,14 @@
 
       const localPB = localStorage.getItem(`tm_pb_${currentMaze.id}`);
       document.getElementById('hud-best-val').innerText = localPB ? formatTime(parseFloat(localPB)) : '--:--.---';
+      lastRenderedHudTimerStr = '00:00.000';
+      if (hudTimerEl) hudTimerEl.innerText = lastRenderedHudTimerStr;
 
       document.querySelectorAll('[id^="modal-"]').forEach(m => {
         if (m.id !== 'modal-loading-screen') m.classList.add('hidden');
       });
 
+      stopMenuBgMazeAnimation();
       renderWorld();
 
       const countdownModal = document.getElementById('modal-countdown');
@@ -2252,6 +2722,7 @@
     function beginActiveGameLoop() {
       gameActive = true;
       isPaused = false;
+      stopMenuBgMazeAnimation();
       startTime = performance.now();
       pausedTimeTotal = 0;
       lastFrameTime = performance.now();
@@ -2269,6 +2740,14 @@
       
       if (isPaused) {
         pauseStartedAt = performance.now();
+        // Reset active inputs on pause so keys/buttons aren't stuck on resume
+        inputs.gas = false;
+        inputs.brake = false;
+        inputs.steerLeft = false;
+        inputs.steerRight = false;
+        inputs.throttleVal = 0;
+        inputs.steerVal = 0;
+        inputs.steerAngle = 0;
         AudioEngine.stopBGM();
         AudioEngine.stopEngineSound();
         renderTuningUI('pause-tuning-controls');
@@ -2289,10 +2768,8 @@
        -------------------------------------------------------------------------- */
     
     function gameLoop(timestamp) {
-      if (!gameActive) return;
-      if (isPaused) {
-        lastFrameTime = performance.now();
-        animFrameId = requestAnimationFrame(gameLoop);
+      if (!gameActive || isPaused) {
+        animFrameId = null;
         return;
       }
 
@@ -2306,13 +2783,18 @@
       renderWorld();
 
       elapsedTime = performance.now() - startTime - pausedTimeTotal;
-      document.getElementById('hud-timer').innerText = formatTime(elapsedTime);
+      const formattedTimer = formatTime(elapsedTime);
+      if (formattedTimer !== lastRenderedHudTimerStr) {
+        lastRenderedHudTimerStr = formattedTimer;
+        hudTimerEl.innerText = formattedTimer;
+      }
 
       animFrameId = requestAnimationFrame(gameLoop);
     }
 
     function updatePhysics(dt) {
       const timeScale = dt * 60;
+      const isLowFx = playerSettings.lowEffects;
 
       let turnInput = 0;
       let forwardInput = 0;
@@ -2342,8 +2824,9 @@
         if (forwardInput > 0) {
           car.speed = Math.min(car.speed + (car.accel * forwardInput * timeScale), car.maxSpeed * forwardInput);
           const speedRatio = Math.min(1, Math.abs(car.speed) / Math.max(1, car.maxSpeed));
-          const spawnChance = 0.45 + forwardInput * 0.45;
-          if (Math.random() < spawnChance) {
+          const maxParticles = isLowFx ? 16 : 90;
+          const spawnChance = (isLowFx ? 0.18 : 0.45) + forwardInput * (isLowFx ? 0.18 : 0.45);
+          if (exhaustParticles.length < maxParticles && Math.random() < spawnChance) {
             const rearDist = car.height * 0.5 + 2;
             const backCenterX = car.x - Math.sin(car.angle) * rearDist;
             const backCenterY = car.y + Math.cos(car.angle) * rearDist;
@@ -2365,12 +2848,12 @@
                 vx: -Math.sin(spreadAngle) * jetSpeed,
                 vy: Math.cos(spreadAngle) * jetSpeed,
                 life: 1.0,
-                decay: 0.028 + Math.random() * 0.02,
+                decay: (isLowFx ? 0.045 : 0.028) + Math.random() * 0.02,
                 size: 3.2 + Math.random() * 2.2,
                 growth: 0.22 + Math.random() * 0.14
               });
 
-              if (forwardInput > 0.65 && (speedRatio > 0.68 || Math.random() < 0.28)) {
+              if (!isLowFx && forwardInput > 0.65 && (speedRatio > 0.68 || Math.random() < 0.28)) {
                 exhaustParticles.push({
                   kind: 'flame',
                   x: px,
@@ -2443,7 +2926,7 @@
 
       const lastPoint = carTrailPath[carTrailPath.length - 1];
       const distFromLast = Math.hypot(car.x - lastPoint.x, car.y - lastPoint.y);
-      if (distFromLast > 10) {
+      if (distFromLast > (isLowFx ? 16 : 10)) {
         carTrailPath.push({ x: car.x, y: car.y });
       }
 
@@ -2455,348 +2938,369 @@
     }
 
     /* --------------------------------------------------------------------------
-       SECTION 10: UPGRADED CIRCUIT ROAD, ARMORED WALLS & DETAILED CAR RENDERER
+       SECTION 10: CACHED CHUNK MAZE RENDERER & DETAILED CAR RENDERER
        -------------------------------------------------------------------------- */
 
-    function isWallAt(r, c) {
-      if (r < 0 || r >= currentMaze.rows || c < 0 || c >= currentMaze.cols) return true;
-      return currentMaze.grid[r][c] === 1;
-    }
-
-    function drawApexCurbStripe(x, y, length, side) {
+    function drawApexCurbStripeTo(targetCtx, x, y, length, side) {
       const segCount = 6;
       const segLen = length / segCount;
       for (let i = 0; i < segCount; i++) {
-        // Deep royal blue & vibrant amber-gold alternating FIA circuit curbs
-        ctx.fillStyle = i % 2 === 0 ? '#1b4d8f' : '#f5b000';
+        targetCtx.fillStyle = i % 2 === 0 ? '#1b4d8f' : '#f5b000';
         if (side === 'top') {
-          ctx.fillRect(x + i * segLen, y, segLen + 0.5, 5);
+          targetCtx.fillRect(x + i * segLen, y, segLen + 0.5, 5);
         } else if (side === 'bottom') {
-          ctx.fillRect(x + i * segLen, y - 5, segLen + 0.5, 5);
+          targetCtx.fillRect(x + i * segLen, y - 5, segLen + 0.5, 5);
         } else if (side === 'left') {
-          ctx.fillRect(x, y + i * segLen, 5, segLen + 0.5);
+          targetCtx.fillRect(x, y + i * segLen, 5, segLen + 0.5);
         } else if (side === 'right') {
-          ctx.fillRect(x - 5, y + i * segLen, 5, segLen + 0.5);
+          targetCtx.fillRect(x - 5, y + i * segLen, 5, segLen + 0.5);
         }
       }
     }
 
-    function drawCheckeredZone(x, y, size, primaryColor, secondaryColor) {
-      ctx.save();
-      ctx.beginPath();
-      ctx.roundRect(x + 4, y + 4, size - 8, size - 8, 6);
-      ctx.clip();
+    function drawCheckeredZoneTo(targetCtx, x, y, size, primaryColor, secondaryColor, lowEffects = false) {
+      targetCtx.save();
+      targetCtx.beginPath();
+      targetCtx.roundRect(x + 4, y + 4, size - 8, size - 8, 6);
+      targetCtx.clip();
 
       const cells = 6;
       const cellSize = (size - 8) / cells;
       for (let r = 0; r < cells; r++) {
         for (let c = 0; c < cells; c++) {
           const isLight = (r + c) % 2 === 0;
-          ctx.fillStyle = isLight ? primaryColor : secondaryColor;
-          ctx.fillRect(x + 4 + c * cellSize, y + 4 + r * cellSize, cellSize + 0.5, cellSize + 0.5);
+          targetCtx.fillStyle = isLight ? primaryColor : secondaryColor;
+          targetCtx.fillRect(x + 4 + c * cellSize, y + 4 + r * cellSize, cellSize + 0.5, cellSize + 0.5);
         }
       }
 
-      const grad = ctx.createRadialGradient(x + size / 2, y + size / 2, 4, x + size / 2, y + size / 2, size * 0.65);
-      grad.addColorStop(0, 'rgba(255, 255, 255, 0.20)');
-      grad.addColorStop(1, 'rgba(7, 12, 20, 0.45)');
-      ctx.fillStyle = grad;
-      ctx.fillRect(x, y, size, size);
+      if (!lowEffects) {
+        const grad = targetCtx.createRadialGradient(x + size / 2, y + size / 2, 4, x + size / 2, y + size / 2, size * 0.65);
+        grad.addColorStop(0, 'rgba(255, 255, 255, 0.20)');
+        grad.addColorStop(1, 'rgba(7, 12, 20, 0.45)');
+        targetCtx.fillStyle = grad;
+        targetCtx.fillRect(x, y, size, size);
+      }
 
-      ctx.restore();
-      ctx.strokeStyle = primaryColor;
-      ctx.lineWidth = 2.5;
-      ctx.beginPath();
-      ctx.roundRect(x + 4, y + 4, size - 8, size - 8, 6);
-      ctx.stroke();
+      targetCtx.restore();
+      targetCtx.strokeStyle = primaryColor;
+      targetCtx.lineWidth = 2.5;
+      targetCtx.beginPath();
+      targetCtx.roundRect(x + 4, y + 4, size - 8, size - 8, 6);
+      targetCtx.stroke();
     }
-    
-    function renderWorld() {
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-      const screenCenterX = canvas.width / 2;
-      const screenCenterY = canvas.height / 2;
-
-      ctx.save();
-      ctx.translate(screenCenterX, screenCenterY);
-      ctx.rotate(-car.angle);
-      ctx.translate(-car.x, -car.y);
-
-      const halfW = (canvas.width / 2) + (TILE_SIZE * 4);
-      const halfH = (canvas.height / 2) + (TILE_SIZE * 4);
-
-      const minCol = Math.max(0, Math.floor((car.x - halfW) / TILE_SIZE));
-      const maxCol = Math.min(currentMaze.cols - 1, Math.ceil((car.x + halfW) / TILE_SIZE));
-      const minRow = Math.max(0, Math.floor((car.y - halfH) / TILE_SIZE));
-      const maxRow = Math.min(currentMaze.rows - 1, Math.ceil((car.y + halfH) / TILE_SIZE));
+    // Renders a static rectangular tile range [minRow..maxRow, minCol..maxCol] into an offscreen chunk context
+    function renderMazeRegionToContext(targetCtx, minRow, maxRow, minCol, maxCol, lowEffects = false) {
+      const masks = currentMaze.neighborMasks;
 
       // Pass 1: Continuous Asphalt Road Surface, Symmetric Contact Shadows, FIA Curbs & Connected Centerlines
       for (let r = minRow; r <= maxRow; r++) {
+        const gridRow = currentMaze.grid[r];
+        const maskRow = masks[r];
         for (let c = minCol; c <= maxCol; c++) {
           const x = c * TILE_SIZE;
           const y = r * TILE_SIZE;
-          const wall = isWallAt(r, c);
+          const wall = gridRow[c] === 1;
 
-          ctx.fillStyle = asphaltPattern || '#131a26';
-          ctx.fillRect(x, y, TILE_SIZE, TILE_SIZE);
+          targetCtx.fillStyle = asphaltPattern || '#131a26';
+          targetCtx.fillRect(x, y, TILE_SIZE, TILE_SIZE);
 
           if (!wall) {
-            const topW = isWallAt(r - 1, c);
-            const botW = isWallAt(r + 1, c);
-            const leftW = isWallAt(r, c - 1);
-            const rightW = isWallAt(r, c + 1);
-            const tlW = isWallAt(r - 1, c - 1);
-            const trW = isWallAt(r - 1, c + 1);
-            const blW = isWallAt(r + 1, c - 1);
-            const brW = isWallAt(r + 1, c + 1);
+            const m = maskRow[c];
+            const topW   = (m & NB_TOP) !== 0;
+            const botW   = (m & NB_BOT) !== 0;
+            const leftW  = (m & NB_LEFT) !== 0;
+            const rightW = (m & NB_RIGHT) !== 0;
+            const tlW    = (m & NB_TL) !== 0;
+            const trW    = (m & NB_TR) !== 0;
+            const blW    = (m & NB_BL) !== 0;
+            const brW    = (m & NB_BR) !== 0;
 
-            // Omnidirectional soft ambient occlusion shadow cast by adjacent walls onto road edges (no directional bias)
-            if (topW) {
-              const g = ctx.createLinearGradient(x, y, x, y + 12);
-              g.addColorStop(0, 'rgba(3, 6, 12, 0.52)');
-              g.addColorStop(1, 'rgba(3, 6, 12, 0)');
-              ctx.fillStyle = g;
-              ctx.fillRect(x, y, TILE_SIZE, 12);
-            }
-            if (botW) {
-              const g = ctx.createLinearGradient(x, y + TILE_SIZE, x, y + TILE_SIZE - 12);
-              g.addColorStop(0, 'rgba(3, 6, 12, 0.52)');
-              g.addColorStop(1, 'rgba(3, 6, 12, 0)');
-              ctx.fillStyle = g;
-              ctx.fillRect(x, y + TILE_SIZE - 12, TILE_SIZE, 12);
-            }
-            if (leftW) {
-              const g = ctx.createLinearGradient(x, y, x + 12, y);
-              g.addColorStop(0, 'rgba(3, 6, 12, 0.52)');
-              g.addColorStop(1, 'rgba(3, 6, 12, 0)');
-              ctx.fillStyle = g;
-              ctx.fillRect(x, y, 12, TILE_SIZE);
-            }
-            if (rightW) {
-              const g = ctx.createLinearGradient(x + TILE_SIZE, y, x + TILE_SIZE - 12, y);
-              g.addColorStop(0, 'rgba(3, 6, 12, 0.52)');
-              g.addColorStop(1, 'rgba(3, 6, 12, 0)');
-              ctx.fillStyle = g;
-              ctx.fillRect(x + TILE_SIZE - 12, y, 12, TILE_SIZE);
+            if (!lowEffects) {
+              if (topW) {
+                const g = targetCtx.createLinearGradient(x, y, x, y + 12);
+                g.addColorStop(0, 'rgba(3, 6, 12, 0.52)');
+                g.addColorStop(1, 'rgba(3, 6, 12, 0)');
+                targetCtx.fillStyle = g;
+                targetCtx.fillRect(x, y, TILE_SIZE, 12);
+              }
+              if (botW) {
+                const g = targetCtx.createLinearGradient(x, y + TILE_SIZE, x, y + TILE_SIZE - 12);
+                g.addColorStop(0, 'rgba(3, 6, 12, 0.52)');
+                g.addColorStop(1, 'rgba(3, 6, 12, 0)');
+                targetCtx.fillStyle = g;
+                targetCtx.fillRect(x, y + TILE_SIZE - 12, TILE_SIZE, 12);
+              }
+              if (leftW) {
+                const g = targetCtx.createLinearGradient(x, y, x + 12, y);
+                g.addColorStop(0, 'rgba(3, 6, 12, 0.52)');
+                g.addColorStop(1, 'rgba(3, 6, 12, 0)');
+                targetCtx.fillStyle = g;
+                targetCtx.fillRect(x, y, 12, TILE_SIZE);
+              }
+              if (rightW) {
+                const g = targetCtx.createLinearGradient(x + TILE_SIZE, y, x + TILE_SIZE - 12, y);
+                g.addColorStop(0, 'rgba(3, 6, 12, 0.52)');
+                g.addColorStop(1, 'rgba(3, 6, 12, 0)');
+                targetCtx.fillStyle = g;
+                targetCtx.fillRect(x + TILE_SIZE - 12, y, 12, TILE_SIZE);
+              }
             }
 
-            // Painted Deep Blue & Bright Amber-Gold FIA Circuit Curbs along barrier edges
-            if (topW) drawApexCurbStripe(x, y, TILE_SIZE, 'top');
-            if (botW) drawApexCurbStripe(x, y + TILE_SIZE, TILE_SIZE, 'bottom');
-            if (leftW) drawApexCurbStripe(x, y, TILE_SIZE, 'left');
-            if (rightW) drawApexCurbStripe(x + TILE_SIZE, y, TILE_SIZE, 'right');
+            if (topW) drawApexCurbStripeTo(targetCtx, x, y, TILE_SIZE, 'top');
+            if (botW) drawApexCurbStripeTo(targetCtx, x, y + TILE_SIZE, TILE_SIZE, 'bottom');
+            if (leftW) drawApexCurbStripeTo(targetCtx, x, y, TILE_SIZE, 'left');
+            if (rightW) drawApexCurbStripeTo(targetCtx, x + TILE_SIZE, y, TILE_SIZE, 'right');
 
-            // Smooth corner curb caps where two walls meet at an inner apex
             if (topW && leftW) {
-              ctx.fillStyle = '#f5b000';
-              ctx.fillRect(x, y, 6, 6);
+              targetCtx.fillStyle = '#f5b000';
+              targetCtx.fillRect(x, y, 6, 6);
             }
             if (topW && rightW) {
-              ctx.fillStyle = '#1b4d8f';
-              ctx.fillRect(x + TILE_SIZE - 6, y, 6, 6);
+              targetCtx.fillStyle = '#1b4d8f';
+              targetCtx.fillRect(x + TILE_SIZE - 6, y, 6, 6);
             }
             if (botW && leftW) {
-              ctx.fillStyle = '#1b4d8f';
-              ctx.fillRect(x, y + TILE_SIZE - 6, 6, 6);
+              targetCtx.fillStyle = '#1b4d8f';
+              targetCtx.fillRect(x, y + TILE_SIZE - 6, 6, 6);
             }
             if (botW && rightW) {
-              ctx.fillStyle = '#f5b000';
-              ctx.fillRect(x + TILE_SIZE - 6, y + TILE_SIZE - 6, 6, 6);
+              targetCtx.fillStyle = '#f5b000';
+              targetCtx.fillRect(x + TILE_SIZE - 6, y + TILE_SIZE - 6, 6, 6);
             }
 
-            // Continuous white track boundary shoulder lines that connect cleanly around corners
-            ctx.strokeStyle = 'rgba(241, 246, 252, 0.34)';
-            ctx.lineWidth = 1.4;
+            targetCtx.strokeStyle = 'rgba(241, 246, 252, 0.34)';
+            targetCtx.lineWidth = 1.4;
             const shOff = 6.5;
             if (topW) {
               const sx1 = leftW ? x + shOff : x;
               const sx2 = rightW ? x + TILE_SIZE - shOff : x + TILE_SIZE;
-              ctx.beginPath(); ctx.moveTo(sx1, y + shOff); ctx.lineTo(sx2, y + shOff); ctx.stroke();
+              targetCtx.beginPath(); targetCtx.moveTo(sx1, y + shOff); targetCtx.lineTo(sx2, y + shOff); targetCtx.stroke();
             }
             if (botW) {
               const sx1 = leftW ? x + shOff : x;
               const sx2 = rightW ? x + TILE_SIZE - shOff : x + TILE_SIZE;
-              ctx.beginPath(); ctx.moveTo(sx1, y + TILE_SIZE - shOff); ctx.lineTo(sx2, y + TILE_SIZE - shOff); ctx.stroke();
+              targetCtx.beginPath(); targetCtx.moveTo(sx1, y + TILE_SIZE - shOff); targetCtx.lineTo(sx2, y + TILE_SIZE - shOff); targetCtx.stroke();
             }
             if (leftW) {
               const sy1 = topW ? y + shOff : y;
               const sy2 = botW ? y + TILE_SIZE - shOff : y + TILE_SIZE;
-              ctx.beginPath(); ctx.moveTo(x + shOff, sy1); ctx.lineTo(x + shOff, sy2); ctx.stroke();
+              targetCtx.beginPath(); targetCtx.moveTo(x + shOff, sy1); targetCtx.lineTo(x + shOff, sy2); targetCtx.stroke();
             }
             if (rightW) {
               const sy1 = topW ? y + shOff : y;
               const sy2 = botW ? y + TILE_SIZE - shOff : y + TILE_SIZE;
-              ctx.beginPath(); ctx.moveTo(x + TILE_SIZE - shOff, sy1); ctx.lineTo(x + TILE_SIZE - shOff, sy2); ctx.stroke();
+              targetCtx.beginPath(); targetCtx.moveTo(x + TILE_SIZE - shOff, sy1); targetCtx.lineTo(x + TILE_SIZE - shOff, sy2); targetCtx.stroke();
             }
 
-            // Outer corner shoulder arcs around convex wall tips
             if (!topW && !leftW && tlW) {
-              ctx.beginPath(); ctx.arc(x, y, shOff, 0, Math.PI * 0.5); ctx.stroke();
+              targetCtx.beginPath(); targetCtx.arc(x, y, shOff, 0, Math.PI * 0.5); targetCtx.stroke();
             }
             if (!topW && !rightW && trW) {
-              ctx.beginPath(); ctx.arc(x + TILE_SIZE, y, shOff, Math.PI * 0.5, Math.PI); ctx.stroke();
+              targetCtx.beginPath(); targetCtx.arc(x + TILE_SIZE, y, shOff, Math.PI * 0.5, Math.PI); targetCtx.stroke();
             }
             if (!botW && !leftW && blW) {
-              ctx.beginPath(); ctx.arc(x, y + TILE_SIZE, shOff, Math.PI * 1.5, Math.PI * 2); ctx.stroke();
+              targetCtx.beginPath(); targetCtx.arc(x, y + TILE_SIZE, shOff, Math.PI * 1.5, Math.PI * 2); targetCtx.stroke();
             }
             if (!botW && !rightW && brW) {
-              ctx.beginPath(); ctx.arc(x + TILE_SIZE, y + TILE_SIZE, shOff, Math.PI, Math.PI * 1.5); ctx.stroke();
+              targetCtx.beginPath(); targetCtx.arc(x + TILE_SIZE, y + TILE_SIZE, shOff, Math.PI, Math.PI * 1.5); targetCtx.stroke();
             }
 
-            // Continuous Centerline Guidance connecting every open exit from the tile center
             const cx = x + TILE_SIZE / 2;
             const cy = y + TILE_SIZE / 2;
-            ctx.strokeStyle = 'rgba(255, 202, 40, 0.28)';
-            ctx.lineWidth = 2;
-            ctx.setLineDash([9, 8]);
+            targetCtx.strokeStyle = 'rgba(255, 202, 40, 0.28)';
+            targetCtx.lineWidth = 2;
+            targetCtx.setLineDash([9, 8]);
             if (!topW) {
-              ctx.beginPath(); ctx.moveTo(cx, cy); ctx.lineTo(cx, y); ctx.stroke();
+              targetCtx.beginPath(); targetCtx.moveTo(cx, cy); targetCtx.lineTo(cx, y); targetCtx.stroke();
             }
             if (!botW) {
-              ctx.beginPath(); ctx.moveTo(cx, cy); ctx.lineTo(cx, y + TILE_SIZE); ctx.stroke();
+              targetCtx.beginPath(); targetCtx.moveTo(cx, cy); targetCtx.lineTo(cx, y + TILE_SIZE); targetCtx.stroke();
             }
             if (!leftW) {
-              ctx.beginPath(); ctx.moveTo(cx, cy); ctx.lineTo(x, cy); ctx.stroke();
+              targetCtx.beginPath(); targetCtx.moveTo(cx, cy); targetCtx.lineTo(x, cy); targetCtx.stroke();
             }
             if (!rightW) {
-              ctx.beginPath(); ctx.moveTo(cx, cy); ctx.lineTo(x + TILE_SIZE, cy); ctx.stroke();
+              targetCtx.beginPath(); targetCtx.moveTo(cx, cy); targetCtx.lineTo(x + TILE_SIZE, cy); targetCtx.stroke();
             }
-            ctx.setLineDash([]);
+            targetCtx.setLineDash([]);
           }
         }
       }
 
       // Pass 2: Continuous Seamless Brick Maze Walls with Sculpted Corner Joints & Continuous Coping Trim
       for (let r = minRow; r <= maxRow; r++) {
+        const gridRow = currentMaze.grid[r];
+        const maskRow = masks[r];
         for (let c = minCol; c <= maxCol; c++) {
-          if (!isWallAt(r, c)) continue;
+          if (gridRow[c] !== 1) continue;
           const x = c * TILE_SIZE;
           const y = r * TILE_SIZE;
 
-          const topW = isWallAt(r - 1, c);
-          const botW = isWallAt(r + 1, c);
-          const leftW = isWallAt(r, c - 1);
-          const rightW = isWallAt(r, c + 1);
-          const tlW = isWallAt(r - 1, c - 1);
-          const trW = isWallAt(r - 1, c + 1);
-          const blW = isWallAt(r + 1, c - 1);
-          const brW = isWallAt(r + 1, c + 1);
+          const m = maskRow[c];
+          const topW   = (m & NB_TOP) !== 0;
+          const botW   = (m & NB_BOT) !== 0;
+          const leftW  = (m & NB_LEFT) !== 0;
+          const rightW = (m & NB_RIGHT) !== 0;
+          const tlW    = (m & NB_TL) !== 0;
+          const trW    = (m & NB_TR) !== 0;
+          const blW    = (m & NB_BL) !== 0;
+          const brW    = (m & NB_BR) !== 0;
 
-          // 1. Continuous World-Space Brick Masonry Fill (spans seamlessly across all connected wall cells)
-          ctx.fillStyle = wallBrickPattern || '#1b3358';
-          ctx.fillRect(x, y, TILE_SIZE, TILE_SIZE);
+          targetCtx.fillStyle = wallBrickPattern || '#1b3358';
+          targetCtx.fillRect(x, y, TILE_SIZE, TILE_SIZE);
 
-          // 2. Continuous Outer Coping Border & Bevel Rim ONLY along road-facing perimeter edges
           const trimW = 5;
 
-          // Dark outer mortar/curb edge against the road
-          ctx.fillStyle = '#070d17';
-          if (!topW) ctx.fillRect(x, y, TILE_SIZE, 2);
-          if (!botW) ctx.fillRect(x, y + TILE_SIZE - 2, TILE_SIZE, 2);
-          if (!leftW) ctx.fillRect(x, y, 2, TILE_SIZE);
-          if (!rightW) ctx.fillRect(x + TILE_SIZE - 2, y, 2, TILE_SIZE);
+          targetCtx.fillStyle = '#070d17';
+          if (!topW) targetCtx.fillRect(x, y, TILE_SIZE, 2);
+          if (!botW) targetCtx.fillRect(x, y + TILE_SIZE - 2, TILE_SIZE, 2);
+          if (!leftW) targetCtx.fillRect(x, y, 2, TILE_SIZE);
+          if (!rightW) targetCtx.fillRect(x + TILE_SIZE - 2, y, 2, TILE_SIZE);
 
-          // Stone/Concrete Coping Cap Band along exposed walls
-          ctx.fillStyle = '#12243f';
-          if (!topW) ctx.fillRect(x, y + 2, TILE_SIZE, trimW);
-          if (!botW) ctx.fillRect(x, y + TILE_SIZE - 2 - trimW, TILE_SIZE, trimW);
-          if (!leftW) ctx.fillRect(x + 2, y, trimW, TILE_SIZE);
-          if (!rightW) ctx.fillRect(x + TILE_SIZE - 2 - trimW, y, trimW, TILE_SIZE);
+          targetCtx.fillStyle = '#12243f';
+          if (!topW) targetCtx.fillRect(x, y + 2, TILE_SIZE, trimW);
+          if (!botW) targetCtx.fillRect(x, y + TILE_SIZE - 2 - trimW, TILE_SIZE, trimW);
+          if (!leftW) targetCtx.fillRect(x + 2, y, trimW, TILE_SIZE);
+          if (!rightW) targetCtx.fillRect(x + TILE_SIZE - 2 - trimW, y, trimW, TILE_SIZE);
 
-          // Crisp Amber-Gold & Royal-Blue Continuous Guardrail Pinstripe along wall perimeter
-          ctx.strokeStyle = '#ffca28';
-          ctx.lineWidth = 1.5;
+          targetCtx.strokeStyle = '#ffca28';
+          targetCtx.lineWidth = 1.5;
           if (!topW) {
             const x1 = leftW ? x : x + trimW;
             const x2 = rightW ? x + TILE_SIZE : x + TILE_SIZE - trimW;
-            ctx.beginPath(); ctx.moveTo(x1, y + trimW + 1); ctx.lineTo(x2, y + trimW + 1); ctx.stroke();
+            targetCtx.beginPath(); targetCtx.moveTo(x1, y + trimW + 1); targetCtx.lineTo(x2, y + trimW + 1); targetCtx.stroke();
           }
           if (!botW) {
             const x1 = leftW ? x : x + trimW;
             const x2 = rightW ? x + TILE_SIZE : x + TILE_SIZE - trimW;
-            ctx.beginPath(); ctx.moveTo(x1, y + TILE_SIZE - trimW - 1); ctx.lineTo(x2, y + TILE_SIZE - trimW - 1); ctx.stroke();
+            targetCtx.beginPath(); targetCtx.moveTo(x1, y + TILE_SIZE - trimW - 1); targetCtx.lineTo(x2, y + TILE_SIZE - trimW - 1); targetCtx.stroke();
           }
           if (!leftW) {
             const y1 = topW ? y : y + trimW;
             const y2 = botW ? y + TILE_SIZE : y + TILE_SIZE - trimW;
-            ctx.beginPath(); ctx.moveTo(x + trimW + 1, y1); ctx.lineTo(x + trimW + 1, y2); ctx.stroke();
+            targetCtx.beginPath(); targetCtx.moveTo(x + trimW + 1, y1); targetCtx.lineTo(x + trimW + 1, y2); targetCtx.stroke();
           }
           if (!rightW) {
             const y1 = topW ? y : y + trimW;
             const y2 = botW ? y + TILE_SIZE : y + TILE_SIZE - trimW;
-            ctx.beginPath(); ctx.moveTo(x + TILE_SIZE - trimW - 1, y1); ctx.lineTo(x + TILE_SIZE - trimW - 1, y2); ctx.stroke();
+            targetCtx.beginPath(); targetCtx.moveTo(x + TILE_SIZE - trimW - 1, y1); targetCtx.lineTo(x + TILE_SIZE - trimW - 1, y2); targetCtx.stroke();
           }
 
-          // 3. Sculpted Corner Joints (Convex Outer Corners & Concave Inner L/T/X Junctions)
           const drawCornerCap = (cx, cy) => {
-            ctx.fillStyle = '#0d1b30';
-            ctx.fillRect(cx - 5, cy - 5, 10, 10);
-            ctx.strokeStyle = '#4b91e8';
-            ctx.lineWidth = 1.3;
-            ctx.strokeRect(cx - 4.5, cy - 4.5, 9, 9);
-            ctx.fillStyle = '#ffca28';
-            ctx.fillRect(cx - 1.5, cy - 1.5, 3, 3);
+            targetCtx.fillStyle = '#0d1b30';
+            targetCtx.fillRect(cx - 5, cy - 5, 10, 10);
+            targetCtx.strokeStyle = '#4b91e8';
+            targetCtx.lineWidth = 1.3;
+            targetCtx.strokeRect(cx - 4.5, cy - 4.5, 9, 9);
+            targetCtx.fillStyle = '#ffca28';
+            targetCtx.fillRect(cx - 1.5, cy - 1.5, 3, 3);
           };
 
-          // Convex outer corners (where two exposed sides meet)
           if (!topW && !leftW) drawCornerCap(x + 5, y + 5);
           if (!topW && !rightW) drawCornerCap(x + TILE_SIZE - 5, y + 5);
           if (!botW && !leftW) drawCornerCap(x + 5, y + TILE_SIZE - 5);
           if (!botW && !rightW) drawCornerCap(x + TILE_SIZE - 5, y + TILE_SIZE - 5);
 
-          // Concave inner corners (where wall turns 90 degrees into another wall)
           if (topW && leftW && !tlW) {
-            ctx.fillStyle = '#12243f';
-            ctx.fillRect(x, y, trimW + 2, trimW + 2);
-            ctx.strokeStyle = '#ffca28';
-            ctx.lineWidth = 1.5;
-            ctx.beginPath();
-            ctx.moveTo(x, y + trimW + 1);
-            ctx.lineTo(x + trimW + 1, y + trimW + 1);
-            ctx.lineTo(x + trimW + 1, y);
-            ctx.stroke();
+            targetCtx.fillStyle = '#12243f';
+            targetCtx.fillRect(x, y, trimW + 2, trimW + 2);
+            targetCtx.strokeStyle = '#ffca28';
+            targetCtx.lineWidth = 1.5;
+            targetCtx.beginPath();
+            targetCtx.moveTo(x, y + trimW + 1);
+            targetCtx.lineTo(x + trimW + 1, y + trimW + 1);
+            targetCtx.lineTo(x + trimW + 1, y);
+            targetCtx.stroke();
           }
           if (topW && rightW && !trW) {
-            ctx.fillStyle = '#12243f';
-            ctx.fillRect(x + TILE_SIZE - trimW - 2, y, trimW + 2, trimW + 2);
-            ctx.strokeStyle = '#ffca28';
-            ctx.lineWidth = 1.5;
-            ctx.beginPath();
-            ctx.moveTo(x + TILE_SIZE, y + trimW + 1);
-            ctx.lineTo(x + TILE_SIZE - trimW - 1, y + trimW + 1);
-            ctx.lineTo(x + TILE_SIZE - trimW - 1, y);
-            ctx.stroke();
+            targetCtx.fillStyle = '#12243f';
+            targetCtx.fillRect(x + TILE_SIZE - trimW - 2, y, trimW + 2, trimW + 2);
+            targetCtx.strokeStyle = '#ffca28';
+            targetCtx.lineWidth = 1.5;
+            targetCtx.beginPath();
+            targetCtx.moveTo(x + TILE_SIZE, y + trimW + 1);
+            targetCtx.lineTo(x + TILE_SIZE - trimW - 1, y + trimW + 1);
+            targetCtx.lineTo(x + TILE_SIZE - trimW - 1, y);
+            targetCtx.stroke();
           }
           if (botW && leftW && !blW) {
-            ctx.fillStyle = '#12243f';
-            ctx.fillRect(x, y + TILE_SIZE - trimW - 2, trimW + 2, trimW + 2);
-            ctx.strokeStyle = '#ffca28';
-            ctx.lineWidth = 1.5;
-            ctx.beginPath();
-            ctx.moveTo(x, y + TILE_SIZE - trimW - 1);
-            ctx.lineTo(x + trimW + 1, y + TILE_SIZE - trimW - 1);
-            ctx.lineTo(x + trimW + 1, y + TILE_SIZE);
-            ctx.stroke();
+            targetCtx.fillStyle = '#12243f';
+            targetCtx.fillRect(x, y + TILE_SIZE - trimW - 2, trimW + 2, trimW + 2);
+            targetCtx.strokeStyle = '#ffca28';
+            targetCtx.lineWidth = 1.5;
+            targetCtx.beginPath();
+            targetCtx.moveTo(x, y + TILE_SIZE - trimW - 1);
+            targetCtx.lineTo(x + trimW + 1, y + TILE_SIZE - trimW - 1);
+            targetCtx.lineTo(x + trimW + 1, y + TILE_SIZE);
+            targetCtx.stroke();
           }
           if (botW && rightW && !brW) {
-            ctx.fillStyle = '#12243f';
-            ctx.fillRect(x + TILE_SIZE - trimW - 2, y + TILE_SIZE - trimW - 2, trimW + 2, trimW + 2);
-            ctx.strokeStyle = '#ffca28';
-            ctx.lineWidth = 1.5;
-            ctx.beginPath();
-            ctx.moveTo(x + TILE_SIZE, y + TILE_SIZE - trimW - 1);
-            ctx.lineTo(x + TILE_SIZE - trimW - 1, y + TILE_SIZE - trimW - 1);
-            ctx.lineTo(x + TILE_SIZE - trimW - 1, y + TILE_SIZE);
-            ctx.stroke();
+            targetCtx.fillStyle = '#12243f';
+            targetCtx.fillRect(x + TILE_SIZE - trimW - 2, y + TILE_SIZE - trimW - 2, trimW + 2, trimW + 2);
+            targetCtx.strokeStyle = '#ffca28';
+            targetCtx.lineWidth = 1.5;
+            targetCtx.beginPath();
+            targetCtx.moveTo(x + TILE_SIZE, y + TILE_SIZE - trimW - 1);
+            targetCtx.lineTo(x + TILE_SIZE - trimW - 1, y + TILE_SIZE - trimW - 1);
+            targetCtx.lineTo(x + TILE_SIZE - trimW - 1, y + TILE_SIZE);
+            targetCtx.stroke();
           }
         }
       }
 
-      // Telemetry / Tire Path
+      // Static Start & Finish Checkered Zones if inside this chunk
+      if (currentMaze.start.x >= minCol && currentMaze.start.x <= maxCol &&
+          currentMaze.start.y >= minRow && currentMaze.start.y <= maxRow) {
+        drawCheckeredZoneTo(targetCtx, currentMaze.start.x * TILE_SIZE, currentMaze.start.y * TILE_SIZE, TILE_SIZE, '#2b6cb8', '#09111e', lowEffects);
+      }
+
+      if (currentMaze.finish.x >= minCol && currentMaze.finish.x <= maxCol &&
+          currentMaze.finish.y >= minRow && currentMaze.finish.y <= maxRow) {
+        drawCheckeredZoneTo(targetCtx, currentMaze.finish.x * TILE_SIZE, currentMaze.finish.y * TILE_SIZE, TILE_SIZE, '#ffca28', '#09111e', lowEffects);
+      }
+    }
+    
+    function renderWorld() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+      const isLowFx = playerSettings.lowEffects;
+      const screenCenterX = canvas.width / 2;
+      const screenCenterY = canvas.height / 2;
+
+      MazeChunkCache.reset(currentMaze.id);
+
+      ctx.save();
+      ctx.translate(screenCenterX, screenCenterY);
+      ctx.rotate(-car.angle);
+      ctx.translate(-car.x, -car.y);
+
+      const halfDiag = Math.hypot(canvas.width / 2, canvas.height / 2) + (TILE_SIZE * 2);
+
+      const minCol = Math.max(0, Math.floor((car.x - halfDiag) / TILE_SIZE));
+      const maxCol = Math.min(currentMaze.cols - 1, Math.ceil((car.x + halfDiag) / TILE_SIZE));
+      const minRow = Math.max(0, Math.floor((car.y - halfDiag) / TILE_SIZE));
+      const maxRow = Math.min(currentMaze.rows - 1, Math.ceil((car.y + halfDiag) / TILE_SIZE));
+
+      // Draw only visible pre-cached offscreen maze chunks
+      const minChunkRow = Math.max(0, Math.floor(minRow / CHUNK_TILES));
+      const maxChunkRow = Math.min(Math.floor((currentMaze.rows - 1) / CHUNK_TILES), Math.floor(maxRow / CHUNK_TILES));
+      const minChunkCol = Math.max(0, Math.floor(minCol / CHUNK_TILES));
+      const maxChunkCol = Math.min(Math.floor((currentMaze.cols - 1) / CHUNK_TILES), Math.floor(maxCol / CHUNK_TILES));
+
+      for (let cr = minChunkRow; cr <= maxChunkRow; cr++) {
+        for (let cc = minChunkCol; cc <= maxChunkCol; cc++) {
+          const chunkCanvas = MazeChunkCache.getChunk(cr, cc);
+          if (chunkCanvas) {
+            ctx.drawImage(chunkCanvas, cc * CHUNK_TILES * TILE_SIZE, cr * CHUNK_TILES * TILE_SIZE);
+          }
+        }
+      }
+
+      // Dynamic Telemetry / Tire Path
       if (carTrailPath.length > 1) {
         ctx.save();
-        ctx.strokeStyle = 'rgba(34, 84, 148, 0.28)';
-        ctx.lineWidth = 10;
         ctx.lineCap = 'round';
         ctx.lineJoin = 'round';
         ctx.beginPath();
@@ -2804,17 +3308,25 @@
         for (let i = 1; i < carTrailPath.length; i++) {
           ctx.lineTo(carTrailPath[i].x, carTrailPath[i].y);
         }
-        ctx.stroke();
-
+        if (!isLowFx) {
+          ctx.strokeStyle = 'rgba(34, 84, 148, 0.28)';
+          ctx.lineWidth = 10;
+          ctx.stroke();
+        }
         ctx.strokeStyle = '#5da0f2';
-        ctx.lineWidth = 3.6;
+        ctx.lineWidth = isLowFx ? 2.5 : 3.6;
         ctx.stroke();
         ctx.restore();
       }
 
-      // Upgraded Exhaust Smoke Plumes & Turbo Flame Bursts
+      // Dynamic Exhaust Smoke Plumes & Turbo Flame Bursts
       for (const p of exhaustParticles) {
-        if (p.kind === 'flame') {
+        if (isLowFx) {
+          ctx.fillStyle = `rgba(185, 205, 232, ${p.life * 0.35})`;
+          ctx.beginPath();
+          ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+          ctx.fill();
+        } else if (p.kind === 'flame') {
           const grad = ctx.createRadialGradient(p.x, p.y, 0.2, p.x, p.y, p.size * 1.6);
           grad.addColorStop(0, `rgba(255, 252, 220, ${p.life})`);
           grad.addColorStop(0.45, `rgba(255, 190, 40, ${p.life * 0.9})`);
@@ -2836,15 +3348,6 @@
           ctx.fill();
         }
       }
-
-      // Start (Deep Royal Blue) & Finish (Vibrant Amber-Gold) Checkered Zones
-      const startX = currentMaze.start.x * TILE_SIZE;
-      const startY = currentMaze.start.y * TILE_SIZE;
-      drawCheckeredZone(startX, startY, TILE_SIZE, '#2b6cb8', '#09111e');
-
-      const finishX = currentMaze.finish.x * TILE_SIZE;
-      const finishY = currentMaze.finish.y * TILE_SIZE;
-      drawCheckeredZone(finishX, finishY, TILE_SIZE, '#ffca28', '#09111e');
 
       // Night Drive: Bright Warm Headlight Cones + Radial Spotlight
       if (activeGameMode === 'dark') {
@@ -2880,13 +3383,12 @@
         spotlightGrad.addColorStop(1, 'rgba(4, 8, 15, 0.998)');
 
         ctx.fillStyle = spotlightGrad;
-        ctx.fillRect(car.x - halfW, car.y - halfH, halfW * 2, halfH * 2);
+        ctx.fillRect(car.x - halfDiag, car.y - halfDiag, halfDiag * 2, halfDiag * 2);
         
         ctx.restore();
-      } else {
-        // Standard Mode: Subtle Warm Daylight Asphalt Tint
+      } else if (!isLowFx) {
         ctx.fillStyle = 'rgba(245, 176, 0, 0.015)';
-        ctx.fillRect(car.x - halfW, car.y - halfH, halfW * 2, halfH * 2);
+        ctx.fillRect(car.x - halfDiag, car.y - halfDiag, halfDiag * 2, halfDiag * 2);
       }
 
       ctx.restore();
@@ -2911,16 +3413,18 @@
 
       ctx.restore();
 
-      // Subtle Screen Edge Vignette
-      const vigRadius = Math.max(canvas.width, canvas.height) * 0.72;
-      const vignette = ctx.createRadialGradient(
-        screenCenterX, screenCenterY, vigRadius * 0.46,
-        screenCenterX, screenCenterY, vigRadius
-      );
-      vignette.addColorStop(0, 'rgba(7, 12, 20, 0)');
-      vignette.addColorStop(1, activeGameMode === 'dark' ? 'rgba(4, 8, 15, 0.56)' : 'rgba(7, 12, 20, 0.32)');
-      ctx.fillStyle = vignette;
-      ctx.fillRect(0, 0, canvas.width, canvas.height);
+      // Subtle Screen Edge Vignette (skipped in Low Effects mode)
+      if (!isLowFx) {
+        const vigRadius = Math.max(canvas.width, canvas.height) * 0.72;
+        const vignette = ctx.createRadialGradient(
+          screenCenterX, screenCenterY, vigRadius * 0.46,
+          screenCenterX, screenCenterY, vigRadius
+        );
+        vignette.addColorStop(0, 'rgba(7, 12, 20, 0)');
+        vignette.addColorStop(1, activeGameMode === 'dark' ? 'rgba(4, 8, 15, 0.56)' : 'rgba(7, 12, 20, 0.32)');
+        ctx.fillStyle = vignette;
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+      }
 
       if (gameActive && !isPaused && activeGameMode !== 'dark') {
         renderMiniMap();
@@ -2945,12 +3449,10 @@
       // 2. Front Carbon Splitter Lip & Rear Diffuser + Twin Exhausts
       targetCtx.fillStyle = '#0c131f';
       if (modelId === 'supercar' || modelId === 'coupe') {
-        // Front aerodynamic chin splitter
         targetCtx.beginPath();
         targetCtx.roundRect(-w * 0.45, -h / 2 - 2, w * 0.90, 4, 2);
         targetCtx.fill();
       }
-      // Twin chrome exhaust tips at rear
       targetCtx.fillStyle = '#94a3b8';
       targetCtx.fillRect(-w * 0.26, h / 2 - 0.5, 3.2, 2.5);
       targetCtx.fillRect(w * 0.26 - 3.2, h / 2 - 0.5, 3.2, 2.5);
@@ -2986,7 +3488,6 @@
         targetCtx.fill();
         targetCtx.stroke();
 
-        // Tire tread notches
         targetCtx.strokeStyle = 'rgba(148, 163, 184, 0.25)';
         targetCtx.lineWidth = 0.8;
         targetCtx.beginPath();
@@ -2997,7 +3498,7 @@
         targetCtx.stroke();
       });
 
-      // 4. Main Painted Chassis Body (Clipped for clean livery & contours)
+      // 4. Main Painted Chassis Body
       targetCtx.save();
       targetCtx.beginPath();
       targetCtx.roundRect(-w / 2, -h / 2, w, h, cornerRadius);
@@ -3005,7 +3506,6 @@
       targetCtx.fill();
       targetCtx.clip();
 
-      // Metallic 3D body contour shading
       const bodyShade = targetCtx.createLinearGradient(-w / 2, 0, w / 2, 0);
       bodyShade.addColorStop(0, 'rgba(0, 0, 0, 0.32)');
       bodyShade.addColorStop(0.22, 'rgba(255, 255, 255, 0.08)');
@@ -3096,7 +3596,6 @@
       targetCtx.stroke();
 
       if (modelId === 'muscle') {
-        // Twin supercharger hood intake scoops
         targetCtx.fillStyle = '#0a111c';
         targetCtx.fillRect(-w * 0.18, -h * 0.38, w * 0.14, h * 0.13);
         targetCtx.fillRect(w * 0.04, -h * 0.38, w * 0.14, h * 0.13);
@@ -3105,7 +3604,6 @@
         targetCtx.strokeRect(-w * 0.18, -h * 0.38, w * 0.14, h * 0.13);
         targetCtx.strokeRect(w * 0.04, -h * 0.38, w * 0.14, h * 0.13);
       } else if (modelId === 'supercar') {
-        // Central NACA hood duct + side engine cooling gills
         targetCtx.fillStyle = '#0a111c';
         targetCtx.beginPath();
         targetCtx.moveTo(-w * 0.10, -h * 0.39);
@@ -3119,12 +3617,11 @@
         targetCtx.fillRect(-w / 2, h * 0.02, 3, h * 0.16);
         targetCtx.fillRect(w / 2 - 3, h * 0.02, 3, h * 0.16);
       } else if (modelId === 'coupe') {
-        // Sleek hood extractor vent
         targetCtx.fillStyle = 'rgba(7, 12, 20, 0.65)';
         targetCtx.fillRect(-w * 0.14, -h * 0.34, w * 0.28, h * 0.06);
       }
 
-      // 7. Panoramic Cabin Canopy (Front Windshield, Side Glass & Rear Louvers/Window)
+      // 7. Panoramic Cabin Canopy
       targetCtx.fillStyle = '#0a121f';
       targetCtx.beginPath();
       if (modelId === 'supercar') {
@@ -3136,7 +3633,6 @@
       }
       targetCtx.fill();
 
-      // Tinted Windshield Dual-Tone Specular Glare
       targetCtx.fillStyle = 'rgba(125, 185, 255, 0.28)';
       targetCtx.beginPath();
       targetCtx.moveTo(-w * 0.32, -h * 0.18);
@@ -3146,7 +3642,6 @@
       targetCtx.closePath();
       targetCtx.fill();
 
-      // Diagonal windshield glint streak
       targetCtx.fillStyle = 'rgba(255, 255, 255, 0.16)';
       targetCtx.beginPath();
       targetCtx.moveTo(-w * 0.16, -h * 0.18);
@@ -3156,9 +3651,7 @@
       targetCtx.closePath();
       targetCtx.fill();
 
-      // Roof Cap or Exposed Roll-Cage (Buggy)
       if (modelId === 'buggy') {
-        // Tubular steel roll-cage bars
         targetCtx.strokeStyle = '#cbd5e1';
         targetCtx.lineWidth = 1.6;
         targetCtx.strokeRect(-w * 0.24, -h * 0.04, w * 0.48, h * 0.22);
@@ -3176,7 +3669,7 @@
         targetCtx.stroke();
       }
 
-      targetCtx.restore(); // End chassis clip
+      targetCtx.restore();
 
       // 8. Crisp Outer Body Contour Outline
       targetCtx.strokeStyle = isColliding ? '#ffca28' : 'rgba(226, 238, 252, 0.78)';
@@ -3204,7 +3697,6 @@
         targetCtx.fill();
         targetCtx.stroke();
 
-        // Wing endplates
         targetCtx.fillStyle = '#ffca28';
         targetCtx.fillRect(-w * 0.49, h / 2 - 5.5, 1.8, 5.5);
         targetCtx.fillRect(w * 0.49 - 1.8, h / 2 - 5.5, 1.8, 5.5);
@@ -3237,8 +3729,7 @@
       const mapSize = 105;
       const padding = 12;
       const x = canvas.width - mapSize - padding;
-      const hudElem = document.getElementById('game-hud');
-      const y = (hudElem ? hudElem.offsetHeight : 55) + 10;
+      const y = (gameHudEl ? gameHudEl.offsetHeight : 55) + 10;
 
       ctx.drawImage(minimapCacheCanvas, x, y);
       ctx.strokeStyle = 'rgba(59, 125, 209, 0.72)';
@@ -3283,22 +3774,59 @@
       ctx.restore();
     }
 
+    function ensureFullMapStaticCache() {
+      if (!currentMaze || fullMapStaticCache.mazeId === currentMaze.id) return;
+      // Pick high-resolution tile size capped at 2048px total so zooming stays crisp without blowing memory
+      const maxDim = Math.max(currentMaze.cols, currentMaze.rows);
+      const tilePx = Math.max(4, Math.min(16, Math.floor(2048 / maxDim)));
+      fullMapStaticCache.tilePx = tilePx;
+      fullMapStaticCache.canvas.width = currentMaze.cols * tilePx;
+      fullMapStaticCache.canvas.height = currentMaze.rows * tilePx;
+
+      const sCtx = fullMapStaticCache.canvas.getContext('2d');
+      sCtx.fillStyle = '#0c1421';
+      sCtx.fillRect(0, 0, fullMapStaticCache.canvas.width, fullMapStaticCache.canvas.height);
+
+      sCtx.fillStyle = '#224778';
+      for (let r = 0; r < currentMaze.rows; r++) {
+        const row = currentMaze.grid[r];
+        for (let c = 0; c < currentMaze.cols; c++) {
+          if (row[c] === 1) {
+            sCtx.fillRect(c * tilePx, r * tilePx, tilePx, tilePx);
+          }
+        }
+      }
+
+      // Bake static start & finish markers into cached map image
+      sCtx.fillStyle = '#2b6cb8';
+      sCtx.fillRect(currentMaze.start.x * tilePx, currentMaze.start.y * tilePx, tilePx, tilePx);
+
+      sCtx.fillStyle = '#ffca28';
+      sCtx.fillRect(currentMaze.finish.x * tilePx, currentMaze.finish.y * tilePx, tilePx, tilePx);
+
+      fullMapStaticCache.mazeId = currentMaze.id;
+    }
+
     function openFullMapModal() {
       if (activeGameMode === 'dark') return;
       mapZoomScale = 1.0;
       mapPanX = 0;
       mapPanY = 0;
+      ensureFullMapStaticCache();
       document.getElementById('full-map-title').innerText = `${currentMaze.name} - Pinch / Buttons to Zoom, Drag to Hover`;
       document.getElementById('modal-full-map').classList.remove('hidden');
       renderFullMazeMap();
     }
 
     function renderFullMazeMap() {
+      ensureFullMapStaticCache();
       const containerW = fullMapCanvas.parentElement.clientWidth - 20;
       const containerH = fullMapCanvas.parentElement.clientHeight - 20;
       
-      fullMapCanvas.width = containerW;
-      fullMapCanvas.height = containerH;
+      if (fullMapCanvas.width !== containerW || fullMapCanvas.height !== containerH) {
+        fullMapCanvas.width = containerW;
+        fullMapCanvas.height = containerH;
+      }
 
       fullMapCtx.clearRect(0, 0, containerW, containerH);
 
@@ -3312,20 +3840,11 @@
       const offsetX = ((containerW - mapWidth) / 2) + mapPanX;
       const offsetY = ((containerH - mapHeight) / 2) + mapPanY;
 
-      for (let r = 0; r < currentMaze.rows; r++) {
-        for (let c = 0; c < currentMaze.cols; c++) {
-          const px = offsetX + c * tileSize;
-          const py = offsetY + r * tileSize;
+      // Blit pre-cached static maze image in a single drawImage call
+      fullMapCtx.imageSmoothingEnabled = false;
+      fullMapCtx.drawImage(fullMapStaticCache.canvas, offsetX, offsetY, mapWidth, mapHeight);
 
-          if (currentMaze.grid[r][c] === 1) {
-            fullMapCtx.fillStyle = '#224778';
-          } else {
-            fullMapCtx.fillStyle = '#0c1421';
-          }
-          fullMapCtx.fillRect(px, py, tileSize, tileSize);
-        }
-      }
-
+      // Draw dynamic trail & live car marker on top
       if (carTrailPath.length > 1) {
         fullMapCtx.strokeStyle = '#68a9f7';
         fullMapCtx.lineWidth = Math.max(2, tileSize * 0.6);
@@ -3342,12 +3861,6 @@
         }
         fullMapCtx.stroke();
       }
-
-      fullMapCtx.fillStyle = '#2b6cb8';
-      fullMapCtx.fillRect(offsetX + currentMaze.start.x * tileSize, offsetY + currentMaze.start.y * tileSize, tileSize, tileSize);
-
-      fullMapCtx.fillStyle = '#ffca28';
-      fullMapCtx.fillRect(offsetX + currentMaze.finish.x * tileSize, offsetY + currentMaze.finish.y * tileSize, tileSize, tileSize);
 
       const carMapX = offsetX + (car.x / TILE_SIZE) * tileSize;
       const carMapY = offsetY + (car.y / TILE_SIZE) * tileSize;
@@ -3403,6 +3916,7 @@
 
       document.getElementById('victory-record-status').classList.toggle('hidden', !isNewRecord);
       document.getElementById('modal-victory').classList.remove('hidden');
+      scheduleMenuBgMazeAnimation();
     }
 
     /* --------------------------------------------------------------------------
@@ -3460,7 +3974,8 @@
     let garagePreviewAnimId = null;
     function renderGaragePreviewCanvas() {
       const pCanvas = document.getElementById('garagePreviewCanvas');
-      if (!pCanvas) return;
+      const garageModal = document.getElementById('modal-garage');
+      if (!pCanvas || !garageModal || garageModal.classList.contains('hidden')) return;
       const pCtx = pCanvas.getContext('2d');
       pCanvas.width = pCanvas.clientWidth || 192;
       pCanvas.height = pCanvas.clientHeight || 192;
@@ -3469,12 +3984,17 @@
       if (garagePreviewAnimId) cancelAnimationFrame(garagePreviewAnimId);
 
       const drawPreview = () => {
+        // Stop automatically whenever modal/canvas is hidden or tab is inactive
+        if (document.hidden || garageModal.classList.contains('hidden') || pCanvas.offsetParent === null) {
+          garagePreviewAnimId = null;
+          return;
+        }
+
         pCtx.clearRect(0, 0, pCanvas.width, pCanvas.height);
         
         pCtx.fillStyle = '#070c14';
         pCtx.fillRect(0, 0, pCanvas.width, pCanvas.height);
 
-        // Turntable rings in deep royal blue & bright amber-gold
         pCtx.strokeStyle = 'rgba(59, 125, 209, 0.34)';
         pCtx.lineWidth = 1.5;
         pCtx.beginPath();
@@ -3500,7 +4020,7 @@
         garagePreviewAnimId = requestAnimationFrame(drawPreview);
       };
 
-      drawPreview();
+      garagePreviewAnimId = requestAnimationFrame(drawPreview);
     }
 
     function renderTuningUI(targetContainerId) {
@@ -3569,6 +4089,21 @@
       window.onGarageStatRangeChange(key, newVal.toString(), containerId);
     };
 
+    function updateLowEffectsUI() {
+      const isLow = playerSettings.lowEffects;
+      const badge = document.getElementById('opt-low-effects-badge');
+      const label = document.getElementById('btn-low-effects-label');
+      if (badge) {
+        badge.innerText = isLow ? 'Low Effects' : 'High Quality';
+        badge.className = isLow
+          ? 'text-[10px] font-bold px-2 py-0.5 rounded bg-[#f5b000]/20 text-[#ffca28] border border-[#f5b000]/55'
+          : 'text-[10px] font-bold px-2 py-0.5 rounded bg-[#1e4b85]/45 text-[#7cb5fa] border border-[#4b91e8]/40';
+      }
+      if (label) {
+        label.innerText = isLow ? 'Switch to High Quality Mode' : 'Switch to Low Effects Mode';
+      }
+    }
+
     function setupUIEventListeners() {
       const bindAction = (id, handler) => {
         const el = document.getElementById(id);
@@ -3584,22 +4119,27 @@
         populateBlockSelector();
         renderLevelSelector();
         document.getElementById('modal-levels').classList.remove('hidden');
+        scheduleMenuBgMazeAnimation();
       });
 
       bindAction('menu-btn-garage', () => {
-        renderGarageUI();
         document.getElementById('modal-garage').classList.remove('hidden');
+        renderGarageUI();
+        scheduleMenuBgMazeAnimation();
       });
 
       bindAction('menu-btn-settings', () => {
         renderTuningUI('settings-tuning-controls');
         initAudioSettingsUI();
+        updateLowEffectsUI();
         document.getElementById('modal-settings').classList.remove('hidden');
+        scheduleMenuBgMazeAnimation();
       });
 
       bindAction('menu-btn-leaderboard', () => {
         renderLeaderboardUI();
         document.getElementById('modal-leaderboard').classList.remove('hidden');
+        scheduleMenuBgMazeAnimation();
       });
 
       bindAction('btn-back-menu', () => {
@@ -3608,6 +4148,7 @@
         AudioEngine.stopBGM();
         AudioEngine.stopEngineSound();
         document.getElementById('modal-menu').classList.remove('hidden');
+        scheduleMenuBgMazeAnimation();
       });
 
       bindAction('btn-pause-game', () => togglePause());
@@ -3623,18 +4164,32 @@
         AudioEngine.stopBGM();
         AudioEngine.stopEngineSound();
         document.getElementById('modal-menu').classList.remove('hidden');
+        scheduleMenuBgMazeAnimation();
       });
 
       bindAction('btn-open-settings', () => {
         renderTuningUI('settings-tuning-controls');
         initAudioSettingsUI();
+        updateLowEffectsUI();
         document.getElementById('modal-settings').classList.remove('hidden');
+        scheduleMenuBgMazeAnimation();
+      });
+
+      bindAction('btn-toggle-low-effects', () => {
+        playerSettings.lowEffects = !playerSettings.lowEffects;
+        localStorage.setItem('tm_low_effects', playerSettings.lowEffects.toString());
+        updateLowEffectsUI();
+        if (currentMaze) {
+          MazeChunkCache.reset(currentMaze.id);
+          if (gameActive) renderWorld();
+        }
       });
 
       bindAction('btn-edit-controls-hud', () => toggleEditLayoutMode(true));
       bindAction('btn-start-adjust-controls', () => {
         document.getElementById('modal-settings').classList.add('hidden');
         toggleEditLayoutMode(true);
+        scheduleMenuBgMazeAnimation();
       });
       bindAction('btn-save-controls', () => toggleEditLayoutMode(false));
       bindAction('btn-reset-controls', () => resetControlPositions());
@@ -3694,6 +4249,7 @@
       bindAction('btn-close-pre-race', () => {
         document.getElementById('modal-pre-race-tuning').classList.add('hidden');
         document.getElementById('modal-levels').classList.remove('hidden');
+        scheduleMenuBgMazeAnimation();
       });
 
       bindAction('btn-start-race-now', () => {
@@ -3711,9 +4267,14 @@
       document.querySelectorAll('.btn-close-modal').forEach(btn => {
         btn.onclick = (e) => {
           e.preventDefault();
-          btn.closest('.fixed').classList.add('hidden');
+          const modal = btn.closest('.fixed');
+          if (modal) modal.classList.add('hidden');
           saveSettings();
-          if (garagePreviewAnimId) cancelAnimationFrame(garagePreviewAnimId);
+          if (garagePreviewAnimId) {
+            cancelAnimationFrame(garagePreviewAnimId);
+            garagePreviewAnimId = null;
+          }
+          scheduleMenuBgMazeAnimation();
         };
       });
 
@@ -3724,6 +4285,7 @@
         AudioEngine.stopBGM();
         AudioEngine.stopEngineSound();
         document.getElementById('modal-menu').classList.remove('hidden');
+        scheduleMenuBgMazeAnimation();
       });
 
       bindAction('victory-btn-restart', () => startCountdownAndRace(currentMaze));
@@ -3738,6 +4300,7 @@
         } else {
           document.getElementById('modal-victory').classList.add('hidden');
           document.getElementById('modal-menu').classList.remove('hidden');
+          scheduleMenuBgMazeAnimation();
         }
       });
 
@@ -3885,138 +4448,342 @@
 
       for (let i = selectedBlockStart; i <= blockEnd; i++) {
         const cfg = getMazeConfig(i, activeGameMode);
-        const isUnlocked = cfg.levelNum <= maxUnlocked;
+        const isUnlocked = i <= maxUnlocked;
         const pb = localStorage.getItem(`tm_pb_${cfg.id}`);
+        const pbText = pb ? `Best: ${formatTime(parseFloat(pb))}` : 'No Record';
+
         const card = document.createElement('div');
-        
-        card.className = `p-3 rounded-xl border flex justify-between items-center transition ${isUnlocked ? 'pit-card hover:border-[#f5b000]/65 cursor-pointer active:scale-98' : 'bg-[#070c14]/75 border-[#183d6e]/30 opacity-60 cursor-not-allowed'}`;
-        
-        card.innerHTML = `
-          <div>
-            <div class="font-bold text-[#f1f6fc] text-xs sm:text-sm flex items-center space-x-2">
-              <span>${cfg.name}</span>
-              <span class="text-[9px] bg-[#1e4b85]/45 text-[#7cb5fa] px-2 py-0.5 rounded border border-[#4b91e8]/40 font-mono">${cfg.size}x${cfg.size}</span>
-            </div>
-            <div class="text-[10px] text-[#9bb3d1] mt-0.5">${isUnlocked ? (pb ? `Best Record: ${formatTime(parseFloat(pb))}` : 'Unlocked • No time recorded') : '🔒 Locked (Complete prior level)'}</div>
-          </div>
-          <button class="${isUnlocked ? 'pit-btn-primary' : 'bg-[#121e30] text-[#4c6482]'} p-2 rounded-lg text-xs">
-            <i class="fa-solid ${isUnlocked ? 'fa-play' : 'fa-lock'}"></i>
-          </button>
-        `;
+        card.className = isUnlocked 
+          ? "pit-card hover:border-[#f5b000]/65 p-3 rounded-xl flex justify-between items-center transition cursor-pointer active:scale-98"
+          : "bg-[#09111e] border border-[#183d6e]/30 p-3 rounded-xl flex justify-between items-center opacity-60 cursor-not-allowed";
 
         if (isUnlocked) {
+          card.innerHTML = `
+            <div class="flex items-center space-x-3">
+              <div class="w-8 h-8 rounded-lg ${activeGameMode === 'dark' ? 'bg-[#1e4b85]/45 text-[#7cb5fa] border border-[#4b91e8]/45' : 'bg-[#f5b000]/20 text-[#ffca28] border border-[#f5b000]/55'} font-mono font-bold text-xs flex items-center justify-center shrink-0">
+                ${i}
+              </div>
+              <div>
+                <div class="font-bold text-[#f1f6fc] text-sm">${cfg.name}</div>
+                <div class="text-[11px] text-[#9bb3d1]">${pbText}</div>
+              </div>
+            </div>
+            <button class="px-4 py-1.5 pit-btn-primary text-xs font-bold rounded-lg">
+              Race
+            </button>
+          `;
           card.onclick = () => openPreRaceModal(cfg);
+        } else {
+          card.innerHTML = `
+            <div class="flex items-center space-x-3">
+              <div class="w-8 h-8 rounded-lg bg-[#121e30] text-[#4c6482] font-mono font-bold text-xs flex items-center justify-center shrink-0">
+                <i class="fa-solid fa-lock"></i>
+              </div>
+              <div>
+                <div class="font-bold text-[#4c6482] text-sm">${cfg.name}</div>
+                <div class="text-[10px] text-[#4c6482]">Locked • Complete Level ${i - 1} to unlock</div>
+              </div>
+            </div>
+            <span class="px-3 py-1 bg-[#121e30] text-[#4c6482] text-xs font-bold rounded-lg">
+              Locked
+            </span>
+          `;
         }
         container.appendChild(card);
       }
     }
 
     function renderLeaderboardUI() {
-      const input = document.getElementById('leaderboard-level-input');
-      let lvlNum = parseInt(input.value, 10);
+      const inputVal = parseInt(document.getElementById('leaderboard-level-input').value, 10);
       const totalLevels = getTotalLevelsForMode(activeGameMode);
+      const levelNum = isNaN(inputVal) ? 1 : Math.max(1, Math.min(totalLevels, inputVal));
       
-      if (isNaN(lvlNum) || lvlNum < 1) lvlNum = 1;
-      if (lvlNum > totalLevels) lvlNum = totalLevels;
-
-      const cfg = getMazeConfig(lvlNum, activeGameMode);
+      const cfg = getMazeConfig(levelNum, activeGameMode);
       const list = document.getElementById('leaderboard-list');
+      const entries = JSON.parse(localStorage.getItem(`tm_lb_${cfg.id}`) || '[]');
 
-      const records = JSON.parse(localStorage.getItem(`tm_lb_${cfg.id}`) || '[]');
-
-      if (records.length === 0) {
-        list.innerHTML = `<div class="text-center text-[#9bb3d1] py-6 text-xs">No records logged for ${cfg.name} (${cfg.size}x${cfg.size}) yet. Drive and set the benchmark!</div>`;
+      if (entries.length === 0) {
+        list.innerHTML = `<div class="text-center text-[#8ea7c7] text-xs py-6">No recorded times for ${cfg.name} yet. Race it now!</div>`;
         return;
       }
 
-      list.innerHTML = records.map((item, idx) => `
-        <div class="p-2.5 pit-card rounded-xl flex justify-between items-center">
-          <div class="flex items-center space-x-3">
-            <span class="font-bold ${idx===0?'text-[#ffca28]':idx===1?'text-[#68a9f7]':'text-[#9bb3d1]'} text-xs">#${idx+1}</span>
-            <div>
-              <div class="font-bold text-[#f1f6fc] text-xs">${escapeHtml(item.driver || 'Driver')}</div>
-              <div class="text-[9px] text-[#8ea7c7]">${item.date || ''}</div>
-            </div>
+      list.innerHTML = entries.map((item, idx) => `
+        <div class="flex justify-between items-center pit-card px-3 py-2 rounded-lg text-xs">
+          <div class="flex items-center space-x-2">
+            <span class="font-bold text-[#ffca28] w-4">#${idx + 1}</span>
+            <span class="font-medium text-[#f1f6fc]">${item.driver}</span>
           </div>
-          <div class="font-mono font-bold text-[#ffca28] text-xs">${formatTime(item.timeMs)}</div>
+          <div class="font-mono font-bold text-[#68a9f7]">${formatTime(item.timeMs)}</div>
         </div>
       `).join('');
     }
 
     function formatTime(ms) {
-      if (!ms || isNaN(ms)) return '00:00.000';
-      const mins = Math.floor(ms / 60000);
-      const secs = Math.floor((ms % 60000) / 1000);
-      const millis = Math.floor(ms % 1000);
-      return `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}.${millis.toString().padStart(3, '0')}`;
-    }
-
-    function escapeHtml(str) {
-      return str.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+      if (!ms || ms < 0) return "00:00.000";
+      const totalSeconds = Math.floor(ms / 1000);
+      const minutes = Math.floor(totalSeconds / 60).toString().padStart(2, '0');
+      const seconds = (totalSeconds % 60).toString().padStart(2, '0');
+      const millis = Math.floor(ms % 1000).toString().padStart(3, '0');
+      return `${minutes}:${seconds}.${millis}`;
     }
 
     /* --------------------------------------------------------------------------
-       SECTION 12: ANIMATED RANDOM MAZE BACKGROUND FOR MENUS & NON-RACING PAGES
+       SECTION 12: ANIMATED RANDOM MAZE BACKGROUND FOR ALL MENUS & PAGES
+       (Automatically paused while racing, when no menu is showing, or tab hidden)
        -------------------------------------------------------------------------- */
     let menuBgCanvas = null;
     let menuBgCtx = null;
-    let menuBgMaze = null;
-    let menuBgSeed = Math.floor(Math.random() * 90000) + 10000;
     let menuBgAnimId = null;
-    let menuBgCamera = { x: 0, y: 0 };
-    let menuBgRunner = { path: [], progress: 0 };
+    let menuBgLastTime = 0;
+
+    const MENU_BG_TILE = 52;
+    const menuBgState = {
+      grid: [],
+      cols: 0,
+      rows: 0,
+      start: { x: 1, y: 1 },
+      finish: { x: 1, y: 1 },
+      route: [],
+      routeIndex: 0,
+      carX: 0,
+      carY: 0,
+      carAngle: 0,
+      trail: [],
+      transitionPause: 0
+    };
 
     function resizeMenuBgCanvas() {
       if (!menuBgCanvas) return;
       menuBgCanvas.width = window.innerWidth;
       menuBgCanvas.height = window.innerHeight;
+      if (isAnyMenuPageVisible()) {
+        generateMenuBgMaze();
+      }
     }
 
-    function buildMenuBgMaze() {
-      menuBgSeed = (menuBgSeed * 1664525 + 1013904223) % 4294967296;
-      const m = generateDFSComplexMaze(31, 31, menuBgSeed);
-      menuBgMaze = m;
+    function isAnyMenuPageVisible() {
+      if (document.hidden || gameActive) return false;
+      const menuIds = [
+        'modal-menu',
+        'modal-levels',
+        'modal-garage',
+        'modal-settings',
+        'modal-leaderboard',
+        'modal-pre-race-tuning'
+      ];
+      return menuIds.some(id => {
+        const el = document.getElementById(id);
+        return el && !el.classList.contains('hidden');
+      });
+    }
 
-      // Compute BFS solution path so an autonomous racer car glides through the background maze
-      const queue = [[1, 1]];
-      const parent = Array(m.rows).fill().map(() => Array(m.cols).fill(null));
-      parent[1][1] = [-1, -1];
-      const dirs = [[1, 0], [-1, 0], [0, 1], [0, -1]];
+    function stopMenuBgMazeAnimation() {
+      if (menuBgAnimId) {
+        cancelAnimationFrame(menuBgAnimId);
+        menuBgAnimId = null;
+      }
+    }
+
+    function scheduleMenuBgMazeAnimation() {
+      if (!menuBgCanvas || !menuBgCtx) return;
+      if (!isAnyMenuPageVisible()) {
+        stopMenuBgMazeAnimation();
+        return;
+      }
+      if (!menuBgAnimId) {
+        if (!menuBgState.grid || menuBgState.grid.length === 0) {
+          generateMenuBgMaze();
+        }
+        menuBgLastTime = performance.now();
+        menuBgAnimId = requestAnimationFrame(stepMenuBgMazeAnimation);
+      }
+    }
+
+    function generateMenuBgMaze() {
+      if (!menuBgCanvas) return;
+      const w = menuBgCanvas.width || window.innerWidth;
+      const h = menuBgCanvas.height || window.innerHeight;
+
+      let cols = Math.max(11, Math.ceil(w / MENU_BG_TILE));
+      let rows = Math.max(9, Math.ceil(h / MENU_BG_TILE));
+      if (cols % 2 === 0) cols += 1;
+      if (rows % 2 === 0) rows += 1;
+
+      const seed = Math.floor(Math.random() * 9000000) + 100000;
+      const maze = generateDFSComplexMaze(cols, rows, seed);
+
+      const corners = [
+        { x: 1, y: 1 },
+        { x: maze.cols - 2, y: 1 },
+        { x: 1, y: maze.rows - 2 },
+        { x: maze.cols - 2, y: maze.rows - 2 }
+      ];
+      const startIdx = Math.floor(Math.random() * corners.length);
+      const start = corners[startIdx];
+      const finish = corners[(startIdx + 2 + Math.floor(Math.random() * 2)) % corners.length];
+
+      const visited = Array(maze.rows).fill().map(() => Array(maze.cols).fill(false));
+      const parent = Array(maze.rows).fill().map(() => Array(maze.cols).fill(null));
+      const queue = [[start.y, start.x]];
+      visited[start.y][start.x] = true;
+
+      const dirs = [[-1, 0], [1, 0], [0, -1], [0, 1]];
       while (queue.length > 0) {
         const [r, c] = queue.shift();
-        if (r === m.finish.y && c === m.finish.x) break;
+        if (r === finish.y && c === finish.x) break;
         for (const [dr, dc] of dirs) {
           const nr = r + dr;
           const nc = c + dc;
-          if (nr >= 0 && nr < m.rows && nc >= 0 && nc < m.cols && m.grid[nr][nc] === 0 && !parent[nr][nc]) {
+          if (nr >= 0 && nr < maze.rows && nc >= 0 && nc < maze.cols && !visited[nr][nc] && maze.grid[nr][nc] === 0) {
+            visited[nr][nc] = true;
             parent[nr][nc] = [r, c];
             queue.push([nr, nc]);
           }
         }
       }
 
-      const path = [];
-      let curr = [m.finish.y, m.finish.x];
-      while (curr && curr[0] !== -1) {
-        path.push({ x: curr[1] + 0.5, y: curr[0] + 0.5 });
+      const route = [];
+      let curr = [finish.y, finish.x];
+      while (curr) {
+        route.unshift({
+          x: (curr[1] + 0.5) * MENU_BG_TILE,
+          y: (curr[0] + 0.5) * MENU_BG_TILE
+        });
         curr = parent[curr[0]][curr[1]];
       }
-      path.reverse();
-      menuBgRunner.path = path.length > 1 ? path : [{ x: 1.5, y: 1.5 }, { x: 2.5, y: 1.5 }];
-      menuBgRunner.progress = 0;
+
+      menuBgState.grid = maze.grid;
+      menuBgState.cols = maze.cols;
+      menuBgState.rows = maze.rows;
+      menuBgState.start = start;
+      menuBgState.finish = finish;
+      menuBgState.route = route;
+      menuBgState.routeIndex = 1;
+      menuBgState.carX = route[0] ? route[0].x : (start.x + 0.5) * MENU_BG_TILE;
+      menuBgState.carY = route[0] ? route[0].y : (start.y + 0.5) * MENU_BG_TILE;
+      menuBgState.carAngle = 0;
+      menuBgState.trail = [{ x: menuBgState.carX, y: menuBgState.carY }];
+      menuBgState.transitionPause = 0;
     }
 
-    function isAnyNonRacingMenuOpen() {
-      if (!gameActive) return true;
-      const modalIds = [
-        'modal-menu', 'modal-garage', 'modal-levels',
-        'modal-pre-race-tuning', 'modal-settings',
-        'modal-victory', 'modal-leaderboard', 'modal-loading-screen'
-      ];
-      return modalIds.some(id => {
-        const el = document.getElementById(id);
-        return el && !el.classList.contains('hidden');
-      });
+    function stepMenuBgMazeAnimation(timestamp) {
+      if (!isAnyMenuPageVisible()) {
+        menuBgAnimId = null;
+        return;
+      }
+
+      const dt = Math.min((timestamp - (menuBgLastTime || timestamp)) / 1000, 0.1);
+      menuBgLastTime = timestamp;
+
+      const visible = isAnyMenuPageVisible();
+      menuBgCanvas.style.opacity = visible ? '1' : '0';
+
+      if (visible) {
+        if (menuBgState.transitionPause > 0) {
+          menuBgState.transitionPause -= dt;
+          if (menuBgState.transitionPause <= 0) {
+            generateMenuBgMaze();
+          }
+        } else if (menuBgState.route.length > 1 && menuBgState.routeIndex < menuBgState.route.length) {
+          const target = menuBgState.route[menuBgState.routeIndex];
+          const dx = target.x - menuBgState.carX;
+          const dy = target.y - menuBgState.carY;
+          const dist = Math.hypot(dx, dy);
+          const speed = 135;
+
+          if (dist > 0.5) {
+            const desiredAngle = Math.atan2(dx, -dy);
+            let diff = desiredAngle - menuBgState.carAngle;
+            while (diff > Math.PI) diff -= Math.PI * 2;
+            while (diff < -Math.PI) diff += Math.PI * 2;
+            menuBgState.carAngle += diff * Math.min(1, dt * 12);
+          }
+
+          const step = speed * dt;
+          if (dist <= step) {
+            menuBgState.carX = target.x;
+            menuBgState.carY = target.y;
+            menuBgState.routeIndex++;
+            if (menuBgState.routeIndex >= menuBgState.route.length) {
+              menuBgState.transitionPause = 0.75;
+            }
+          } else {
+            menuBgState.carX += (dx / dist) * step;
+            menuBgState.carY += (dy / dist) * step;
+          }
+
+          const lastPt = menuBgState.trail[menuBgState.trail.length - 1];
+          if (!lastPt || Math.hypot(menuBgState.carX - lastPt.x, menuBgState.carY - lastPt.y) > 8) {
+            menuBgState.trail.push({ x: menuBgState.carX, y: menuBgState.carY });
+            if (menuBgState.trail.length > 140) menuBgState.trail.shift();
+          }
+        }
+
+        renderMenuBgMaze();
+      }
+
+      menuBgAnimId = requestAnimationFrame(stepMenuBgMazeAnimation);
+    }
+
+    function renderMenuBgMaze() {
+      if (!menuBgCtx) return;
+      const w = menuBgCanvas.width;
+      const h = menuBgCanvas.height;
+
+      menuBgCtx.fillStyle = '#070c14';
+      menuBgCtx.fillRect(0, 0, w, h);
+
+      const offsetX = (w - menuBgState.cols * MENU_BG_TILE) / 2;
+      const offsetY = (h - menuBgState.rows * MENU_BG_TILE) / 2;
+
+      menuBgCtx.save();
+      menuBgCtx.translate(offsetX, offsetY);
+
+      for (let r = 0; r < menuBgState.rows; r++) {
+        for (let c = 0; c < menuBgState.cols; c++) {
+          const x = c * MENU_BG_TILE;
+          const y = r * MENU_BG_TILE;
+          const isWall = menuBgState.grid[r][c] === 1;
+
+          if (isWall) {
+            menuBgCtx.fillStyle = '#0f1f38';
+            menuBgCtx.fillRect(x, y, MENU_BG_TILE, MENU_BG_TILE);
+            menuBgCtx.strokeStyle = 'rgba(43, 108, 184, 0.30)';
+            menuBgCtx.lineWidth = 1;
+            menuBgCtx.strokeRect(x + 0.5, y + 0.5, MENU_BG_TILE - 1, MENU_BG_TILE - 1);
+          } else {
+            menuBgCtx.fillStyle = '#09111e';
+            menuBgCtx.fillRect(x, y, MENU_BG_TILE, MENU_BG_TILE);
+          }
+        }
+      }
+
+      menuBgCtx.fillStyle = 'rgba(43, 108, 184, 0.42)';
+      menuBgCtx.fillRect(menuBgState.start.x * MENU_BG_TILE + 6, menuBgState.start.y * MENU_BG_TILE + 6, MENU_BG_TILE - 12, MENU_BG_TILE - 12);
+
+      menuBgCtx.fillStyle = 'rgba(245, 176, 0, 0.48)';
+      menuBgCtx.fillRect(menuBgState.finish.x * MENU_BG_TILE + 6, menuBgState.finish.y * MENU_BG_TILE + 6, MENU_BG_TILE - 12, MENU_BG_TILE - 12);
+
+      if (menuBgState.trail.length > 1) {
+        menuBgCtx.strokeStyle = 'rgba(75, 145, 232, 0.48)';
+        menuBgCtx.lineWidth = 3.5;
+        menuBgCtx.lineCap = 'round';
+        menuBgCtx.lineJoin = 'round';
+        menuBgCtx.beginPath();
+        menuBgCtx.moveTo(menuBgState.trail[0].x, menuBgState.trail[0].y);
+        for (let i = 1; i < menuBgState.trail.length; i++) {
+          menuBgCtx.lineTo(menuBgState.trail[i].x, menuBgState.trail[i].y);
+        }
+        menuBgCtx.stroke();
+      }
+
+      menuBgCtx.save();
+      menuBgCtx.translate(menuBgState.carX, menuBgState.carY);
+      menuBgCtx.rotate(menuBgState.carAngle);
+      drawCustomCar(menuBgCtx, 0, 0, 18, 30, garageConfig.modelId, garageConfig.color, garageConfig.decal, false);
+      menuBgCtx.restore();
+
+      menuBgCtx.restore();
     }
 
     function initMenuBgMazeAnimation() {
@@ -4024,125 +4791,7 @@
       if (!menuBgCanvas) return;
       menuBgCtx = menuBgCanvas.getContext('2d');
       resizeMenuBgCanvas();
-      buildMenuBgMaze();
-
-      const cell = 44;
-
-      const animateMenuBg = () => {
-        const showBg = isAnyNonRacingMenuOpen();
-        menuBgCanvas.style.display = showBg ? 'block' : 'none';
-
-        if (showBg && menuBgMaze) {
-          const w = menuBgCanvas.width;
-          const h = menuBgCanvas.height;
-          const mazeW = menuBgMaze.cols * cell;
-          const mazeH = menuBgMaze.rows * cell;
-
-          menuBgRunner.progress += 0.045;
-          if (menuBgRunner.progress >= menuBgRunner.path.length - 1) {
-            buildMenuBgMaze();
-          }
-
-          const idx = Math.floor(menuBgRunner.progress);
-          const frac = menuBgRunner.progress - idx;
-          const p0 = menuBgRunner.path[Math.min(idx, menuBgRunner.path.length - 1)];
-          const p1 = menuBgRunner.path[Math.min(idx + 1, menuBgRunner.path.length - 1)];
-          const rx = (p0.x + (p1.x - p0.x) * frac) * cell;
-          const ry = (p0.y + (p1.y - p0.y) * frac) * cell;
-          const rAngle = Math.atan2(p1.y - p0.y, p1.x - p0.x) + Math.PI / 2;
-
-          const targetCamX = Math.max(0, Math.min(Math.max(0, mazeW - w), rx - w / 2));
-          const targetCamY = Math.max(0, Math.min(Math.max(0, mazeH - h), ry - h / 2));
-          menuBgCamera.x += (targetCamX - menuBgCamera.x) * 0.04;
-          menuBgCamera.y += (targetCamY - menuBgCamera.y) * 0.04;
-
-          menuBgCtx.fillStyle = '#070c14';
-          menuBgCtx.fillRect(0, 0, w, h);
-
-          menuBgCtx.save();
-          menuBgCtx.translate(-menuBgCamera.x, -menuBgCamera.y);
-
-          const startCol = Math.max(0, Math.floor(menuBgCamera.x / cell));
-          const endCol = Math.min(menuBgMaze.cols - 1, Math.ceil((menuBgCamera.x + w) / cell));
-          const startRow = Math.max(0, Math.floor(menuBgCamera.y / cell));
-          const endRow = Math.min(menuBgMaze.rows - 1, Math.ceil((menuBgCamera.y + h) / cell));
-
-          for (let r = startRow; r <= endRow; r++) {
-            for (let c = startCol; c <= endCol; c++) {
-              const px = c * cell;
-              const py = r * cell;
-              if (menuBgMaze.grid[r][c] === 1) {
-                menuBgCtx.fillStyle = '#13243f';
-                menuBgCtx.fillRect(px, py, cell, cell);
-
-                // Subtle brick courses
-                menuBgCtx.strokeStyle = 'rgba(7, 12, 20, 0.65)';
-                menuBgCtx.lineWidth = 1;
-                menuBgCtx.beginPath();
-                menuBgCtx.moveTo(px, py + cell * 0.33);
-                menuBgCtx.lineTo(px + cell, py + cell * 0.33);
-                menuBgCtx.moveTo(px, py + cell * 0.66);
-                menuBgCtx.lineTo(px + cell, py + cell * 0.66);
-                menuBgCtx.moveTo(px + cell * 0.5, py);
-                menuBgCtx.lineTo(px + cell * 0.5, py + cell * 0.33);
-                menuBgCtx.moveTo(px + cell * 0.25, py + cell * 0.33);
-                menuBgCtx.lineTo(px + cell * 0.25, py + cell * 0.66);
-                menuBgCtx.moveTo(px + cell * 0.75, py + cell * 0.66);
-                menuBgCtx.lineTo(px + cell * 0.75, py + cell);
-                menuBgCtx.stroke();
-
-                // Continuous gold coping along exposed wall edges
-                menuBgCtx.strokeStyle = 'rgba(255, 202, 40, 0.26)';
-                menuBgCtx.lineWidth = 1.4;
-                if (r > 0 && menuBgMaze.grid[r - 1][c] === 0) {
-                  menuBgCtx.beginPath(); menuBgCtx.moveTo(px, py + 1.5); menuBgCtx.lineTo(px + cell, py + 1.5); menuBgCtx.stroke();
-                }
-                if (r < menuBgMaze.rows - 1 && menuBgMaze.grid[r + 1][c] === 0) {
-                  menuBgCtx.beginPath(); menuBgCtx.moveTo(px, py + cell - 1.5); menuBgCtx.lineTo(px + cell, py + cell - 1.5); menuBgCtx.stroke();
-                }
-                if (c > 0 && menuBgMaze.grid[r][c - 1] === 0) {
-                  menuBgCtx.beginPath(); menuBgCtx.moveTo(px + 1.5, py); menuBgCtx.lineTo(px + 1.5, py + cell); menuBgCtx.stroke();
-                }
-                if (c < menuBgMaze.cols - 1 && menuBgMaze.grid[r][c + 1] === 0) {
-                  menuBgCtx.beginPath(); menuBgCtx.moveTo(px + cell - 1.5, py); menuBgCtx.lineTo(px + cell - 1.5, py + cell); menuBgCtx.stroke();
-                }
-              } else {
-                menuBgCtx.fillStyle = '#0b121e';
-                menuBgCtx.fillRect(px, py, cell, cell);
-              }
-            }
-          }
-
-          // Glowing path trail behind the autonomous car
-          if (idx > 0) {
-            menuBgCtx.strokeStyle = 'rgba(75, 145, 232, 0.34)';
-            menuBgCtx.lineWidth = 4;
-            menuBgCtx.lineCap = 'round';
-            menuBgCtx.lineJoin = 'round';
-            menuBgCtx.beginPath();
-            menuBgCtx.moveTo(menuBgRunner.path[0].x * cell, menuBgRunner.path[0].y * cell);
-            for (let i = 1; i <= idx; i++) {
-              menuBgCtx.lineTo(menuBgRunner.path[i].x * cell, menuBgRunner.path[i].y * cell);
-            }
-            menuBgCtx.lineTo(rx, ry);
-            menuBgCtx.stroke();
-          }
-
-          // Autonomous mini-racer gliding through the menu maze
-          menuBgCtx.save();
-          menuBgCtx.translate(rx, ry);
-          menuBgCtx.rotate(rAngle);
-          drawCustomCar(menuBgCtx, 0, 0, 16, 28, garageConfig.modelId, garageConfig.color, garageConfig.decal, false);
-          menuBgCtx.restore();
-
-          menuBgCtx.restore();
-        }
-
-        menuBgAnimId = requestAnimationFrame(animateMenuBg);
-      };
-
-      if (menuBgAnimId) cancelAnimationFrame(menuBgAnimId);
-      menuBgAnimId = requestAnimationFrame(animateMenuBg);
+      scheduleMenuBgMazeAnimation();
     }
   </script>
 </body>
