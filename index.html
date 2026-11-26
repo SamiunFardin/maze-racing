@@ -818,6 +818,7 @@
         <div class="text-[10px] text-[#9bb3d1] font-bold uppercase">Time Recorded</div>
         <div id="victory-final-time" class="text-2xl font-mono font-bold text-[#ffca28] my-0.5">00:45.420</div>
         <div id="victory-record-status" class="text-xs font-bold text-[#68a9f7] hidden">🎉 NEW PERSONAL BEST RECORD!</div>
+        <div id="victory-global-score-status" class="text-[10px] text-[#9bb3d1] mt-1" role="status" aria-live="polite"></div>
       </div>
 
       <div class="grid grid-cols-3 gap-2">
@@ -862,7 +863,58 @@
     /* --------------------------------------------------------------------------
        SECTION 0: PWA SERVICE WORKER REGISTRATION & VERSION CHECK
        -------------------------------------------------------------------------- */
-    const CURRENT_GAME_VERSION = '1.4.0';
+    const CURRENT_GAME_VERSION = '1.4.1';
+    const SUPABASE_PROJECT_URL = 'https://jqolvwzonrutoqmnmvys.supabase.co';
+    const SUPABASE_PUBLISHABLE_KEY = 'sb_publishable_TETw-FSaSLTHwDJQ3Kq8wg_5PY4FJDA';
+    const SUPABASE_LEADERBOARD_URL = `${SUPABASE_PROJECT_URL}/rest/v1/leaderboard_scores`;
+
+    async function submitGlobalScore(mazeId, driver, timeMs) {
+      const response = await fetch(SUPABASE_LEADERBOARD_URL, {
+        method: 'POST',
+        headers: {
+          apikey: SUPABASE_PUBLISHABLE_KEY,
+          'Content-Type': 'application/json',
+          Prefer: 'return=minimal'
+        },
+        body: JSON.stringify({
+          maze_id: mazeId,
+          driver: driver.trim().slice(0, 24) || 'Driver',
+          time_ms: Math.round(timeMs)
+        })
+      });
+
+      if (!response.ok) {
+        throw new Error(`Score submission failed (${response.status}): ${await response.text()}`);
+      }
+    }
+
+    async function fetchGlobalScores(mazeId) {
+      const params = new URLSearchParams({
+        select: 'driver,time_ms,created_at',
+        maze_id: `eq.${mazeId}`,
+        order: 'time_ms.asc,created_at.asc',
+        limit: '10'
+      });
+      const response = await fetch(`${SUPABASE_LEADERBOARD_URL}?${params}`, {
+        headers: { apikey: SUPABASE_PUBLISHABLE_KEY }
+      });
+
+      if (!response.ok) {
+        throw new Error(`Leaderboard request failed (${response.status}): ${await response.text()}`);
+      }
+
+      const rows = await response.json();
+      if (!Array.isArray(rows)) {
+        throw new Error('Leaderboard response was not a list.');
+      }
+
+      return rows.map(row => ({
+        driver: row.driver,
+        timeMs: row.time_ms,
+        date: new Date(row.created_at).toLocaleDateString()
+      }));
+    }
+
     function checkGameVersion() {
       const savedVersion = localStorage.getItem('tm_game_version');
       if (savedVersion !== CURRENT_GAME_VERSION) {
@@ -3559,6 +3611,17 @@
       mazeLeaderboard = mazeLeaderboard.slice(0, 10);
       localStorage.setItem(`tm_lb_${currentMaze.id}`, JSON.stringify(mazeLeaderboard));
 
+      const globalScoreStatus = document.getElementById('victory-global-score-status');
+      globalScoreStatus.textContent = 'Submitting to global leaderboard...';
+      submitGlobalScore(currentMaze.id, playerSettings.playerName, timeMs)
+        .then(() => {
+          globalScoreStatus.textContent = 'Score added to the global leaderboard.';
+        })
+        .catch(error => {
+          console.error('Global leaderboard score submission failed:', error);
+          globalScoreStatus.textContent = 'Could not submit your global score. Check your connection and try again later.';
+        });
+
       document.getElementById('victory-record-status').classList.toggle('hidden', !isNewRecord);
       document.getElementById('modal-victory').classList.remove('hidden');
     }
@@ -4112,7 +4175,9 @@
       }
     }
 
-    function renderLeaderboardUI() {
+    let leaderboardRenderRequestId = 0;
+
+    async function renderLeaderboardUI() {
       const input = document.getElementById('leaderboard-level-input');
       let lvlNum = parseInt(input.value, 10);
       const totalLevels = getTotalLevelsForMode(activeGameMode);
@@ -4122,15 +4187,33 @@
 
       const cfg = getMazeConfig(lvlNum, activeGameMode);
       const list = document.getElementById('leaderboard-list');
+      const requestId = ++leaderboardRenderRequestId;
+      list.innerHTML = `<div class="text-center text-[#9bb3d1] py-6 text-xs">Loading global records...</div>`;
 
-      const records = JSON.parse(localStorage.getItem(`tm_lb_${cfg.id}`) || '[]');
+      let records;
+      try {
+        records = await fetchGlobalScores(cfg.id);
+      } catch (error) {
+        console.error('Global leaderboard load failed:', error);
+        if (requestId !== leaderboardRenderRequestId) return;
+
+        records = JSON.parse(localStorage.getItem(`tm_lb_${cfg.id}`) || '[]');
+        if (records.length === 0) {
+          list.innerHTML = `<div class="text-center text-[#9bb3d1] py-6 text-xs">Could not load the global leaderboard. Check your connection and try again.</div>`;
+          return;
+        }
+
+        list.innerHTML = `<div class="text-center text-[#9bb3d1] text-[10px] pb-2">Global records are unavailable. Showing records saved on this device.</div>`;
+      }
+
+      if (requestId !== leaderboardRenderRequestId) return;
 
       if (records.length === 0) {
-        list.innerHTML = `<div class="text-center text-[#9bb3d1] py-6 text-xs">No records logged for ${cfg.name} (${cfg.size}x${cfg.size}) yet. Drive and set the benchmark!</div>`;
+        list.innerHTML = `<div class="text-center text-[#9bb3d1] py-6 text-xs">No global records for ${cfg.name} (${cfg.size}x${cfg.size}) yet. Drive and set the benchmark!</div>`;
         return;
       }
 
-      list.innerHTML = records.map((item, idx) => `
+      const recordsHtml = records.map((item, idx) => `
         <div class="p-2.5 pit-card rounded-xl flex justify-between items-center">
           <div class="flex items-center space-x-3">
             <span class="font-bold ${idx===0?'text-[#ffca28]':idx===1?'text-[#68a9f7]':'text-[#9bb3d1]'} text-xs">#${idx+1}</span>
@@ -4142,6 +4225,7 @@
           <div class="font-mono font-bold text-[#ffca28] text-xs">${formatTime(item.timeMs)}</div>
         </div>
       `).join('');
+      list.innerHTML += recordsHtml;
     }
 
     function formatTime(ms) {
