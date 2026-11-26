@@ -849,7 +849,9 @@
       </div>
 
       <div>
-        <label for="leaderboard-level-select" class="block text-[10px] uppercase text-[#9bb3d1] font-bold mb-1">Select Level</label>
+        <label for="leaderboard-level-search" class="block text-[10px] uppercase text-[#9bb3d1] font-bold mb-1">Search Levels</label>
+        <input type="search" id="leaderboard-level-search" autocomplete="off" placeholder="Type a level number or name" class="w-full bg-[#070c14] border border-[#3b7dd1]/45 rounded-xl px-3 py-2 text-[#f1f6fc] text-xs font-bold focus:outline-none focus:border-[#ffca28] mb-2">
+        <label for="leaderboard-level-select" class="block text-[10px] uppercase text-[#9bb3d1] font-bold mb-1">Choose from matching levels</label>
         <select id="leaderboard-level-select" class="w-full bg-[#070c14] border border-[#3b7dd1]/45 rounded-xl px-3 py-2 text-[#f1f6fc] text-xs font-bold focus:outline-none focus:border-[#ffca28]"></select>
       </div>
 
@@ -864,7 +866,7 @@
     /* --------------------------------------------------------------------------
        SECTION 0: PWA SERVICE WORKER REGISTRATION & VERSION CHECK
        -------------------------------------------------------------------------- */
-    const CURRENT_GAME_VERSION = '1.4.2';
+    const CURRENT_GAME_VERSION = '1.4.3';
     const SUPABASE_PROJECT_URL = 'https://jqolvwzonrutoqmnmvys.supabase.co';
     const SUPABASE_PUBLISHABLE_KEY = 'sb_publishable_TETw-FSaSLTHwDJQ3Kq8wg_5PY4FJDA';
     const SUPABASE_LEADERBOARD_URL = `${SUPABASE_PROJECT_URL}/rest/v1/leaderboard_scores`;
@@ -3859,6 +3861,7 @@
       });
 
       bindAction('menu-btn-leaderboard', () => {
+        document.getElementById('leaderboard-level-search').value = '';
         populateLeaderboardLevelOptions();
         renderLeaderboardUI();
         document.getElementById('modal-leaderboard').classList.remove('hidden');
@@ -4019,7 +4022,14 @@
       bindAction('opt-steer-buttons', () => selectSteerOption('buttons'));
       bindAction('opt-steer-wheel', () => selectSteerOption('wheel'));
 
-      document.getElementById('leaderboard-level-select').onchange = renderLeaderboardUI;
+      const leaderboardLevelSearch = document.getElementById('leaderboard-level-search');
+      const leaderboardLevelSelect = document.getElementById('leaderboard-level-select');
+      leaderboardLevelSearch.oninput = filterLeaderboardLevelOptions;
+      leaderboardLevelSelect.onchange = () => {
+        if (!leaderboardLevelSelect.value) return;
+        leaderboardLevelSelect.dataset.selectedLevel = leaderboardLevelSelect.value;
+        renderLeaderboardUI();
+      };
       document.getElementById('input-player-name').oninput = () => {
         if (document.getElementById('input-player-name').value.trim()) {
           document.getElementById('player-name-error').classList.add('hidden');
@@ -4207,26 +4217,62 @@
     }
 
     let leaderboardRenderRequestId = 0;
+    const leaderboardLevelOptionsCache = {};
 
     function populateLeaderboardLevelOptions() {
       const select = document.getElementById('leaderboard-level-select');
-      if (select.dataset.mode === activeGameMode) return;
-
-      const previousLevel = parseInt(select.value, 10);
-      const totalLevels = getTotalLevelsForMode(activeGameMode);
-      const selectedLevel = Number.isInteger(previousLevel) && previousLevel >= 1 && previousLevel <= totalLevels
-        ? previousLevel
-        : 1;
-      const options = [];
-
-      for (let level = 1; level <= totalLevels; level++) {
-        const cfg = getMazeConfig(level, activeGameMode);
-        options.push(`<option value="${level}">${cfg.name} (${cfg.size}x${cfg.size})</option>`);
+      if (select.dataset.mode !== activeGameMode) {
+        const previousLevel = parseInt(select.dataset.selectedLevel || select.value, 10);
+        const totalLevels = getTotalLevelsForMode(activeGameMode);
+        const selectedLevel = Number.isInteger(previousLevel) && previousLevel >= 1 && previousLevel <= totalLevels
+          ? previousLevel
+          : 1;
+        select.dataset.mode = activeGameMode;
+        select.dataset.selectedLevel = selectedLevel.toString();
       }
 
-      select.innerHTML = options.join('');
-      select.value = selectedLevel.toString();
-      select.dataset.mode = activeGameMode;
+      filterLeaderboardLevelOptions();
+    }
+
+    function getLeaderboardLevelOptions(mode) {
+      if (!leaderboardLevelOptionsCache[mode]) {
+        const totalLevels = getTotalLevelsForMode(mode);
+        const options = [];
+        for (let level = 1; level <= totalLevels; level++) {
+          const cfg = getMazeConfig(level, mode);
+          const label = `${cfg.name} (${cfg.size}x${cfg.size})`;
+          options.push({
+            value: level.toString(),
+            label,
+            searchText: `${level} ${label}`.toLowerCase()
+          });
+        }
+        leaderboardLevelOptionsCache[mode] = options;
+      }
+
+      return leaderboardLevelOptionsCache[mode];
+    }
+
+    function filterLeaderboardLevelOptions() {
+      const select = document.getElementById('leaderboard-level-select');
+      const query = document.getElementById('leaderboard-level-search').value.trim().toLowerCase();
+      const selectedLevel = select.dataset.selectedLevel || '1';
+      const matchingOptions = getLeaderboardLevelOptions(activeGameMode)
+        .filter(option => option.searchText.includes(query));
+
+      if (matchingOptions.length === 0) {
+        select.innerHTML = '<option value="">No matching levels</option>';
+        return;
+      }
+
+      const hasSelectedMatch = matchingOptions.some(option => option.value === selectedLevel);
+      const optionsHtml = matchingOptions
+        .map(option => `<option value="${option.value}">${option.label}</option>`)
+        .join('');
+      select.innerHTML = hasSelectedMatch
+        ? optionsHtml
+        : `<option value="">Select a matching level</option>${optionsHtml}`;
+      select.value = hasSelectedMatch ? selectedLevel : '';
     }
 
     async function renderLeaderboardUI() {
