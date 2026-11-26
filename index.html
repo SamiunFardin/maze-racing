@@ -589,12 +589,12 @@
 
         <button id="menu-btn-leaderboard" class="w-full py-3 pit-btn-secondary font-bold rounded-xl flex items-center justify-center space-x-2 transition">
           <i class="fa-solid fa-trophy text-[#ffca28]"></i>
-          <span>Track Leaderboards</span>
+          <span>Global Leaderboard</span>
         </button>
 
         <button id="menu-btn-settings" class="w-full py-3 pit-btn-secondary font-bold rounded-xl flex items-center justify-center space-x-2 transition">
           <i class="fa-solid fa-sliders text-[#d6e4f5]"></i>
-          <span>Control Options & Tuning</span>
+          <span>Settings</span>
         </button>
       </div>
     </div>
@@ -710,7 +710,7 @@
     <div class="max-w-md w-full pit-panel rounded-2xl p-5 space-y-4 max-h-[90vh] overflow-y-auto custom-scroll min-h-0">
       <div class="flex justify-between items-center border-b border-[#1e4b85]/45 pb-3">
         <h2 class="text-lg font-bold text-[#f1f6fc] flex items-center gap-2">
-          <i class="fa-solid fa-sliders text-[#68a9f7]"></i> Preferences & Audio
+          <i class="fa-solid fa-sliders text-[#68a9f7]"></i> Settings
         </h2>
         <button class="btn-close-modal text-[#9bb3d1] hover:text-[#f1f6fc] p-1">
           <i class="fa-solid fa-xmark text-lg"></i>
@@ -791,8 +791,9 @@
         </div>
 
         <div>
-          <label class="block text-xs uppercase tracking-wider text-[#9bb3d1] font-bold mb-1">Driver Name</label>
-          <input type="text" id="input-player-name" maxlength="14" placeholder="SpeedRacer" class="w-full bg-[#070c14] border border-[#3b7dd1]/45 rounded-xl px-4 py-2 text-[#f1f6fc] text-sm focus:outline-none focus:border-[#ffca28]">
+          <label for="input-player-name" class="block text-xs uppercase tracking-wider text-[#9bb3d1] font-bold mb-1">Driver Name <span class="text-[#ffca28]">*</span></label>
+          <input type="text" id="input-player-name" maxlength="14" required autocomplete="nickname" placeholder="Enter your driver name" aria-describedby="player-name-error" class="w-full bg-[#070c14] border border-[#3b7dd1]/45 rounded-xl px-4 py-2 text-[#f1f6fc] text-sm focus:outline-none focus:border-[#ffca28]">
+          <p id="player-name-error" class="hidden text-[10px] text-[#ff8a80] mt-1" role="alert">A driver name is required before you can race.</p>
         </div>
       </div>
 
@@ -840,7 +841,7 @@
     <div class="max-w-md w-full pit-panel rounded-2xl p-5 space-y-4 max-h-[85vh] flex flex-col">
       <div class="flex justify-between items-center border-b border-[#1e4b85]/45 pb-2">
         <h2 class="text-lg font-bold text-[#f1f6fc] flex items-center gap-2">
-          <i class="fa-solid fa-trophy text-[#ffca28]"></i> Track Records
+          <i class="fa-solid fa-trophy text-[#ffca28]"></i> Global Leaderboard
         </h2>
         <button class="btn-close-modal text-[#9bb3d1] hover:text-[#f1f6fc] p-1">
           <i class="fa-solid fa-xmark text-lg"></i>
@@ -848,8 +849,8 @@
       </div>
 
       <div>
-        <label class="block text-[10px] uppercase text-[#9bb3d1] font-bold mb-1">Select Level</label>
-        <input type="number" id="leaderboard-level-input" min="1" max="10100" value="1" class="w-full bg-[#070c14] border border-[#3b7dd1]/45 rounded-xl px-3 py-2 text-[#f1f6fc] text-xs font-bold focus:outline-none focus:border-[#ffca28]">
+        <label for="leaderboard-level-select" class="block text-[10px] uppercase text-[#9bb3d1] font-bold mb-1">Select Level</label>
+        <select id="leaderboard-level-select" class="w-full bg-[#070c14] border border-[#3b7dd1]/45 rounded-xl px-3 py-2 text-[#f1f6fc] text-xs font-bold focus:outline-none focus:border-[#ffca28]"></select>
       </div>
 
       <div id="leaderboard-list" class="space-y-2 overflow-y-auto custom-scroll flex-1 pr-1 min-h-0" style="touch-action: pan-y !important;"></div>
@@ -863,7 +864,7 @@
     /* --------------------------------------------------------------------------
        SECTION 0: PWA SERVICE WORKER REGISTRATION & VERSION CHECK
        -------------------------------------------------------------------------- */
-    const CURRENT_GAME_VERSION = '1.4.1';
+    const CURRENT_GAME_VERSION = '1.4.2';
     const SUPABASE_PROJECT_URL = 'https://jqolvwzonrutoqmnmvys.supabase.co';
     const SUPABASE_PUBLISHABLE_KEY = 'sb_publishable_TETw-FSaSLTHwDJQ3Kq8wg_5PY4FJDA';
     const SUPABASE_LEADERBOARD_URL = `${SUPABASE_PROJECT_URL}/rest/v1/leaderboard_scores`;
@@ -1542,7 +1543,7 @@
 
     let playerSettings = {
       steeringMode: localStorage.getItem('tm_steer_mode') || 'joysticks',
-      playerName: localStorage.getItem('tm_player_name') || 'Driver' + Math.floor(Math.random()*1000),
+      playerName: (localStorage.getItem('tm_player_name') || '').trim(),
       controlScale: parseFloat(localStorage.getItem('tm_control_scale') || '1.0'),
       lowEffects: localStorage.getItem('tm_low_effects') === 'true'
     };
@@ -2290,6 +2291,11 @@
     }
 
     function startCountdownAndRace(mazeConfig) {
+      if (!playerSettings.playerName.trim()) {
+        openSettingsModal(true);
+        return;
+      }
+
       currentMaze = getOrGenerateMaze(mazeConfig);
       activeGameMode = currentMaze.mode || 'standard';
       if (mazeRenderCacheId !== currentMaze.id) {
@@ -3832,6 +3838,11 @@
       bindAction('menu-tab-dark', () => setMenuGameMode('dark'));
 
       bindAction('menu-btn-play', () => {
+        if (!playerSettings.playerName.trim()) {
+          openSettingsModal(true);
+          return;
+        }
+
         renderTierTabs();
         populateBlockSelector();
         renderLevelSelector();
@@ -3844,12 +3855,11 @@
       });
 
       bindAction('menu-btn-settings', () => {
-        renderTuningUI('settings-tuning-controls');
-        initAudioSettingsUI();
-        document.getElementById('modal-settings').classList.remove('hidden');
+        openSettingsModal();
       });
 
       bindAction('menu-btn-leaderboard', () => {
+        populateLeaderboardLevelOptions();
         renderLeaderboardUI();
         document.getElementById('modal-leaderboard').classList.remove('hidden');
       });
@@ -3878,9 +3888,7 @@
       });
 
       bindAction('btn-open-settings', () => {
-        renderTuningUI('settings-tuning-controls');
-        initAudioSettingsUI();
-        document.getElementById('modal-settings').classList.remove('hidden');
+        openSettingsModal();
       });
 
       bindAction('btn-edit-controls-hud', () => toggleEditLayoutMode(true));
@@ -3930,6 +3938,7 @@
         bindVolumeRange('vol-sfx-range', 'vol-sfx-val', 'sfx');
         bindVolumeRange('vol-bgm-range', 'vol-bgm-val', 'bgm');
       };
+      initAudioSettingsUI();
 
       bindAction('btn-full-map', () => openFullMapModal());
 
@@ -3974,8 +3983,9 @@
       document.querySelectorAll('.btn-close-modal').forEach(btn => {
         btn.onclick = (e) => {
           e.preventDefault();
-          btn.closest('.fixed').classList.add('hidden');
-          saveSettings();
+          const modal = btn.closest('.fixed');
+          if (modal.id === 'modal-settings' && !saveSettings()) return;
+          modal.classList.add('hidden');
           if (garagePreviewAnimId) cancelAnimationFrame(garagePreviewAnimId);
           garagePreviewAnimId = null;
         };
@@ -4009,7 +4019,12 @@
       bindAction('opt-steer-buttons', () => selectSteerOption('buttons'));
       bindAction('opt-steer-wheel', () => selectSteerOption('wheel'));
 
-      document.getElementById('leaderboard-level-input').oninput = renderLeaderboardUI;
+      document.getElementById('leaderboard-level-select').onchange = renderLeaderboardUI;
+      document.getElementById('input-player-name').oninput = () => {
+        if (document.getElementById('input-player-name').value.trim()) {
+          document.getElementById('player-name-error').classList.add('hidden');
+        }
+      };
       document.getElementById('level-block-select').onchange = (e) => {
         selectedBlockStart = parseInt(e.target.value, 10);
         renderLevelSelector();
@@ -4073,12 +4088,28 @@
       btnWheel.className = isWheel ? "p-2.5 bg-[#1e4b85]/35 border-2 border-[#4b91e8] rounded-xl text-center flex flex-col items-center space-y-1" : "p-2.5 pit-card border-2 border-transparent rounded-xl text-center flex flex-col items-center space-y-1";
     }
 
+    function openSettingsModal(showNameError = false) {
+      const nameInput = document.getElementById('input-player-name');
+      const nameError = document.getElementById('player-name-error');
+      nameInput.value = playerSettings.playerName;
+      nameError.classList.toggle('hidden', !showNameError);
+      renderTuningUI('settings-tuning-controls');
+      document.getElementById('modal-settings').classList.remove('hidden');
+      if (showNameError) nameInput.focus();
+    }
+
     function saveSettings() {
       const nameInput = document.getElementById('input-player-name').value.trim();
-      if (nameInput) {
-        playerSettings.playerName = nameInput;
-        localStorage.setItem('tm_player_name', nameInput);
+      if (!nameInput) {
+        document.getElementById('player-name-error').classList.remove('hidden');
+        document.getElementById('input-player-name').focus();
+        return false;
       }
+
+      playerSettings.playerName = nameInput;
+      localStorage.setItem('tm_player_name', nameInput);
+      document.getElementById('player-name-error').classList.add('hidden');
+      return true;
     }
 
     function renderTierTabs() {
@@ -4177,14 +4208,30 @@
 
     let leaderboardRenderRequestId = 0;
 
-    async function renderLeaderboardUI() {
-      const input = document.getElementById('leaderboard-level-input');
-      let lvlNum = parseInt(input.value, 10);
-      const totalLevels = getTotalLevelsForMode(activeGameMode);
-      
-      if (isNaN(lvlNum) || lvlNum < 1) lvlNum = 1;
-      if (lvlNum > totalLevels) lvlNum = totalLevels;
+    function populateLeaderboardLevelOptions() {
+      const select = document.getElementById('leaderboard-level-select');
+      if (select.dataset.mode === activeGameMode) return;
 
+      const previousLevel = parseInt(select.value, 10);
+      const totalLevels = getTotalLevelsForMode(activeGameMode);
+      const selectedLevel = Number.isInteger(previousLevel) && previousLevel >= 1 && previousLevel <= totalLevels
+        ? previousLevel
+        : 1;
+      const options = [];
+
+      for (let level = 1; level <= totalLevels; level++) {
+        const cfg = getMazeConfig(level, activeGameMode);
+        options.push(`<option value="${level}">${cfg.name} (${cfg.size}x${cfg.size})</option>`);
+      }
+
+      select.innerHTML = options.join('');
+      select.value = selectedLevel.toString();
+      select.dataset.mode = activeGameMode;
+    }
+
+    async function renderLeaderboardUI() {
+      populateLeaderboardLevelOptions();
+      const lvlNum = parseInt(document.getElementById('leaderboard-level-select').value, 10);
       const cfg = getMazeConfig(lvlNum, activeGameMode);
       const list = document.getElementById('leaderboard-list');
       const requestId = ++leaderboardRenderRequestId;
