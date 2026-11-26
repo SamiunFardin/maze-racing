@@ -1,4 +1,4 @@
-const CACHE_NAME = 'turbo-maze-racer-v1.2.5';
+const CACHE_NAME = 'turbo-maze-racer-v1.2.6';
 const CORE_ASSETS = [
   './',
   './index.html',
@@ -32,6 +32,9 @@ self.addEventListener('activate', (event) => {
 // Fetch event: network-first with cache fallback (and runtime caching for CDN assets)
 self.addEventListener('fetch', (event) => {
   if (event.request.method !== 'GET') return;
+
+  const requestUrl = new URL(event.request.url);
+  if (requestUrl.hostname.endsWith('.supabase.co') && requestUrl.pathname.startsWith('/rest/v1/')) return;
 
   event.respondWith(
     fetch(event.request)
