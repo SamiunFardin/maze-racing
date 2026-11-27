@@ -863,6 +863,11 @@
         <select id="leaderboard-level-select" class="w-full bg-[#070c14] border border-[#3b7dd1]/45 rounded-xl px-3 py-2 text-[#f1f6fc] text-xs font-bold focus:outline-none focus:border-[#ffca28]"></select>
       </div>
 
+      <div id="leaderboard-player-rank" aria-live="polite"></div>
+      <div class="flex justify-between items-center text-[10px] uppercase tracking-wider text-[#9bb3d1] font-bold">
+        <span>Top 100 Scores</span>
+        <span id="leaderboard-score-count"></span>
+      </div>
       <div id="leaderboard-list" class="space-y-2 overflow-y-auto custom-scroll flex-1 pr-1 min-h-0" style="touch-action: pan-y !important;"></div>
     </div>
   </div>
@@ -942,7 +947,7 @@
     /* --------------------------------------------------------------------------
        SECTION 0: PWA SERVICE WORKER REGISTRATION & VERSION CHECK
        -------------------------------------------------------------------------- */
-    const CURRENT_GAME_VERSION = '1.4.4';
+    const CURRENT_GAME_VERSION = '1.4.5';
     const SUPABASE_PROJECT_URL = 'https://jqolvwzonrutoqmnmvys.supabase.co';
     const SUPABASE_PUBLISHABLE_KEY = 'sb_publishable_TETw-FSaSLTHwDJQ3Kq8wg_5PY4FJDA';
     const supabaseClient = window.supabase?.createClient
@@ -985,27 +990,62 @@
     async function fetchGlobalScores(mazeId) {
       if (!supabaseClient) throw new Error('Supabase client is unavailable.');
 
-      const { data, error } = await supabaseClient
+      const { data: sessionData, error: sessionError } = await supabaseClient.auth.getSession();
+      if (sessionError) throw sessionError;
+
+      const [scoresResult, playerResult] = await Promise.all([
+        supabaseClient
         .from('account_best_scores')
-        .select('time_ms,created_at,player_profiles(username)')
+        .select('id,time_ms,created_at,player_profiles(username)')
         .eq('maze_id', mazeId)
         .order('time_ms', { ascending: true })
         .order('created_at', { ascending: true })
-        .limit(10);
+        .order('id', { ascending: true })
+        .limit(100),
+        sessionData.session
+          ? supabaseClient
+            .from('account_best_scores')
+            .select('id,time_ms,created_at,player_profiles(username)')
+            .eq('maze_id', mazeId)
+            .eq('player_id', sessionData.session.user.id)
+            .maybeSingle()
+          : Promise.resolve({ data: null, error: null })
+      ]);
 
-      if (error) throw error;
-      if (!Array.isArray(data)) throw new Error('Leaderboard response was not a list.');
+      if (scoresResult.error) throw scoresResult.error;
+      if (!Array.isArray(scoresResult.data)) throw new Error('Leaderboard response was not a list.');
+      if (playerResult.error) throw playerResult.error;
 
-      return data.map(row => {
+      const mapScore = row => {
         const profile = Array.isArray(row.player_profiles)
           ? row.player_profiles[0]
           : row.player_profiles;
         return {
+          id: row.id,
           driver: profile?.username || 'Driver',
           timeMs: row.time_ms,
           date: new Date(row.created_at).toLocaleDateString()
         };
-      });
+      };
+
+      let playerScore = playerResult.data ? mapScore(playerResult.data) : null;
+      let playerRank = null;
+      if (playerScore) {
+        const { count, error } = await supabaseClient
+          .from('account_best_scores')
+          .select('id', { count: 'exact', head: true })
+          .eq('maze_id', mazeId)
+          .lt('time_ms', playerScore.timeMs);
+        if (error) throw error;
+        playerRank = (count || 0) + 1;
+      }
+
+      return {
+        records: scoresResult.data.map(mapScore),
+        playerScore,
+        playerRank,
+        isSignedIn: Boolean(sessionData.session)
+      };
     }
 
     function setAccountMessage(message, type = 'info') {
@@ -4657,44 +4697,91 @@
       const lvlNum = parseInt(document.getElementById('leaderboard-level-select').value, 10);
       const cfg = getMazeConfig(lvlNum, activeGameMode);
       const list = document.getElementById('leaderboard-list');
+      const playerRankPanel = document.getElementById('leaderboard-player-rank');
+      const scoreCount = document.getElementById('leaderboard-score-count');
       const requestId = ++leaderboardRenderRequestId;
+      playerRankPanel.innerHTML = `<div class="pit-card rounded-xl p-3 text-center text-[11px] text-[#9bb3d1]">Loading your score and rank...</div>`;
+      scoreCount.textContent = '';
       list.innerHTML = `<div class="text-center text-[#9bb3d1] py-6 text-xs">Loading global records...</div>`;
 
-      let records;
+      let leaderboard;
+      let usedLocalFallback = false;
       try {
-        records = await fetchGlobalScores(cfg.id);
+        leaderboard = await fetchGlobalScores(cfg.id);
       } catch (error) {
         console.error('Global leaderboard load failed:', error);
         if (requestId !== leaderboardRenderRequestId) return;
 
-        records = JSON.parse(localStorage.getItem(`tm_lb_${cfg.id}`) || '[]');
+        const records = JSON.parse(localStorage.getItem(`tm_lb_${cfg.id}`) || '[]');
+        playerRankPanel.innerHTML = `<div class="pit-card rounded-xl p-3 text-center text-[11px] text-[#9bb3d1]">Your global rank is unavailable right now.</div>`;
         if (records.length === 0) {
           list.innerHTML = `<div class="text-center text-[#9bb3d1] py-6 text-xs">Could not load the global leaderboard. Check your connection and try again.</div>`;
           return;
         }
 
         list.innerHTML = `<div class="text-center text-[#9bb3d1] text-[10px] pb-2">Global records are unavailable. Showing records saved on this device.</div>`;
+        leaderboard = { records, playerScore: null, playerRank: null, isSignedIn: false };
+        usedLocalFallback = true;
       }
 
       if (requestId !== leaderboardRenderRequestId) return;
 
+      const { records, playerScore, playerRank, isSignedIn } = leaderboard;
+      if (usedLocalFallback) {
+        playerRankPanel.innerHTML = `<div class="pit-card rounded-xl p-3 text-center text-[11px] text-[#9bb3d1]">Your global rank is unavailable while offline.</div>`;
+      } else if (!isSignedIn) {
+        playerRankPanel.innerHTML = `<div class="pit-card rounded-xl p-3 text-center text-[11px] text-[#9bb3d1]">Sign in to see your global rank and highlight your score.</div>`;
+      } else if (!playerScore) {
+        playerRankPanel.innerHTML = `<div class="pit-card rounded-xl p-3 text-center text-[11px] text-[#9bb3d1]">You have not set a score on ${escapeHtml(cfg.name)} yet.</div>`;
+      } else {
+        const isInTop100 = records.some(item => item.id === playerScore.id);
+        playerRankPanel.innerHTML = `
+          <div class="rounded-xl border border-[#ffca28]/55 bg-[#ffca28]/10 p-3 flex items-center justify-between gap-3">
+            <div class="min-w-0">
+              <div class="text-[9px] uppercase tracking-wider text-[#ffca28] font-black">Your score</div>
+              <div class="font-bold text-[#f1f6fc] text-xs truncate">${escapeHtml(playerScore.driver)}</div>
+              <div class="text-[9px] text-[#9bb3d1]">${isInTop100 ? 'In the top 100' : 'Outside the top 100'}</div>
+            </div>
+            <div class="text-right shrink-0">
+              <div class="font-black text-[#ffca28] text-sm">Rank #${playerRank}</div>
+              <div class="font-mono font-bold text-[#f1f6fc] text-xs">${formatTime(playerScore.timeMs)}</div>
+            </div>
+          </div>`;
+      }
+
+      const displayedScoreCount = Math.min(records.length, 100);
+      scoreCount.textContent = `${displayedScoreCount} ${displayedScoreCount === 1 ? 'score' : 'scores'}`;
       if (records.length === 0) {
-        list.innerHTML = `<div class="text-center text-[#9bb3d1] py-6 text-xs">No global records for ${cfg.name} (${cfg.size}x${cfg.size}) yet. Drive and set the benchmark!</div>`;
+        list.innerHTML = `<div class="text-center text-[#9bb3d1] py-6 text-xs">No global records for ${escapeHtml(cfg.name)} (${cfg.size}x${cfg.size}) yet. Drive and set the benchmark!</div>`;
         return;
       }
 
-      const recordsHtml = records.map((item, idx) => `
-        <div class="p-2.5 pit-card rounded-xl flex justify-between items-center">
+      let previousTimeMs = null;
+      let currentRank = 0;
+      const recordsHtml = records.slice(0, 100).map((item, idx) => {
+        if (idx === 0 || item.timeMs !== previousTimeMs) currentRank = idx + 1;
+        previousTimeMs = item.timeMs;
+        const isCurrentPlayer = playerScore?.id === item.id;
+        const rankColor = currentRank === 1
+          ? 'text-[#ffca28]'
+          : currentRank === 2
+            ? 'text-[#68a9f7]'
+            : 'text-[#9bb3d1]';
+        return `
+        <div class="p-2.5 rounded-xl flex justify-between items-center ${isCurrentPlayer ? 'border border-[#ffca28]/70 bg-[#ffca28]/10 shadow-md' : 'pit-card'}">
           <div class="flex items-center space-x-3">
-            <span class="font-bold ${idx===0?'text-[#ffca28]':idx===1?'text-[#68a9f7]':'text-[#9bb3d1]'} text-xs">#${idx+1}</span>
+            <span class="font-bold ${rankColor} text-xs">#${currentRank}</span>
             <div>
               <div class="font-bold text-[#f1f6fc] text-xs">${escapeHtml(item.driver || 'Driver')}</div>
               <div class="text-[9px] text-[#8ea7c7]">${item.date || ''}</div>
             </div>
           </div>
-          <div class="font-mono font-bold text-[#ffca28] text-xs">${formatTime(item.timeMs)}</div>
-        </div>
-      `).join('');
+          <div class="flex items-center gap-2">
+            ${isCurrentPlayer ? '<span class="text-[8px] uppercase tracking-wider text-[#ffca28] font-black">You</span>' : ''}
+            <span class="font-mono font-bold text-[#ffca28] text-xs">${formatTime(item.timeMs)}</span>
+          </div>
+        </div>`;
+      }).join('');
       list.innerHTML += recordsHtml;
     }
 
