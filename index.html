@@ -6,6 +6,7 @@
   <title>Turbo Maze Racer</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   
   <!-- ==========================================================================
      PWA WEB APP MANIFEST & THEME METAS (Enables App Installation)
@@ -596,6 +597,11 @@
           <i class="fa-solid fa-sliders text-[#d6e4f5]"></i>
           <span>Settings</span>
         </button>
+
+        <button id="menu-btn-account" class="w-full py-3 pit-btn-secondary font-bold rounded-xl flex items-center justify-center space-x-2 transition">
+          <i class="fa-solid fa-user text-[#68a9f7]"></i>
+          <span id="menu-account-label">Account: Guest</span>
+        </button>
       </div>
     </div>
   </div>
@@ -791,9 +797,10 @@
         </div>
 
         <div>
-          <label for="input-player-name" class="block text-xs uppercase tracking-wider text-[#9bb3d1] font-bold mb-1">Driver Name <span class="text-[#ffca28]">*</span></label>
+          <label for="input-player-name" class="block text-xs uppercase tracking-wider text-[#9bb3d1] font-bold mb-1">Guest Display Name</label>
           <input type="text" id="input-player-name" maxlength="14" required autocomplete="nickname" placeholder="Enter your driver name" aria-describedby="player-name-error" class="w-full bg-[#070c14] border border-[#3b7dd1]/45 rounded-xl px-4 py-2 text-[#f1f6fc] text-sm focus:outline-none focus:border-[#ffca28]">
-          <p id="player-name-error" class="hidden text-[10px] text-[#ff8a80] mt-1" role="alert">A driver name is required before you can race.</p>
+          <p id="player-name-error" class="hidden text-[10px] text-[#ff8a80] mt-1" role="alert">Enter a guest name to race without an account.</p>
+          <p class="text-[10px] text-[#8ea7c7] mt-1">Guest records stay on this device. Sign in to save scores to the global leaderboard.</p>
         </div>
       </div>
 
@@ -820,6 +827,7 @@
         <div id="victory-final-time" class="text-2xl font-mono font-bold text-[#ffca28] my-0.5">00:45.420</div>
         <div id="victory-record-status" class="text-xs font-bold text-[#68a9f7] hidden">🎉 NEW PERSONAL BEST RECORD!</div>
         <div id="victory-global-score-status" class="text-[10px] text-[#9bb3d1] mt-1" role="status" aria-live="polite"></div>
+        <button id="victory-btn-account" class="hidden text-[10px] font-bold text-[#68a9f7] underline mt-1">Sign in / create account</button>
       </div>
 
       <div class="grid grid-cols-3 gap-2">
@@ -859,6 +867,74 @@
     </div>
   </div>
 
+  <!-- PLAYER ACCOUNT MODAL -->
+  <div id="modal-account" class="fixed inset-0 z-50 bg-[#070c14]/76 backdrop-blur-[3px] hidden flex items-center justify-center p-4">
+    <div class="max-w-md w-full pit-panel rounded-2xl p-5 space-y-4 max-h-[90vh] overflow-y-auto custom-scroll">
+      <div class="flex justify-between items-center border-b border-[#1e4b85]/45 pb-2">
+        <h2 class="text-lg font-bold text-[#f1f6fc] flex items-center gap-2">
+          <i class="fa-solid fa-user-shield text-[#68a9f7]"></i> Player Account
+        </h2>
+        <button class="btn-close-modal text-[#9bb3d1] hover:text-[#f1f6fc] p-1" aria-label="Close account panel">
+          <i class="fa-solid fa-xmark text-lg"></i>
+        </button>
+      </div>
+
+      <div id="account-signed-in-panel" class="hidden space-y-3">
+        <div class="pit-card rounded-xl p-3 text-center">
+          <div class="text-[10px] uppercase text-[#9bb3d1] font-bold">Signed in as</div>
+          <div id="account-current-username" class="font-bold text-[#ffca28] text-lg"></div>
+          <div id="account-current-email" class="text-[10px] text-[#9bb3d1]"></div>
+        </div>
+        <button id="account-sign-out-button" class="w-full py-2.5 pit-btn-secondary font-bold rounded-xl text-sm">Sign Out</button>
+      </div>
+
+      <div id="account-auth-panel" class="space-y-3">
+        <p class="text-[11px] text-[#9bb3d1]">Play as a guest, or sign in to save your best times under a unique username.</p>
+
+        <div id="account-auth-tabs" class="grid grid-cols-2 gap-2">
+          <button type="button" id="account-tab-sign-in" class="py-2 pit-btn-primary rounded-lg text-xs font-bold">Sign In</button>
+          <button type="button" id="account-tab-sign-up" class="py-2 pit-btn-secondary rounded-lg text-xs font-bold">Create Account</button>
+        </div>
+
+        <form id="account-auth-form" class="space-y-3">
+          <div id="account-username-row" class="hidden">
+            <label for="account-username-input" class="block text-[10px] uppercase text-[#9bb3d1] font-bold mb-1">Unique Username</label>
+            <input id="account-username-input" type="text" minlength="3" maxlength="14" autocomplete="username" pattern="[A-Za-z0-9_]+" placeholder="3-14 letters, numbers, or _" class="w-full bg-[#070c14] border border-[#3b7dd1]/45 rounded-xl px-3 py-2 text-[#f1f6fc] text-xs focus:outline-none focus:border-[#ffca28]">
+          </div>
+          <div>
+            <label for="account-email-input" class="block text-[10px] uppercase text-[#9bb3d1] font-bold mb-1">Email</label>
+            <input id="account-email-input" type="email" required autocomplete="email" placeholder="you@example.com" class="w-full bg-[#070c14] border border-[#3b7dd1]/45 rounded-xl px-3 py-2 text-[#f1f6fc] text-xs focus:outline-none focus:border-[#ffca28]">
+          </div>
+          <div>
+            <label for="account-password-input" class="block text-[10px] uppercase text-[#9bb3d1] font-bold mb-1">Password</label>
+            <input id="account-password-input" type="password" minlength="8" required autocomplete="current-password" class="w-full bg-[#070c14] border border-[#3b7dd1]/45 rounded-xl px-3 py-2 text-[#f1f6fc] text-xs focus:outline-none focus:border-[#ffca28]">
+          </div>
+          <div id="account-confirm-password-row" class="hidden">
+            <label for="account-confirm-password-input" class="block text-[10px] uppercase text-[#9bb3d1] font-bold mb-1">Confirm Password</label>
+            <input id="account-confirm-password-input" type="password" minlength="8" autocomplete="new-password" class="w-full bg-[#070c14] border border-[#3b7dd1]/45 rounded-xl px-3 py-2 text-[#f1f6fc] text-xs focus:outline-none focus:border-[#ffca28]">
+          </div>
+          <button id="account-submit-button" type="submit" class="w-full py-2.5 pit-btn-primary font-bold rounded-xl text-sm">Sign In</button>
+          <button id="account-forgot-password-button" type="button" class="w-full text-[10px] text-[#68a9f7] underline">Forgot password?</button>
+        </form>
+
+        <form id="account-password-reset-form" class="hidden space-y-3">
+          <p class="text-[11px] text-[#9bb3d1]">Choose a new password for your account.</p>
+          <div>
+            <label for="account-new-password-input" class="block text-[10px] uppercase text-[#9bb3d1] font-bold mb-1">New Password</label>
+            <input id="account-new-password-input" type="password" minlength="8" required autocomplete="new-password" class="w-full bg-[#070c14] border border-[#3b7dd1]/45 rounded-xl px-3 py-2 text-[#f1f6fc] text-xs focus:outline-none focus:border-[#ffca28]">
+          </div>
+          <div>
+            <label for="account-new-password-confirm-input" class="block text-[10px] uppercase text-[#9bb3d1] font-bold mb-1">Confirm New Password</label>
+            <input id="account-new-password-confirm-input" type="password" minlength="8" required autocomplete="new-password" class="w-full bg-[#070c14] border border-[#3b7dd1]/45 rounded-xl px-3 py-2 text-[#f1f6fc] text-xs focus:outline-none focus:border-[#ffca28]">
+          </div>
+          <button type="submit" class="w-full py-2.5 pit-btn-primary font-bold rounded-xl text-sm">Update Password</button>
+        </form>
+
+      </div>
+      <p id="account-auth-message" class="text-[11px] text-[#9bb3d1]" role="status" aria-live="polite"></p>
+    </div>
+  </div>
+
   <!-- ==========================================================================
      [JAVASCRIPT CORE LOGIC & PWA / AUDIO ENGINE]
      ========================================================================== -->
@@ -866,56 +942,330 @@
     /* --------------------------------------------------------------------------
        SECTION 0: PWA SERVICE WORKER REGISTRATION & VERSION CHECK
        -------------------------------------------------------------------------- */
-    const CURRENT_GAME_VERSION = '1.4.3';
+    const CURRENT_GAME_VERSION = '1.4.4';
     const SUPABASE_PROJECT_URL = 'https://jqolvwzonrutoqmnmvys.supabase.co';
     const SUPABASE_PUBLISHABLE_KEY = 'sb_publishable_TETw-FSaSLTHwDJQ3Kq8wg_5PY4FJDA';
-    const SUPABASE_LEADERBOARD_URL = `${SUPABASE_PROJECT_URL}/rest/v1/leaderboard_scores`;
+    const supabaseClient = window.supabase?.createClient
+      ? window.supabase.createClient(SUPABASE_PROJECT_URL, SUPABASE_PUBLISHABLE_KEY)
+      : null;
+    let currentAuthSession = null;
+    let currentPlayerProfile = null;
+    let accountAuthMode = 'sign-in';
+    let accountSyncRequestId = 0;
 
-    async function submitGlobalScore(mazeId, driver, timeMs) {
-      const response = await fetch(SUPABASE_LEADERBOARD_URL, {
-        method: 'POST',
-        headers: {
-          apikey: SUPABASE_PUBLISHABLE_KEY,
-          'Content-Type': 'application/json',
-          Prefer: 'return=minimal'
-        },
-        body: JSON.stringify({
-          maze_id: mazeId,
-          driver: driver.trim().slice(0, 24) || 'Driver',
-          time_ms: Math.round(timeMs)
-        })
-      });
-
-      if (!response.ok) {
-        throw new Error(`Score submission failed (${response.status}): ${await response.text()}`);
+    async function submitGlobalScore(mazeId, timeMs) {
+      if (!supabaseClient) {
+        return { authenticated: false };
       }
+
+      const { data: sessionData, error: sessionError } = await supabaseClient.auth.getSession();
+      if (sessionError) throw sessionError;
+      if (!sessionData.session) return { authenticated: false };
+
+      currentAuthSession = sessionData.session;
+      let profile = currentPlayerProfile;
+      if (!profile || profile.user_id !== sessionData.session.user.id) {
+        profile = await loadPlayerProfile(sessionData.session);
+      }
+      if (!profile) throw new Error('Your player profile could not be loaded.');
+
+      const { data, error } = await supabaseClient.rpc('submit_turbo_maze_best_score', {
+        p_maze_id: mazeId,
+        p_time_ms: Math.round(timeMs)
+      });
+      if (error) throw error;
+
+      return {
+        authenticated: true,
+        improved: data === true,
+        username: profile.username
+      };
     }
 
     async function fetchGlobalScores(mazeId) {
-      const params = new URLSearchParams({
-        select: 'driver,time_ms,created_at',
-        maze_id: `eq.${mazeId}`,
-        order: 'time_ms.asc,created_at.asc',
-        limit: '10'
-      });
-      const response = await fetch(`${SUPABASE_LEADERBOARD_URL}?${params}`, {
-        headers: { apikey: SUPABASE_PUBLISHABLE_KEY }
-      });
+      if (!supabaseClient) throw new Error('Supabase client is unavailable.');
 
-      if (!response.ok) {
-        throw new Error(`Leaderboard request failed (${response.status}): ${await response.text()}`);
+      const { data, error } = await supabaseClient
+        .from('account_best_scores')
+        .select('time_ms,created_at,player_profiles(username)')
+        .eq('maze_id', mazeId)
+        .order('time_ms', { ascending: true })
+        .order('created_at', { ascending: true })
+        .limit(10);
+
+      if (error) throw error;
+      if (!Array.isArray(data)) throw new Error('Leaderboard response was not a list.');
+
+      return data.map(row => {
+        const profile = Array.isArray(row.player_profiles)
+          ? row.player_profiles[0]
+          : row.player_profiles;
+        return {
+          driver: profile?.username || 'Driver',
+          timeMs: row.time_ms,
+          date: new Date(row.created_at).toLocaleDateString()
+        };
+      });
+    }
+
+    function setAccountMessage(message, type = 'info') {
+      const messageEl = document.getElementById('account-auth-message');
+      messageEl.textContent = message;
+      messageEl.className = `text-[11px] ${type === 'error' ? 'text-[#ff8a80]' : 'text-[#9bb3d1]'}`;
+    }
+
+    function updateAccountUI() {
+      const hasAccount = Boolean(currentAuthSession?.user && currentPlayerProfile);
+      const isPasswordReset = accountAuthMode === 'reset';
+      const accountLabel = document.getElementById('menu-account-label');
+
+      accountLabel.textContent = currentPlayerProfile
+        ? `Account: ${currentPlayerProfile.username}`
+        : currentAuthSession?.user
+          ? 'Account: Loading...'
+          : 'Account: Guest';
+
+      document.getElementById('account-auth-panel').classList.toggle('hidden', hasAccount && !isPasswordReset);
+      document.getElementById('account-signed-in-panel').classList.toggle('hidden', !hasAccount || isPasswordReset);
+      document.getElementById('account-auth-tabs').classList.toggle('hidden', isPasswordReset);
+      document.getElementById('account-auth-form').classList.toggle('hidden', isPasswordReset);
+      document.getElementById('account-password-reset-form').classList.toggle('hidden', !isPasswordReset);
+
+      if (hasAccount) {
+        document.getElementById('account-current-username').textContent = currentPlayerProfile.username;
+        document.getElementById('account-current-email').textContent = currentAuthSession.user.email || '';
+      }
+    }
+
+    function setAccountAuthMode(mode) {
+      accountAuthMode = mode;
+      const isSignUp = mode === 'sign-up';
+      const usernameInput = document.getElementById('account-username-input');
+      const confirmPasswordInput = document.getElementById('account-confirm-password-input');
+      const passwordInput = document.getElementById('account-password-input');
+
+      document.getElementById('account-username-row').classList.toggle('hidden', !isSignUp);
+      document.getElementById('account-confirm-password-row').classList.toggle('hidden', !isSignUp);
+      usernameInput.required = isSignUp;
+      confirmPasswordInput.required = isSignUp;
+      passwordInput.minLength = isSignUp ? 8 : 0;
+      passwordInput.autocomplete = isSignUp ? 'new-password' : 'current-password';
+      document.getElementById('account-submit-button').textContent = isSignUp ? 'Create Account' : 'Sign In';
+      document.getElementById('account-forgot-password-button').classList.toggle('hidden', isSignUp);
+      document.getElementById('account-tab-sign-in').className = mode === 'sign-in'
+        ? 'py-2 pit-btn-primary rounded-lg text-xs font-bold'
+        : 'py-2 pit-btn-secondary rounded-lg text-xs font-bold';
+      document.getElementById('account-tab-sign-up').className = isSignUp
+        ? 'py-2 pit-btn-primary rounded-lg text-xs font-bold'
+        : 'py-2 pit-btn-secondary rounded-lg text-xs font-bold';
+      updateAccountUI();
+      setAccountMessage('');
+    }
+
+    function openAccountModal() {
+      if (accountAuthMode !== 'reset' && !currentAuthSession?.user) {
+        setAccountAuthMode('sign-in');
+      } else {
+        updateAccountUI();
+      }
+      document.getElementById('modal-account').classList.remove('hidden');
+      if (!supabaseClient) {
+        setAccountMessage('Account services are unavailable right now. You can continue playing as a guest.', 'error');
+      }
+    }
+
+    async function loadPlayerProfile(session) {
+      if (!supabaseClient || !session?.user) {
+        throw new Error('A signed-in Supabase session is required.');
       }
 
-      const rows = await response.json();
-      if (!Array.isArray(rows)) {
-        throw new Error('Leaderboard response was not a list.');
+      const { data, error } = await supabaseClient
+        .from('player_profiles')
+        .select('user_id,username')
+        .eq('user_id', session.user.id)
+        .maybeSingle();
+      if (error) throw error;
+      if (!data) throw new Error('Your player profile could not be found.');
+      if (currentAuthSession?.user?.id !== session.user.id) return null;
+
+      currentPlayerProfile = data;
+      updateAccountUI();
+      return data;
+    }
+
+    async function syncPlayerAuthState(session) {
+      const requestId = ++accountSyncRequestId;
+      currentAuthSession = session;
+      currentPlayerProfile = null;
+      updateAccountUI();
+
+      if (!session) return;
+      const profile = await loadPlayerProfile(session);
+      if (requestId !== accountSyncRequestId) return;
+      currentPlayerProfile = profile;
+      updateAccountUI();
+    }
+
+    async function initializePlayerAuth() {
+      updateAccountUI();
+      if (!supabaseClient) {
+        setAccountMessage('Account services are unavailable right now. You can continue playing as a guest.', 'error');
+        return;
       }
 
-      return rows.map(row => ({
-        driver: row.driver,
-        timeMs: row.time_ms,
-        date: new Date(row.created_at).toLocaleDateString()
-      }));
+      supabaseClient.auth.onAuthStateChange((event, session) => {
+        currentAuthSession = session;
+        if (!session) {
+          currentPlayerProfile = null;
+          accountSyncRequestId++;
+          updateAccountUI();
+        }
+        if (event === 'PASSWORD_RECOVERY') {
+          accountAuthMode = 'reset';
+          updateAccountUI();
+          document.getElementById('modal-account').classList.remove('hidden');
+          setAccountMessage('Enter and confirm your new password.');
+        }
+        window.setTimeout(() => {
+          syncPlayerAuthState(session).catch(error => {
+            console.error('Failed to load player account:', error);
+            setAccountMessage('Could not load your account profile. Please try signing out and in again.', 'error');
+          });
+        }, 0);
+      });
+
+      try {
+        const { data, error } = await supabaseClient.auth.getSession();
+        if (error) throw error;
+        await syncPlayerAuthState(data.session);
+      } catch (error) {
+        console.error('Failed to initialize player account:', error);
+        setAccountMessage('Could not restore your sign-in. You can continue playing as a guest.', 'error');
+      }
+    }
+
+    async function handleAccountFormSubmit(event) {
+      event.preventDefault();
+      if (!supabaseClient) {
+        setAccountMessage('Account services are unavailable right now.', 'error');
+        return;
+      }
+
+      const submitButton = document.getElementById('account-submit-button');
+      const email = document.getElementById('account-email-input').value.trim();
+      const password = document.getElementById('account-password-input').value;
+      submitButton.disabled = true;
+      setAccountMessage(accountAuthMode === 'sign-up' ? 'Creating your account...' : 'Signing in...');
+
+      try {
+        if (accountAuthMode === 'sign-up') {
+          const username = document.getElementById('account-username-input').value.trim();
+          const confirmPassword = document.getElementById('account-confirm-password-input').value;
+          if (!/^[A-Za-z0-9_]{3,14}$/.test(username)) {
+            setAccountMessage('Use 3-14 letters, numbers, or underscores for your username.', 'error');
+            return;
+          }
+          if (password.length < 8) {
+            setAccountMessage('Use a password with at least 8 characters.', 'error');
+            return;
+          }
+          if (password !== confirmPassword) {
+            setAccountMessage('The passwords do not match.', 'error');
+            return;
+          }
+
+          const { data: available, error: availabilityError } = await supabaseClient.rpc(
+            'is_turbo_maze_username_available',
+            { p_username: username }
+          );
+          if (availabilityError) throw availabilityError;
+          if (!available) {
+            setAccountMessage('That username is unavailable. Try another one.', 'error');
+            return;
+          }
+
+          const { data, error } = await supabaseClient.auth.signUp({
+            email,
+            password,
+            options: {
+              data: { username },
+              emailRedirectTo: `${window.location.origin}${window.location.pathname}`
+            }
+          });
+          if (error) throw error;
+
+          if (data.session) {
+            await syncPlayerAuthState(data.session);
+            document.getElementById('modal-account').classList.add('hidden');
+            setAccountMessage('Account created and signed in.');
+          } else {
+            setAccountMessage('Account created. Check your email to confirm it, then sign in here.');
+          }
+        } else {
+          const { data, error } = await supabaseClient.auth.signInWithPassword({ email, password });
+          if (error) throw error;
+          await syncPlayerAuthState(data.session);
+          document.getElementById('modal-account').classList.add('hidden');
+        }
+      } catch (error) {
+        console.error('Account sign-in action failed:', error);
+        setAccountMessage(error.message || 'Account request failed. Please try again.', 'error');
+      } finally {
+        submitButton.disabled = false;
+      }
+    }
+
+    async function sendPasswordResetEmail() {
+      if (!supabaseClient) {
+        setAccountMessage('Account services are unavailable right now.', 'error');
+        return;
+      }
+
+      const email = document.getElementById('account-email-input').value.trim();
+      if (!email) {
+        setAccountMessage('Enter your account email first.', 'error');
+        document.getElementById('account-email-input').focus();
+        return;
+      }
+
+      try {
+        const { error } = await supabaseClient.auth.resetPasswordForEmail(email, {
+          redirectTo: `${window.location.origin}${window.location.pathname}`
+        });
+        if (error) throw error;
+        setAccountMessage('If an account uses that email, a password reset link has been sent.');
+      } catch (error) {
+        console.error('Password reset request failed:', error);
+        setAccountMessage(error.message || 'Could not send the reset email.', 'error');
+      }
+    }
+
+    async function handlePasswordResetSubmit(event) {
+      event.preventDefault();
+      if (!supabaseClient) return;
+
+      const password = document.getElementById('account-new-password-input').value;
+      const confirmation = document.getElementById('account-new-password-confirm-input').value;
+      if (password.length < 8) {
+        setAccountMessage('Use a password with at least 8 characters.', 'error');
+        return;
+      }
+      if (password !== confirmation) {
+        setAccountMessage('The passwords do not match.', 'error');
+        return;
+      }
+
+      try {
+        const { error } = await supabaseClient.auth.updateUser({ password });
+        if (error) throw error;
+        accountAuthMode = 'sign-in';
+        await syncPlayerAuthState(currentAuthSession);
+        updateAccountUI();
+        setAccountMessage('Your password has been updated.');
+      } catch (error) {
+        console.error('Password update failed:', error);
+        setAccountMessage(error.message || 'Could not update your password.', 'error');
+      }
     }
 
     function checkGameVersion() {
@@ -1740,6 +2090,7 @@
       restoreSavedControlPositions();
       applyControlScale(playerSettings.controlScale);
       setupUIEventListeners();
+      initializePlayerAuth();
       setupGaragePreviewVisibility();
       setupFullMapInteractions();
       updateControlUI();
@@ -2293,7 +2644,7 @@
     }
 
     function startCountdownAndRace(mazeConfig) {
-      if (!playerSettings.playerName.trim()) {
+      if (!currentAuthSession?.user && !playerSettings.playerName.trim()) {
         openSettingsModal(true);
         return;
       }
@@ -3611,7 +3962,7 @@
 
       let mazeLeaderboard = JSON.parse(localStorage.getItem(`tm_lb_${currentMaze.id}`) || '[]');
       mazeLeaderboard.push({
-        driver: playerSettings.playerName,
+        driver: currentPlayerProfile?.username || playerSettings.playerName || 'Guest',
         timeMs: timeMs,
         date: new Date().toLocaleDateString()
       });
@@ -3620,10 +3971,19 @@
       localStorage.setItem(`tm_lb_${currentMaze.id}`, JSON.stringify(mazeLeaderboard));
 
       const globalScoreStatus = document.getElementById('victory-global-score-status');
+      const accountButton = document.getElementById('victory-btn-account');
+      accountButton.classList.add('hidden');
       globalScoreStatus.textContent = 'Submitting to global leaderboard...';
-      submitGlobalScore(currentMaze.id, playerSettings.playerName, timeMs)
-        .then(() => {
-          globalScoreStatus.textContent = 'Score added to the global leaderboard.';
+      submitGlobalScore(currentMaze.id, timeMs)
+        .then(result => {
+          if (!result.authenticated) {
+            globalScoreStatus.textContent = 'This guest record is saved only on this device. Sign in before your next run to save global scores.';
+            accountButton.classList.remove('hidden');
+            return;
+          }
+          globalScoreStatus.textContent = result.improved
+            ? `Best time saved for ${result.username}.`
+            : 'Your faster time is already saved on the global leaderboard.';
         })
         .catch(error => {
           console.error('Global leaderboard score submission failed:', error);
@@ -3840,7 +4200,7 @@
       bindAction('menu-tab-dark', () => setMenuGameMode('dark'));
 
       bindAction('menu-btn-play', () => {
-        if (!playerSettings.playerName.trim()) {
+        if (!currentAuthSession?.user && !playerSettings.playerName.trim()) {
           openSettingsModal(true);
           return;
         }
@@ -3859,6 +4219,33 @@
       bindAction('menu-btn-settings', () => {
         openSettingsModal();
       });
+
+      bindAction('menu-btn-account', () => openAccountModal());
+      bindAction('victory-btn-account', () => openAccountModal());
+      bindAction('account-tab-sign-in', () => setAccountAuthMode('sign-in'));
+      bindAction('account-tab-sign-up', () => setAccountAuthMode('sign-up'));
+      bindAction('account-forgot-password-button', () => sendPasswordResetEmail());
+      bindAction('account-sign-out-button', async () => {
+        if (!supabaseClient) return;
+        try {
+          const { error } = await supabaseClient.auth.signOut();
+          if (error) throw error;
+          await syncPlayerAuthState(null);
+          setAccountMessage('You are signed out. You can continue playing as a guest.');
+        } catch (error) {
+          console.error('Sign-out failed:', error);
+          setAccountMessage(error.message || 'Could not sign out.', 'error');
+        }
+      });
+      document.getElementById('account-auth-form').addEventListener('submit', handleAccountFormSubmit);
+      document.getElementById('account-password-reset-form').addEventListener('submit', handlePasswordResetSubmit);
+      setAccountAuthMode('sign-in');
+      updateAccountUI();
+      document.getElementById('input-player-name').oninput = () => {
+        if (document.getElementById('input-player-name').value.trim()) {
+          document.getElementById('player-name-error').classList.add('hidden');
+        }
+      };
 
       bindAction('menu-btn-leaderboard', () => {
         document.getElementById('leaderboard-level-search').value = '';
@@ -3987,7 +4374,7 @@
         btn.onclick = (e) => {
           e.preventDefault();
           const modal = btn.closest('.fixed');
-          if (modal.id === 'modal-settings' && !saveSettings()) return;
+          if (modal.id === 'modal-settings') saveSettings();
           modal.classList.add('hidden');
           if (garagePreviewAnimId) cancelAnimationFrame(garagePreviewAnimId);
           garagePreviewAnimId = null;
@@ -4029,11 +4416,6 @@
         if (!leaderboardLevelSelect.value) return;
         leaderboardLevelSelect.dataset.selectedLevel = leaderboardLevelSelect.value;
         renderLeaderboardUI();
-      };
-      document.getElementById('input-player-name').oninput = () => {
-        if (document.getElementById('input-player-name').value.trim()) {
-          document.getElementById('player-name-error').classList.add('hidden');
-        }
       };
       document.getElementById('level-block-select').onchange = (e) => {
         selectedBlockStart = parseInt(e.target.value, 10);
@@ -4098,28 +4480,23 @@
       btnWheel.className = isWheel ? "p-2.5 bg-[#1e4b85]/35 border-2 border-[#4b91e8] rounded-xl text-center flex flex-col items-center space-y-1" : "p-2.5 pit-card border-2 border-transparent rounded-xl text-center flex flex-col items-center space-y-1";
     }
 
-    function openSettingsModal(showNameError = false) {
+    function openSettingsModal(showGuestNameError = false) {
       const nameInput = document.getElementById('input-player-name');
-      const nameError = document.getElementById('player-name-error');
       nameInput.value = playerSettings.playerName;
-      nameError.classList.toggle('hidden', !showNameError);
+      document.getElementById('player-name-error').classList.toggle('hidden', !showGuestNameError);
       renderTuningUI('settings-tuning-controls');
       document.getElementById('modal-settings').classList.remove('hidden');
-      if (showNameError) nameInput.focus();
+      if (showGuestNameError) nameInput.focus();
     }
 
     function saveSettings() {
       const nameInput = document.getElementById('input-player-name').value.trim();
-      if (!nameInput) {
-        document.getElementById('player-name-error').classList.remove('hidden');
-        document.getElementById('input-player-name').focus();
-        return false;
-      }
-
       playerSettings.playerName = nameInput;
-      localStorage.setItem('tm_player_name', nameInput);
-      document.getElementById('player-name-error').classList.add('hidden');
-      return true;
+      if (nameInput) {
+        localStorage.setItem('tm_player_name', nameInput);
+      } else {
+        localStorage.removeItem('tm_player_name');
+      }
     }
 
     function renderTierTabs() {
@@ -4447,7 +4824,7 @@
       const modalIds = [
         'modal-menu', 'modal-garage', 'modal-levels',
         'modal-pre-race-tuning', 'modal-settings',
-        'modal-victory', 'modal-leaderboard', 'modal-loading-screen'
+        'modal-victory', 'modal-leaderboard', 'modal-account', 'modal-loading-screen'
       ];
       return modalIds.some(id => {
         const el = document.getElementById(id);
@@ -4556,7 +4933,7 @@
       const menuModalIds = new Set([
         'modal-menu', 'modal-garage', 'modal-levels',
         'modal-pre-race-tuning', 'modal-settings',
-        'modal-victory', 'modal-leaderboard', 'modal-loading-screen'
+        'modal-victory', 'modal-leaderboard', 'modal-account', 'modal-loading-screen'
       ]);
       if (!menuBgObserver) {
         menuBgObserver = new MutationObserver(records => {
