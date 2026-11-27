@@ -1,4 +1,4 @@
-const CACHE_NAME = 'turbo-maze-racer-v1.2.7';
+const CACHE_NAME = 'turbo-maze-racer-v1.2.8';
 const CORE_ASSETS = [
   './',
   './index.html',
@@ -34,7 +34,7 @@ self.addEventListener('fetch', (event) => {
   if (event.request.method !== 'GET') return;
 
   const requestUrl = new URL(event.request.url);
-  if (requestUrl.hostname.endsWith('.supabase.co') && requestUrl.pathname.startsWith('/rest/v1/')) return;
+  if (requestUrl.hostname.endsWith('.supabase.co')) return;
 
   event.respondWith(
     fetch(event.request)
